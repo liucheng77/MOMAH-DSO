@@ -368,8 +368,8 @@ table.tbl tbody tr:hover{background:#f8fbf9}
    DSO additions — coverage switch, engine grid, J1 chat, J2 monitoring,
    J3 scenarios, journey cards, agent activity log.
    ========================================================================= */
-/* shell gets a bottom agent-log bar */
-.content{padding-bottom:30px}
+/* shell gets a bottom agent-log bar (30px) — reserve space so nothing hides under it */
+.content{padding-bottom:46px}
 
 /* coverage-mode segmented control in topbar */
 .cov{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
@@ -406,7 +406,7 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 .jcard .jgo{font-size:12.5px;font-weight:700;color:var(--green-dark);display:inline-flex;align-items:center;gap:5px}
 
 /* J1 chat */
-.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - var(--topbar-h) - 150px);min-height:440px}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - var(--topbar-h) - 268px);min-height:340px}
 .chat-scroll{flex:1;overflow-y:auto;padding:6px 4px 12px;display:flex;flex-direction:column;gap:14px}
 .msg{display:flex;gap:10px;max-width:88%;animation:fade .3s ease}
 .msg.user{align-self:flex-end;flex-direction:row-reverse}
