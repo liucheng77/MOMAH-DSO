@@ -11,7 +11,10 @@ const REPO_BASE = ".";
 const css = fs.readFileSync(path.join(root, "src", "styles.css"), "utf8").replaceAll("url('/assets/", "url('" + REPO_BASE + "/assets/");
 let code = fs.readFileSync(path.join(root, "src", "App.jsx"), "utf8").replaceAll('"/assets/', '"' + REPO_BASE + '/assets/');
 
-const BUILD = new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC";
+// Riyadh / Arabia Standard Time (UTC+3)
+const BUILD = new Date().toLocaleString("en-CA", { timeZone: "Asia/Riyadh",
+  year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })
+  .replace(", ", " ") + " AST";
 code = code
   .replace('import React, { useState, useMemo, useEffect, useRef, createContext, useContext } from "react";',
            'const { useState, useMemo, useEffect, useRef, createContext, useContext } = React;')
