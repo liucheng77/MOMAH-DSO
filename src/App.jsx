@@ -10,6 +10,9 @@ import * as RC from "recharts";
    All figures are synthetic, internally consistent demo data anchored to BRD V0.3.
    ========================================================================= */
 
+/* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "@@BUILD@@";
+
 /* ---- Engines & data sources ---- */
 const ENGINES = [
   { key:"orch",   icon:"✦", lvl:"L1" },
@@ -592,6 +595,9 @@ Object.assign(I18N.ar, { datamgr_full:"مدير البيانات", datamgr:"مد
 Object.assign(I18N.zh, {
   rg_riyadh:"利雅得", rg_eastern:"东部省", rg_makkah:"麦加", rg_madinah:"麦地那", rg_asir:"阿西尔", rg_qassim:"卡西姆",
   rg_tabuk:"塔布克", rg_hail:"哈伊勒", rg_najran:"纳季兰", rg_jazan:"吉赞", rg_bahah:"巴哈", rg_jawf:"焦夫", rg_northern:"北部边境" });
+Object.assign(I18N.en, { build:"Build" });
+Object.assign(I18N.ar, { build:"الإصدار" });
+Object.assign(I18N.zh, { build:"发版" });
 
 /* =========================================================================
    Store / helpers
@@ -1369,6 +1375,7 @@ function App(){
     <TopBar/>
     <div className="shell"><Sidebar/><div className="content">{page}</div></div>
     <AgentLog/>
+    <div className="buildstamp" title={t("build")}>📦 {t("build")}: {BUILD_TIME}</div>
   </Ctx.Provider>);
 }
 
