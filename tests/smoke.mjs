@@ -51,14 +51,32 @@ const harness = `
       log:[{ts:"10:00:00",text:"x"}], pushLog:()=>{}, seed:null, clearSeed:()=>{}, reset:()=>{} };
   }
   const PAGES=[["Login","analyst",Login],["Hub","analyst",Hub],["ChatAnalysis","analyst",ChatAnalysis],
-    ["Monitoring","analyst",Monitoring],["PolicySim","planner",PolicySim],["Reports","analyst",Reports],
+    ["Monitoring","analyst",Monitoring],["MacroImpact","analyst",MacroImpact],["Developers","planner",Developers],
+    ["PolicySim","planner",PolicySim],["Reports","analyst",Reports],
     ["Cockpit","leader",Cockpit],["Ecosystem","leader",Ecosystem],["TopBar","analyst",TopBar],
-    ["Sidebar","analyst",Sidebar],["Sidebar","leader",Sidebar],["AgentLog","analyst",AgentLog],["EngineGrid","analyst",EngineGrid]];
+    ["Sidebar","analyst",Sidebar],["Sidebar","planner",Sidebar],["Sidebar","leader",Sidebar],["AgentLog","analyst",AgentLog],["EngineGrid","analyst",EngineGrid]];
+  const MSGS=[
+    ["Msg.shock",{role:"bot",type:"answer",scn:"q_shock"}],
+    ["Msg.demand",{role:"bot",type:"answer",scn:"q_demand"}],
+    ["Msg.gap",{role:"bot",type:"answer",scn:"q_gap"}],
+    ["Msg.escalate",{role:"bot",type:"escalate",scn:"q_vague"}],
+    ["Msg.reportBrief",{role:"bot",type:"report",scn:"q_shock",ref:"DSO-2026-1234"}],
+    ["Msg.think",{role:"bot",type:"think",scn:"q_demand",steps:[{eng:"demand",k:"think_run",st:"ok"}]}],
+    ["Msg.user",{role:"user",text:"hi"}],
+  ];
   let ok=0, fail=0;
   for(const lang of ["en","ar","zh"]){
     for(const [name,user,Comp] of PAGES){
       try{ render(createElement(Ctx.Provider,{value:makeStore(lang,user)}, createElement(Comp,null))); ok++; }
       catch(e){ fail++; console.log("FAIL "+name+" ["+lang+"]: "+(e&&e.message||e)); }
+    }
+    for(const [name,m] of MSGS){
+      try{ render(createElement(Ctx.Provider,{value:makeStore(lang,"analyst")}, createElement(Msg,{m,onGenReport:()=>{},onRoute:()=>{},onRun:()=>{}}))); ok++; }
+      catch(e){ fail++; console.log("FAIL "+name+" ["+lang+"]: "+(e&&e.message||e)); }
+    }
+    for(const w of ["A","B"]){
+      try{ render(createElement(Ctx.Provider,{value:makeStore(lang,"planner")}, createElement(ABCard,{which:w}))); ok++; }
+      catch(e){ fail++; console.log("FAIL ABCard."+w+" ["+lang+"]: "+(e&&e.message||e)); }
     }
   }
   REPORT(ok, fail);

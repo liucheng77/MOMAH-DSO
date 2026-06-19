@@ -4,3 +4,4 @@ dist/
 backup/
 dist2/
 *.timestamp-*.mjs
+build_*/

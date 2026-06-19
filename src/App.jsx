@@ -17,6 +17,7 @@ const ENGINES = [
   { key:"balance",icon:"⚖", lvl:"L2" },
   { key:"plan",   icon:"🏗", lvl:"L3" },
   { key:"conv",   icon:"🔁", lvl:"L2" },
+  { key:"macro",  icon:"🌐", lvl:"L3" },
 ];
 const SOURCES11 = [
   { key:"sakani", status:"ok",    sla:"daily",     fresh:98 },
@@ -372,10 +373,232 @@ I18N.zh = {
 };
 
 /* =========================================================================
+   Ministerial-briefing storyline data (interest-rate +50bps shock)
+   ========================================================================= */
+const MACRO_CORR = [   // 6 indicators × R² vs demand/supply/price (Figure 1)
+  { key:"int",   demand:0.73, supply:0.58, price:0.81 },
+  { key:"pop",   demand:0.85, supply:0.22, price:0.69 },
+  { key:"gdp",   demand:0.66, supply:0.51, price:0.71 },
+  { key:"inf",   demand:0.61, supply:0.42, price:0.66 },
+  { key:"unemp", demand:0.49, supply:0.31, price:0.44 },
+  { key:"oil",   demand:0.39, supply:0.35, price:0.41 },
+];
+const ECON_SCN = [
+  { k:"opt",  prob:20, rate:"6.50%", inf:"2.5%", unemp:"4.0%", gdp:"3.5%" },
+  { k:"base", prob:55, rate:"7.25%", inf:"3.2%", unemp:"4.8%", gdp:"2.1%" },
+  { k:"pess", prob:25, rate:"7.50%", inf:"4.5%", unemp:"6.2%", gdp:"0.8%" },
+];
+const VULN = [
+  { key:"riyadh",v:92 },{ key:"eastern",v:78 },{ key:"makkah",v:65 },{ key:"madinah",v:48 },
+  { key:"qassim",v:35 },{ key:"asir",v:28 },{ key:"tabuk",v:22 },{ key:"hail",v:18 },
+  { key:"najran",v:15 },{ key:"jazan",v:12 },{ key:"bahah",v:10 },{ key:"jawf",v:8 },{ key:"northern",v:5 },
+];
+const SEG_FORECAST = [   // Riyadh demand by segment A–E, 5-year (Figure 2)
+  { y:"2026", A:14200, B:11800, C:18900, D:15300, E:7400 },
+  { y:"2027", A:16800, B:10200, C:17800, D:14800, E:7500 },
+  { y:"2028", A:18900, B:9400,  C:17200, D:14500, E:7600 },
+  { y:"2029", A:20400, B:9000,  C:16900, D:14200, E:7700 },
+  { y:"2030", A:21600, B:8900,  C:17000, D:14100, E:7800 },
+];
+const MIGRATION = [ {k:"B→A",v:2100},{k:"C→A",v:800},{k:"C→B",v:500},{k:"D→C",v:300} ];
+const GAP_HEAT = {   // region × segment gap, units (Figure 4)
+  rows:["riyadh","eastern","makkah","madinah","qassim","asir"],
+  cols:["A","B","C","D","E"],
+  data:{
+    riyadh:[-12400,-6100,-5200,1800,3200], eastern:[-5300,-8700,-2100,400,1100],
+    makkah:[-4800,-3200,2500,1200,900], madinah:[-2100,-1500,800,-400,600],
+    qassim:[-900,-600,400,300,200], asir:[-500,-300,200,100,100],
+  },
+};
+const DEVS = [   // developer scorecard (Figure 6 + table)
+  { name:"Al-Majd",        grade:"A", score:92, quality:90, completion:88, concentration:84, timeliness:91, signing:89 },
+  { name:"Riyadh Housing", grade:"A", score:88, quality:92, completion:85, concentration:80, timeliness:86, signing:84 },
+  { name:"Watan Builders", grade:"A", score:86, quality:84, completion:91, concentration:82, timeliness:85, signing:83 },
+  { name:"Dar Al-Maskan",  grade:"B", score:78, quality:76, completion:80, concentration:72, timeliness:74, signing:79 },
+  { name:"Shamal Dev",     grade:"B", score:75, quality:73, completion:77, concentration:70, timeliness:71, signing:72 },
+];
+const DEV_DIMS = ["quality","completion","concentration","timeliness","signing"];
+const POLICY_AB = {   // Figure 7
+  A:{ demand:0,  supply:3100, gapClose:85, cost:2.4, risk:"low"  },
+  B:{ demand:18, supply:0,    gapClose:38, cost:1.6, risk:"high" },
+};
+const RECS = [   // Section 10 — ranked, role-owned
+  { pri:"immediate", owner:"planner", deadline:"30 Jun 2026", k:"rec_dev" },
+  { pri:"immediate", owner:"leader",  deadline:"31 Jul 2026", k:"rec_subsidy" },
+  { pri:"high",      owner:"leader",  deadline:"now",         k:"rec_nodown" },
+  { pri:"high",      owner:"datamgr", deadline:"23 Jun 2026", k:"rec_moj" },
+  { pri:"medium",    owner:"analyst", deadline:"quarterly",   k:"rec_refresh" },
+];
+
+/* ---- i18n additions for the briefing storyline (EN / AR / ZH) ---- */
+Object.assign(I18N.en, {
+  eng_macro:"Macro-Economic", engd_macro:"Macro shocks → housing impact & scenarios.",
+  nav_macro:"Macro Impact", nav_dev:"Developers",
+  shock_banner:"SAMA announced an unexpected +50bps interest-rate hike — assess the housing-market impact.",
+  runAssessment:"Run impact assessment",
+  q_shock:"SAMA just raised rates +50bps — assess the impact on Riyadh & Eastern housing.",
+  a_shock:"Urgent multi-engine assessment complete. A +50bps shock drives Riyadh demand −7% (base) to −14% (pessimistic, Y1) and forces an 18% Segment B→A migration. The Riyadh Segment A gap widens to 12,400 units (Y3); current pipeline covers only 35%. Generated autonomously in minutes — historically 3–4 days.",
+  view_macro:"View macro analysis", view_gap:"View gap heatmap", view_dev:"Developer scorecard",
+  view_policy:"Policy A vs B simulation", gen_brief:"Generate ministerial briefing",
+  repName_brief:"Macro-Economic Impact — Interest Rate Hike (+50bps)",
+  brief_urgent:"URGENT · Ministerial Briefing", autonomous_note:"Autonomous · human-reviewed",
+  // macro page
+  macro_sub:"Macro-Economic engine — indicator correlation, economic scenarios, regional vulnerability",
+  corr_title:"Macro indicators → housing-market correlation (R²)", corr_thresh:"R² = 0.6 threshold",
+  ind_int:"Interest rate", ind_pop:"Population", ind_gdp:"GDP growth", ind_inf:"Inflation (CPI)", ind_unemp:"Unemployment", ind_oil:"Oil price",
+  m_demandR:"Demand R²", m_supplyR:"Supply R²", m_priceR:"Price R²",
+  econ_title:"Three economic scenarios (2026–2029)", prob:"probability",
+  p_rate:"Interest rate", p_inf:"Inflation", p_unemp:"Unemployment", p_gdp:"GDP growth",
+  vuln_title:"Regional economic vulnerability to the rate shock", vuln_axis:"Vulnerability index (0–100)",
+  // 5-seg demand + migration
+  chart_segT:"Riyadh demand forecast by Sakani segment (5-year)",
+  seg_a:"Seg A (≤5K)", seg_b:"Seg B (5–8K)", seg_c:"Seg C (8–14K)", seg_d:"Seg D (14–25K)", seg_e:"Seg E (>25K)",
+  mig_title:"Net segment downgrades (3-year cumulative)", mig_note:"18% Segment B→A — a one-way structural shift, +22% subsidy burden (SAR 1.8B).",
+  households:"households",
+  a_demand5:"Across the five Sakani segments, Segment A grows +11% CAGR while B–D contract — forced migration, not organic growth. 2,100 households shift B→A (the largest structural change in 5 years).",
+  // gap heatmap
+  heat_title:"Supply-demand gap by region × segment (Y3, units)", surplus:"surplus", shortage:"shortage",
+  a_gapHeat:"Product-market mismatch: shortages concentrate in affordable Seg A–B (Riyadh A −12,400, Eastern B −8,700) while Seg D–E show surplus. Not a quantity problem — the pipeline is building the wrong mix.",
+  // developers
+  dev_sub:"Developer value-chain engine — 5-dimension scorecard, grades & engagement tiers",
+  dev_score:"5-dimension scorecard (Segment A-active)", d_quality:"Quality", d_completion:"Completion", d_concentration:"Concentration", d_timeliness:"Timeliness", d_signing:"Signing",
+  grade:"Grade", score:"Score", capacity_note:"3 A-grade developers offer 4,200 units/yr — ~50% of the gap-closure need.",
+  tiers_title:"Engagement plan", tier:"Tier", tier_dev:"Developers", tier_action:"Action", tier_out:"Output", tier_when:"Timeline",
+  t1:"Immediate", t1d:"Al-Majd · Riyadh Housing · Watan", t1a:"Direct negotiation", t1o:"4,200 units/yr", t1w:"Q3 2026",
+  t2:"Incentivized", t2d:"6 B-grade developers", t2a:"+15% subsidy (Policy A)", t2o:"+3,100 units/yr", t2w:"Q4 2026–Q1 2027",
+  t3:"Monitor", t3d:"20 C/D-grade", t3a:"No engagement; reassess", t3o:"—", t3w:"Q1 2027",
+  // policy A vs B
+  polAB_sub:"Policy Simulation — developer subsidy vs. reduce down payment (counter-intuitive)",
+  runAB:"Run Policy A vs B", policyA:"Policy A · Developer subsidy +15%", policyB:"Policy B · Reduce down payment",
+  pa_kind:"Supply-side", pb_kind:"Demand-side",
+  m_gapclose:"Gap closure", m_cost:"Fiscal cost", m_risk:"Risk", m_demandImp:"Demand impact", m_supplyImp:"Supply impact",
+  risk_low:"Low", risk_high:"High", recommended:"Recommended", counter:"Counter-indicated",
+  warnB_t:"Counter-indication", warnB:"Reducing down payment is politically attractive but backfires in a supply-constrained market: +18% demand (2,600 households) with zero new supply → wider gap and higher prices. If relief is needed, use rental assistance instead.",
+  recs_title:"Strategic recommendations (ranked)", pri_immediate:"IMMEDIATE", pri_high:"HIGH", pri_medium:"MEDIUM",
+  owner:"Owner", deadline:"Deadline",
+  rec_dev:"Engage Tier-1 developers for accelerated Segment A delivery (4,200 units/yr).",
+  rec_subsidy:"Implement Policy A: +15% developer subsidy (+3,100 units/yr) → gap closure 85%.",
+  rec_nodown:"Do NOT reduce beneficiary down payment — simulation shows it widens the gap.",
+  rec_moj:"Resolve DS-07 (MOJ price) pipeline delay — escalate ticket #DQ-2407.",
+  rec_refresh:"Schedule quarterly macro-economic scenario refresh; ad-hoc on any rate change.",
+  // data-quality enrichment
+  dq_score:"Data quality score", dq_ticket:"Auto-notified Data Manager", dq_impact:"Confidence impact",
+  dq_degraded:"DS-07 (MOJ price) degraded · 3-day delay → price confidence 95% → 88%. Proceeding on last valid snapshot.",
+});
+Object.assign(I18N.ar, {
+  eng_macro:"الاقتصاد الكلي", engd_macro:"الصدمات الكلية ← أثر السكن والسيناريوهات.",
+  nav_macro:"الأثر الكلي", nav_dev:"المطوّرون",
+  shock_banner:"أعلن البنك المركزي رفعاً غير متوقع للفائدة +٥٠ نقطة — قيّم الأثر على سوق السكن.",
+  runAssessment:"تشغيل تقييم الأثر",
+  q_shock:"رفع البنك المركزي الفائدة +٥٠ نقطة — قيّم الأثر على سكن الرياض والشرقية.",
+  a_shock:"اكتمل التقييم العاجل متعدد المحركات. صدمة +٥٠ نقطة تخفض طلب الرياض −٧٪ (أساسي) إلى −١٤٪ (متشائم، السنة ١) وتدفع هجرة ١٨٪ من الشريحة B إلى A. تتسع فجوة الشريحة A في الرياض إلى ١٢٬٤٠٠ وحدة (السنة ٣)؛ يغطي الخط الحالي ٣٥٪ فقط. وُلّد ذاتياً خلال دقائق — تاريخياً ٣–٤ أيام.",
+  view_macro:"عرض التحليل الكلي", view_gap:"خريطة حرارة الفجوة", view_dev:"بطاقة المطوّرين",
+  view_policy:"محاكاة السياسة A مقابل B", gen_brief:"توليد الموجز الوزاري",
+  repName_brief:"الأثر الاقتصادي الكلي — رفع الفائدة (+٥٠ نقطة)",
+  brief_urgent:"عاجل · موجز وزاري", autonomous_note:"ذاتي · مُراجَع بشرياً",
+  macro_sub:"محرك الاقتصاد الكلي — ارتباط المؤشرات، السيناريوهات الاقتصادية، الهشاشة الإقليمية",
+  corr_title:"ارتباط المؤشرات الكلية بسوق السكن (R²)", corr_thresh:"عتبة R² = ٠٫٦",
+  ind_int:"سعر الفائدة", ind_pop:"السكان", ind_gdp:"نمو الناتج", ind_inf:"التضخم", ind_unemp:"البطالة", ind_oil:"سعر النفط",
+  m_demandR:"R² الطلب", m_supplyR:"R² العرض", m_priceR:"R² السعر",
+  econ_title:"ثلاثة سيناريوهات اقتصادية (٢٠٢٦–٢٠٢٩)", prob:"الاحتمال",
+  p_rate:"سعر الفائدة", p_inf:"التضخم", p_unemp:"البطالة", p_gdp:"نمو الناتج",
+  vuln_title:"الهشاشة الاقتصادية الإقليمية تجاه صدمة الفائدة", vuln_axis:"مؤشر الهشاشة (٠–١٠٠)",
+  chart_segT:"تنبؤ طلب الرياض حسب شريحة سكني (٥ سنوات)",
+  seg_a:"الشريحة A", seg_b:"الشريحة B", seg_c:"الشريحة C", seg_d:"الشريحة D", seg_e:"الشريحة E",
+  mig_title:"صافي تنزّل الشرائح (تراكمي ٣ سنوات)", mig_note:"١٨٪ هجرة B←A — تحوّل بنيوي أحادي الاتجاه، +٢٢٪ عبء دعم (١٫٨ مليار).",
+  households:"أسرة",
+  a_demand5:"عبر الشرائح الخمس، تنمو الشريحة A بـ +١١٪ سنوياً بينما تنكمش B–D — هجرة قسرية لا نمو عضوي. ٢٬١٠٠ أسرة تتحول B←A (أكبر تغيّر بنيوي منذ ٥ سنوات).",
+  heat_title:"فجوة العرض والطلب حسب المنطقة × الشريحة (السنة ٣، وحدات)", surplus:"فائض", shortage:"عجز",
+  a_gapHeat:"عدم تطابق المنتج والسوق: يتركّز العجز في الشرائح الميسورة A–B (الرياض A −١٢٬٤٠٠، الشرقية B −٨٬٧٠٠) بينما يظهر فائض في D–E. ليست مشكلة كمية — الخط ينتج المزيج الخاطئ.",
+  dev_sub:"محرك سلسلة قيمة المطوّرين — بطاقة بخمسة أبعاد، التصنيف ومستويات التعامل",
+  dev_score:"بطاقة بخمسة أبعاد (نشِط في الشريحة A)", d_quality:"الجودة", d_completion:"الإنجاز", d_concentration:"التركّز", d_timeliness:"الالتزام", d_signing:"التوقيع",
+  grade:"الفئة", score:"الدرجة", capacity_note:"٣ مطوّرين فئة A يوفّرون ٤٬٢٠٠ وحدة/سنة — نحو ٥٠٪ من الحاجة لسدّ الفجوة.",
+  tiers_title:"خطة التعامل", tier:"المستوى", tier_dev:"المطوّرون", tier_action:"الإجراء", tier_out:"المخرجات", tier_when:"التوقيت",
+  t1:"فوري", t1d:"المجد · الرياض للإسكان · وطن", t1a:"تفاوض مباشر", t1o:"٤٬٢٠٠ وحدة/سنة", t1w:"ربع ٣ ٢٠٢٦",
+  t2:"محفّز", t2d:"٦ مطوّرين فئة B", t2a:"+١٥٪ دعم (سياسة A)", t2o:"+٣٬١٠٠ وحدة/سنة", t2w:"ربع ٤ ٢٠٢٦–ربع ١ ٢٠٢٧",
+  t3:"مراقبة", t3d:"٢٠ من فئة C/D", t3a:"بلا تعامل؛ إعادة تقييم", t3o:"—", t3w:"ربع ١ ٢٠٢٧",
+  polAB_sub:"محاكاة السياسات — دعم المطوّرين مقابل خفض الدفعة الأولى (نتيجة معاكسة للحدس)",
+  runAB:"تشغيل السياسة A مقابل B", policyA:"السياسة A · دعم المطوّرين +١٥٪", policyB:"السياسة B · خفض الدفعة الأولى",
+  pa_kind:"جانب العرض", pb_kind:"جانب الطلب",
+  m_gapclose:"سدّ الفجوة", m_cost:"الكلفة المالية", m_risk:"المخاطرة", m_demandImp:"أثر الطلب", m_supplyImp:"أثر العرض",
+  risk_low:"منخفضة", risk_high:"عالية", recommended:"موصى به", counter:"غير موصى به",
+  warnB_t:"تحذير معاكس", warnB:"خفض الدفعة الأولى جذّاب سياسياً لكنه يأتي بنتائج عكسية في سوق محدود العرض: +١٨٪ طلب (٢٬٦٠٠ أسرة) دون أي عرض جديد ← فجوة أوسع وأسعار أعلى. إن لزم الدعم فاستخدم مساعدة الإيجار.",
+  recs_title:"التوصيات الاستراتيجية (مرتّبة)", pri_immediate:"فوري", pri_high:"مرتفع", pri_medium:"متوسط",
+  owner:"المسؤول", deadline:"الموعد",
+  rec_dev:"إشراك مطوّري المستوى ١ لتسريع تسليم الشريحة A (٤٬٢٠٠ وحدة/سنة).",
+  rec_subsidy:"تطبيق السياسة A: دعم مطوّرين +١٥٪ (+٣٬١٠٠ وحدة/سنة) ← سدّ الفجوة ٨٥٪.",
+  rec_nodown:"لا تُخفّض الدفعة الأولى للمستفيد — المحاكاة تُظهر اتساع الفجوة.",
+  rec_moj:"معالجة تأخّر مصدر أسعار العدل — تصعيد التذكرة #DQ-2407.",
+  rec_refresh:"جدولة تحديث ربع سنوي للسيناريوهات الكلية؛ فوري عند أي تغيّر للفائدة.",
+  dq_score:"درجة جودة البيانات", dq_ticket:"إبلاغ تلقائي لمدير البيانات", dq_impact:"أثر الثقة",
+  dq_degraded:"تدهور DS-07 (أسعار العدل) · تأخّر ٣ أيام ← ثقة السعر ٩٥٪ ← ٨٨٪. المتابعة على آخر لقطة صالحة.",
+});
+Object.assign(I18N.zh, {
+  eng_macro:"宏观经济", engd_macro:"宏观冲击 → 住房影响与情景。",
+  nav_macro:"宏观影响", nav_dev:"开发商",
+  shock_banner:"SAMA 意外宣布加息 +50 个基点 —— 评估对住房市场的影响。",
+  runAssessment:"运行影响评估",
+  q_shock:"SAMA 刚加息 +50bps —— 评估对利雅得与东部省住房的影响。",
+  a_shock:"紧急多引擎评估完成。+50bps 冲击使利雅得需求下降 −7%(基准)至 −14%(悲观,第1年),并迫使 18% 的 B 段向 A 段迁移。利雅得 A 段缺口扩大至 12,400 套(第3年),现有管线仅覆盖 35%。本次自主生成仅用几分钟 —— 过去需 3–4 天。",
+  view_macro:"查看宏观分析", view_gap:"查看缺口热力图", view_dev:"开发商评分",
+  view_policy:"政策 A vs B 模拟", gen_brief:"生成部长简报",
+  repName_brief:"宏观经济影响 —— 利率上调(+50bps)",
+  brief_urgent:"紧急 · 部长简报", autonomous_note:"自主 · 人工复核",
+  macro_sub:"宏观经济引擎 —— 指标相关性、经济情景、区域脆弱性",
+  corr_title:"宏观指标 → 住房市场相关性(R²)", corr_thresh:"R² = 0.6 阈值",
+  ind_int:"利率", ind_pop:"人口", ind_gdp:"GDP 增长", ind_inf:"通胀(CPI)", ind_unemp:"失业率", ind_oil:"油价",
+  m_demandR:"需求 R²", m_supplyR:"供给 R²", m_priceR:"价格 R²",
+  econ_title:"三套经济情景(2026–2029)", prob:"概率",
+  p_rate:"利率", p_inf:"通胀", p_unemp:"失业率", p_gdp:"GDP 增长",
+  vuln_title:"各区域对加息冲击的经济脆弱性", vuln_axis:"脆弱性指数(0–100)",
+  chart_segT:"利雅得各 Sakani 收入段需求预测(5 年)",
+  seg_a:"A 段(≤5千)", seg_b:"B 段(5–8千)", seg_c:"C 段(8–14千)", seg_d:"D 段(14–25千)", seg_e:"E 段(>25千)",
+  mig_title:"客群净下迁(3 年累计)", mig_note:"18% 的 B→A 迁移 —— 单向结构性转移,补贴负担 +22%(SAR 18 亿)。",
+  households:"户",
+  a_demand5:"在五个 Sakani 段中,A 段以 +11% 年复合增长,而 B–D 收缩 —— 是被迫迁移而非自然增长。2,100 户从 B 迁往 A(5 年来最大的结构变化)。",
+  heat_title:"按区域 × 客群的供需缺口(第3年,套)", surplus:"盈余", shortage:"短缺",
+  a_gapHeat:"产品-市场错配:短缺集中在可负担的 A–B 段(利雅得 A −12,400、东部 B −8,700),而 D–E 段出现盈余。不是数量问题 —— 管线在造错误的产品组合。",
+  dev_sub:"开发商价值链引擎 —— 五维评分卡、评级与对接分层",
+  dev_score:"五维评分卡(A 段活跃)", d_quality:"质量", d_completion:"完工", d_concentration:"集中度", d_timeliness:"准时", d_signing:"签约",
+  grade:"评级", score:"得分", capacity_note:"3 家 A 级开发商提供 4,200 套/年 —— 约占补缺口需求的 50%。",
+  tiers_title:"对接计划", tier:"层级", tier_dev:"开发商", tier_action:"动作", tier_out:"产出", tier_when:"时间",
+  t1:"立即", t1d:"Al-Majd · 利雅得住房 · Watan", t1a:"直接谈判", t1o:"4,200 套/年", t1w:"2026 Q3",
+  t2:"激励", t2d:"6 家 B 级开发商", t2a:"+15% 补贴(政策 A)", t2o:"+3,100 套/年", t2w:"2026 Q4–2027 Q1",
+  t3:"观察", t3d:"20 家 C/D 级", t3a:"暂不对接;重评", t3o:"—", t3w:"2027 Q1",
+  polAB_sub:"政策模拟 —— 开发商补贴 vs 降低首付(反直觉结论)",
+  runAB:"运行 政策 A vs B", policyA:"政策 A · 开发商补贴 +15%", policyB:"政策 B · 降低首付",
+  pa_kind:"供给侧", pb_kind:"需求侧",
+  m_gapclose:"缺口补足", m_cost:"财政成本", m_risk:"风险", m_demandImp:"需求影响", m_supplyImp:"供给影响",
+  risk_low:"低", risk_high:"高", recommended:"推荐", counter:"不推荐",
+  warnB_t:"反向警告", warnB:"降低首付在政治上讨好,但在供给受限的市场会适得其反:需求 +18%(2,600 户)却零新增供给 → 缺口更大、价格更高。若确需纾困,应改用租赁补贴。",
+  recs_title:"战略建议(排序)", pri_immediate:"立即", pri_high:"高", pri_medium:"中",
+  owner:"负责人", deadline:"截止",
+  rec_dev:"对接一级开发商,加速 A 段交付(4,200 套/年)。",
+  rec_subsidy:"实施政策 A:开发商补贴 +15%(+3,100 套/年)→ 缺口补足 85%。",
+  rec_nodown:"不要降低受益人首付 —— 模拟显示会扩大缺口。",
+  rec_moj:"解决 DS-07(司法部房价)管线延迟 —— 升级工单 #DQ-2407。",
+  rec_refresh:"安排季度宏观情景刷新;利率一有变动即临时刷新。",
+  dq_score:"数据质量分", dq_ticket:"已自动通知数据经理", dq_impact:"置信度影响",
+  dq_degraded:"DS-07(司法部房价)降级 · 延迟 3 天 → 价格置信度 95% → 88%。沿用最近有效快照继续。",
+  // role label for Data Manager (used by recommendations owner)
+  datamgr_full:"数据经理", datamgr:"数据经理",
+});
+Object.assign(I18N.en, { datamgr_full:"Data Manager", datamgr:"Data Manager",
+  rg_riyadh:"Riyadh", rg_eastern:"Eastern", rg_makkah:"Makkah", rg_madinah:"Madinah", rg_asir:"Asir", rg_qassim:"Qassim",
+  rg_tabuk:"Tabuk", rg_hail:"Hail", rg_najran:"Najran", rg_jazan:"Jazan", rg_bahah:"Al-Bahah", rg_jawf:"Al-Jawf", rg_northern:"Northern" });
+Object.assign(I18N.ar, { datamgr_full:"مدير البيانات", datamgr:"مدير البيانات",
+  rg_riyadh:"الرياض", rg_eastern:"الشرقية", rg_makkah:"مكة", rg_madinah:"المدينة", rg_asir:"عسير", rg_qassim:"القصيم",
+  rg_tabuk:"تبوك", rg_hail:"حائل", rg_najran:"نجران", rg_jazan:"جازان", rg_bahah:"الباحة", rg_jawf:"الجوف", rg_northern:"الشمالية" });
+Object.assign(I18N.zh, {
+  rg_riyadh:"利雅得", rg_eastern:"东部省", rg_makkah:"麦加", rg_madinah:"麦地那", rg_asir:"阿西尔", rg_qassim:"卡西姆",
+  rg_tabuk:"塔布克", rg_hail:"哈伊勒", rg_najran:"纳季兰", rg_jazan:"吉赞", rg_bahah:"巴哈", rg_jawf:"焦夫", rg_northern:"北部边境" });
+
+/* =========================================================================
    Store / helpers
    ========================================================================= */
 const Ctx = createContext(null);
 const useStore = () => useContext(Ctx);
+const n0 = v => Math.round(v).toLocaleString("en-US");
 function nowStr(lang){ return new Date().toLocaleString(lang==="ar"?"ar-SA":lang==="zh"?"zh-CN":"en-GB",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}); }
 function timeStr(lang){ return new Date().toLocaleTimeString(lang==="ar"?"ar-SA":lang==="zh"?"zh-CN":"en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"}); }
 function refNo(){ return "DSO-2026-"+String(1000+Math.floor(Math.random()*9000)); }
@@ -503,9 +726,9 @@ function TopBar(){
   </div>);
 }
 const NAV = {
-  analyst:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_monitor","◉","monitor"],["nav_policy","⚖","policy"],["nav_reports","📄","reports"]],
-  planner:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_policy","⚖","policy"],["nav_reports","📄","reports"]],
-  leader:[["nav_cockpit","◧","cockpit"],["nav_policy","⚖","policy"],["nav_eco","🤝","eco"],["nav_reports","📄","reports"]],
+  analyst:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_monitor","◉","monitor"],["nav_macro","🌐","macro"],["nav_dev","🏗","dev"],["nav_policy","⚖","policy"],["nav_reports","📄","reports"]],
+  planner:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_macro","🌐","macro"],["nav_dev","🏗","dev"],["nav_policy","⚖","policy"],["nav_reports","📄","reports"]],
+  leader:[["nav_cockpit","◧","cockpit"],["nav_macro","🌐","macro"],["nav_policy","⚖","policy"],["nav_eco","🤝","eco"],["nav_reports","📄","reports"]],
 };
 function Sidebar(){
   const {t,user,route,setRoute,alerts}=useStore();
@@ -576,6 +799,12 @@ function Hub(){
   const open=alerts.filter(a=>!a.ack);
   return (<div className="fade">
     <PageHeader title={t("hub_hello")+" · "+t(user+"_full")} sub={t("hub_sub")}/>
+    <div className="shock">
+      <span className="si">⚡</span>
+      <span className="stxt">{t("shock_banner")}</span>
+      <button className="btn" onClick={()=>askOrchestrator("q_shock")}>✦ {t("runAssessment")}</button>
+      <span className="spill">{t("brief_urgent")}</span>
+    </div>
     <div className="cols-4" style={{marginBottom:16}}>
       <KPI label={t("k_resp")} value={t("k_resp_v")} sub={t("k_resp_s")} tone="good"/>
       <KPI label={t("k_alerts")} value={open.length} tone={open.length?"bad":"good"}/>
@@ -608,31 +837,72 @@ function Hub(){
    J1 — Conversational analysis (centerpiece)
    ========================================================================= */
 const SCN = {
-  q_demand:{ type:"single", intent:"think_intent", engines:["orch","demand"],
+  q_shock:{ type:"cross", engines:["orch","macro","demand","balance","plan","conv"],
+    steps:[["orch","think_intent"],["macro","think_run"],["demand","think_run"],["balance","think_run"],["plan","think_run"],["orch","think_compose"]],
+    answer:"a_shock", conf:88, srcs:["src_sakani","src_wafi","src_moj","src_gastat","src_sec","src_private","src_geo"],
+    viz:"shock", report:"repName_brief", reportLabel:"gen_brief", brief:true, red:true,
+    actions:[{lk:"view_macro",kind:"route",to:"macro"},{lk:"view_gap",kind:"run",to:"q_gap"},{lk:"view_dev",kind:"route",to:"dev"},{lk:"view_policy",kind:"route",to:"policy"}] },
+  q_demand:{ type:"single", engines:["orch","demand"],
     steps:[["orch","think_intent"],["demand","think_route"],["demand","think_run"],["orch","think_compose"]],
-    answer:"a_demand", conf:91, srcs:["src_sakani","src_uc1","src_uc2","src_gastat"],
-    chart:{type:"line", title:"chart_demandT"}, report:"repName_demand", follow:["q_gap"] },
-  q_gap:{ type:"cross", intent:"think_intent", engines:["orch","balance","plan"],
+    answer:"a_demand5", conf:91, srcs:["src_sakani","src_uc1","src_uc2","src_gastat"],
+    viz:"segments", report:"repName_demand",
+    actions:[{lk:"view_gap",kind:"run",to:"q_gap"}] },
+  q_gap:{ type:"cross", engines:["orch","balance","plan"],
     steps:[["orch","think_intent"],["balance","think_route"],["balance","think_run"],["plan","think_run"],["orch","think_compose"]],
-    answer:"a_gap", conf:86, srcs:["src_wafi","src_private","src_moj","src_sec","src_geo"],
-    chart:{type:"bar", title:"chart_gapT"}, report:"repName_gap", red:true, mem:true, follow:["q_policy"] },
-  q_policy:{ type:"handoff", answer:null, follow:[] },
-  q_vague:{ type:"escalate", intent:"think_perm", engines:["orch"],
-    steps:[["orch","think_intent"],["orch","think_perm"]], answer:"a_vague", follow:[] },
+    answer:"a_gapHeat", conf:86, srcs:["src_wafi","src_private","src_moj","src_sec","src_geo"],
+    viz:"heatmap", report:"repName_gap", red:true, mem:true,
+    actions:[{lk:"view_dev",kind:"route",to:"dev"},{lk:"view_policy",kind:"route",to:"policy"}] },
+  q_policy:{ type:"handoff", answer:null, actions:[] },
+  q_vague:{ type:"escalate", engines:["orch"],
+    steps:[["orch","think_intent"],["orch","think_perm"]], answer:"a_vague", actions:[] },
 };
-function ChartMini({spec}){
+const SEG_COLORS={A:"#e32700",B:"#e29700",C:"#2563eb",D:"#6d5ae6",E:"#1B8354"};
+function SegChart(){
   const {t}=useStore(); const C=RC; if(!C.ResponsiveContainer) return null;
-  if(spec.type==="line") return (<div style={{width:"100%",height:170,marginTop:8}}><C.ResponsiveContainer>
-    <C.LineChart data={DEMAND_TREND} margin={{top:6,right:12,left:-12,bottom:0}}>
-      <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="m" tick={{fontSize:10}}/><C.YAxis tick={{fontSize:10}} domain={[90,140]}/>
-      <C.Tooltip/><C.Line type="monotone" dataKey="v" stroke="#1B8354" strokeWidth={2.5} dot={{r:3}}/>
+  return (<div style={{width:"100%",height:220,marginTop:6}}><C.ResponsiveContainer>
+    <C.LineChart data={SEG_FORECAST} margin={{top:6,right:12,left:-6,bottom:0}}>
+      <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="y" tick={{fontSize:10}}/>
+      <C.YAxis tick={{fontSize:10}} tickFormatter={v=>(v/1000)+"K"}/><C.Tooltip/>
+      <C.Legend wrapperStyle={{fontSize:11}}/>
+      {["A","B","C","D","E"].map(s=><C.Line key={s} type="monotone" dataKey={s} name={t("seg_"+s.toLowerCase())} stroke={SEG_COLORS[s]} strokeWidth={s==="A"||s==="B"?2.6:1.6} dot={false}/>)}
     </C.LineChart></C.ResponsiveContainer></div>);
-  return (<div style={{width:"100%",height:180,marginTop:8}}><C.ResponsiveContainer>
-    <C.BarChart data={GAP_REGIONS.map(r=>({name:t("src_"+(r.key==="riyadh"?"":"")) ? r.key : r.key, key:r.key, gap:r.gap}))} margin={{top:6,right:10,left:-12,bottom:0}}>
-      <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="key" tick={{fontSize:10}}/><C.YAxis tick={{fontSize:10}} domain={[0,40]}/>
-      <C.Tooltip/><C.ReferenceLine y={30} stroke="#e32700" strokeDasharray="4 4"/>
-      <C.Bar dataKey="gap" radius={[3,3,0,0]}>{GAP_REGIONS.map((r,i)=><C.Cell key={i} fill={r.gap>=30?"#e32700":r.gap>=15?"#e29700":"#1B8354"}/>)}</C.Bar>
-    </C.BarChart></C.ResponsiveContainer></div>);
+}
+function MigrationBars(){
+  const {t}=useStore(); const max=Math.max(...MIGRATION.map(m=>m.v));
+  return (<div style={{marginTop:8}}>
+    <div style={{fontSize:12,fontWeight:700,color:"var(--muted)",marginBottom:6}}>{t("mig_title")}</div>
+    {MIGRATION.map(m=>(<div key={m.k} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+      <span className="mono" style={{width:44,fontSize:12,fontWeight:700}}>{m.k}</span>
+      <div className="bar-mini" style={{flex:1}}><span style={{width:(m.v/max*100)+"%",background:m.k==="B→A"?"#e32700":"#e29700"}}/></div>
+      <span className="mono" style={{fontSize:11.5,color:"var(--muted)",width:96,textAlign:"end"}}>{n0(m.v)} {t("households")}</span>
+    </div>))}
+  </div>);
+}
+function heatColor(v){ if(v<=-8000)return"#b42318"; if(v<=-3000)return"#e0683f"; if(v<0)return"#e6a23c"; if(v<=1000)return"#73b355"; return"#1B8354"; }
+function GapHeatmap(){
+  const {t}=useStore();
+  return (<div style={{marginTop:8}}>
+    <div className="scrollx"><table className="heat">
+      <thead><tr><th></th>{GAP_HEAT.cols.map(c=><th key={c}>{t("seg_"+c.toLowerCase()).split(" ")[0]+" "+c}</th>)}</tr></thead>
+      <tbody>{GAP_HEAT.rows.map(r=>(<tr key={r}>
+        <td className="rh">{t("rg_"+r)||r}</td>
+        {GAP_HEAT.data[r].map((v,i)=><td key={i} className="cell" style={{background:heatColor(v)}}>{v>0?"+":""}{n0(v)}</td>)}
+      </tr>))}</tbody>
+    </table></div>
+    <div className="heat-legend"><span>{t("shortage")}</span><span className="heat-scale"/><span>{t("surplus")}</span></div>
+  </div>);
+}
+function ShockFindings(){
+  const {t}=useStore();
+  const items=["−7% / −14% demand","18% B→A migration","Riyadh Seg A gap 12,400","pipeline covers 35%"];
+  return (<div className="meta" style={{marginTop:4}}>{items.map((x,i)=><span key={i} className="chip danger">⚠ {x}</span>)}</div>);
+}
+function Viz({kind}){
+  const {t}=useStore();
+  if(kind==="segments") return (<><div style={{fontSize:12,fontWeight:700,marginTop:10,color:"var(--muted)"}}>{t("chart_segT")}</div><SegChart/><MigrationBars/></>);
+  if(kind==="heatmap") return (<><div style={{fontSize:12,fontWeight:700,marginTop:10,color:"var(--muted)"}}>{t("heat_title")}</div><GapHeatmap/></>);
+  if(kind==="shock") return <ShockFindings/>;
+  return null;
 }
 function ChatAnalysis(){
   const {t,cov,setRoute,pushLog,addReport,seed,clearSeed}=useStore();
@@ -678,15 +948,16 @@ function ChatAnalysis(){
     const q=input.trim().toLowerCase(); setInput("");
     if(!q) return;
     let id="q_vague";
-    if(/gap|缺口|فجوة|supply|供给|عرض/.test(q)) id="q_gap";
-    else if(/demand|趋势|需求|طلب|trend/.test(q)) id="q_demand";
+    if(/rate|interest|bps|利率|加息|فائدة|shock|冲击/.test(q)) id="q_shock";
+    else if(/gap|缺口|فجوة|supply|供给|عرض/.test(q)) id="q_gap";
+    else if(/demand|趋势|需求|طلب|trend|segment|客群|段/.test(q)) id="q_demand";
     else if(/financ|融资|政策|policy|تمويل|سياسة/.test(q)) id="q_policy";
     else { push({role:"user",text:input||q}); push({role:"bot",type:"text",text:t("a_vague")}); return; }
     run(id);
   }
   useEffect(()=>{ if(seed){ run(seed); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
 
-  const presets=["q_demand","q_gap","q_vague"];
+  const presets=["q_shock","q_demand","q_gap","q_vague"];
   return (<div className="fade">
     <PageHeader title={t("nav_chat")} sub={t("chat_sub")} right={<AgentBadge name={t("eng_orch")}/>}/>
     <div className="card pad" style={{display:"flex",flexDirection:"column"}}>
@@ -697,7 +968,7 @@ function ChatAnalysis(){
       <div className="chat-wrap">
         <div className="chat-scroll" ref={scrollRef}>
           {msgs.length===0&&<div className="muted" style={{textAlign:"center",margin:"30px 0",fontSize:13}}>✦ {t("chat_sub")}</div>}
-          {msgs.map(m=><Msg key={m.id} m={m} onGenReport={genReport} onPolicy={()=>setRoute("policy")} onRun={run}/>)}
+          {msgs.map(m=><Msg key={m.id} m={m} onGenReport={genReport} onRoute={setRoute} onRun={run}/>)}
         </div>
         <div className="chat-input">
           <input className="input" placeholder={t("chat_ph")} value={input} disabled={busy}
@@ -708,7 +979,7 @@ function ChatAnalysis(){
     </div>
   </div>);
 }
-function Msg({m,onGenReport,onPolicy,onRun}){
+function Msg({m,onGenReport,onRoute,onRun}){
   const {t,cov}=useStore();
   if(m.role==="user") return (<div className="msg user"><div className="av">{UserIcon}</div><div className="bubble">{m.text}</div></div>);
   // bot variants
@@ -730,13 +1001,13 @@ function Msg({m,onGenReport,onPolicy,onRun}){
   if(m.type==="report"){
     const scn=SCN[m.scn];
     return (<div className="msg bot"><div className="av">✦</div><div className="bubble" style={{padding:0,border:"none",boxShadow:"none",background:"transparent",maxWidth:"100%"}}>
-      <div className="report-card">
-        <div className="rch"><span className="rt">📄 {t(scn.report)}</span><span className="chip" style={{background:"rgba(255,255,255,.2)",color:"#fff"}}>{t("cov_"+cov)}</span></div>
+      <div className={"report-card"+(scn.brief?" brief":"")}>
+        <div className="rch"><span className="rt">📄 {t(scn.report)}</span><span className="chip" style={{background:"rgba(255,255,255,.2)",color:"#fff"}}>{scn.brief?t("brief_urgent"):t("cov_"+cov)}</span></div>
         <div className="rcb">
           <div className="report-row"><span className="muted">{t("refNo")}</span><b className="mono">{m.ref}</b></div>
           <div className="report-row"><span className="muted">{t("coverageMode")}</span><span>{t("cov_"+cov)} · {COV_ACC[cov]}</span></div>
           <div className="report-row"><span className="muted">{t("confidence")}</span><span style={{color:"var(--green-dark)",fontWeight:700}}>{scn.conf}%</span></div>
-          <div className="report-row"><span className="muted">{t("generated")}</span><span>{nowStr("en")}</span></div>
+          <div className="report-row"><span className="muted">{t("generated")}</span><span>{nowStr("en")} · {t("autonomous_note")}</span></div>
           <button className="btn sm" style={{marginTop:10,width:"100%",justifyContent:"center"}} onClick={()=>window.print()}>⬇ {t("download")}</button>
         </div>
       </div>
@@ -744,21 +1015,22 @@ function Msg({m,onGenReport,onPolicy,onRun}){
   }
   // answer
   const scn=SCN[m.scn];
+  function doAction(a){ if(a.kind==="run") onRun(a.to); else onRoute(a.to); }
   return (<div className="msg bot"><div className="av">✦</div><div className="bubble">
+    {scn.brief&&<span className="brief-tag">⚡ {t("brief_urgent")}</span>}
     {scn.mem&&<span className="chip info" style={{marginBottom:6}}>🧠 {t("memory")}</span>}
-    {scn.type==="cross"&&<div className="banner" style={{marginBottom:8}}>✦ {t("cross_note")}</div>}
+    {scn.type==="cross"&&!scn.brief&&<div className="banner" style={{marginBottom:8}}>✦ {t("cross_note")}</div>}
     <div>{t(scn.answer)}</div>
-    {scn.chart&&<><div style={{fontSize:12,fontWeight:700,marginTop:10,color:"var(--muted)"}}>{t(scn.chart.title)}</div><ChartMini spec={scn.chart}/></>}
-    {scn.red&&<div className="banner" style={{marginTop:8,background:"var(--danger-50)",borderColor:"#f0b4ad",color:"#7a241d"}}>⚠ {t("gapRed")}</div>}
+    {scn.viz&&<Viz kind={scn.viz}/>}
+    {scn.red&&scn.viz==="heatmap"&&<div className="banner" style={{marginTop:8,background:"var(--danger-50)",borderColor:"#f0b4ad",color:"#7a241d"}}>⚠ {t("gapRed")}</div>}
     <div className="meta">
       <span className="chip gray">{t("confidence")}: <b style={{marginInlineStart:4,color:"var(--green-dark)"}}>{scn.conf}%</b></span>
       {scn.engines.filter(e=>e!=="orch").map(e=><span key={e} className="chip">{t("eng_"+e)}</span>)}
       <span className="chip gray">{t("sources")}: {scn.srcs.length}</span>
     </div>
     <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:10}}>
-      {scn.report&&<button className="btn sm" onClick={()=>onGenReport(m.scn)}>📄 {t("genReport")}</button>}
-      {scn.follow&&scn.follow.includes("q_gap")&&<button className="btn secondary sm" onClick={()=>onRun("q_gap")}>{t("q_gap").slice(0,22)}… {ArrowIcon}</button>}
-      {scn.follow&&scn.follow.includes("q_policy")&&<button className="btn secondary sm" onClick={onPolicy}>⚖ {t("askPolicy")}</button>}
+      {scn.report&&<button className="btn sm" onClick={()=>onGenReport(m.scn)}>📄 {t(scn.reportLabel||"genReport")}</button>}
+      {(scn.actions||[]).map((a,i)=><button key={i} className="btn secondary sm" onClick={()=>doAction(a)}>{t(a.lk)} {ArrowIcon}</button>)}
     </div>
   </div></div>);
 }
@@ -780,7 +1052,8 @@ function Monitoring(){
       <button className="btn" onClick={scan} disabled={scanning}>{scanning?t("scanning"):("◉ "+t("runScan"))}</button>
     </span>}/>
     {scanning&&<div className="scan-bar" style={{marginBottom:14}}><span/></div>}
-    <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="chip">9 / 11 ●</span>}>
+    <div className="banner" style={{marginBottom:14}}>⚠ {t("dq_degraded")} · {t("dq_ticket")} (#DQ-2407)</div>
+    <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right"><span className="chip">{t("dq_score")}: 94.2/100</span><span className="chip">9 / 11 ●</span></span>}>
       <div className="mon-grid">
         {SOURCES11.map(s=>{ const tone=s.status==="ok"?"":s.status==="amber"?"amber":"red";
           const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
@@ -813,78 +1086,74 @@ function Monitoring(){
 }
 
 /* =========================================================================
-   J3 — Policy simulation
+   J3 — Policy simulation (Policy A vs Policy B + ranked recommendations)
    ========================================================================= */
-const POL_NODES=[{k:"think_intent",icon:"✦"},{k:"sc_opt",icon:"📈"},{k:"sc_base",icon:"⚖"},{k:"sc_pess",icon:"📉"}];
+const POL_NODES=[{k:"think_intent",icon:"✦"},{k:"eng_demand",icon:"📈"},{k:"eng_plan",icon:"🏗"},{k:"runAB",icon:"⚖"}];
+function ABCard({which}){
+  const {t}=useStore(); const d=POLICY_AB[which]; const good=which==="A";
+  const rows=[
+    ["m_gapclose", d.gapClose+"%", good?"var(--green-dark)":"var(--danger)"],
+    ["m_demandImp", (d.demand>0?"+":"")+d.demand+"%", d.demand>0?"var(--danger)":"var(--muted)"],
+    ["m_supplyImp", d.supply>0?("+"+n0(d.supply)):"0", d.supply>0?"var(--green-dark)":"var(--danger)"],
+    ["m_cost", "SAR "+d.cost+"B", "var(--ink)"],
+    ["m_risk", t("risk_"+d.risk), d.risk==="low"?"var(--green-dark)":"var(--danger)"],
+  ];
+  return (<div className={"ab "+(good?"good":"bad")}>
+    <div className="abh"><span className="abt">{t(good?"policyA":"policyB")}</span>
+      <span className={"chip "+(good?"":"danger")}>{t(good?"recommended":"counter")}</span></div>
+    <div className="muted" style={{fontSize:11.5,marginBottom:6}}>{t(good?"pa_kind":"pb_kind")}</div>
+    {rows.map(([lk,val,col])=>(<div key={lk} className="abrow"><span className="muted">{t(lk)}</span><span className="abv" style={{color:col}}>{val}</span></div>))}
+  </div>);
+}
 function PolicySim(){
-  const {t,pushLog,addReport,cov}=useStore();
-  const [ptype,setPtype]=useState("financing");
-  const [lv,setLv]=useState({financing:10,whiteland:0,subsidy:0});
+  const {t,pushLog,addReport,cov,user,setRoute}=useStore();
   const [chain,setChain]=useState(["idle","idle","idle","idle"]);
   const [busy,setBusy]=useState(false);
-  const [res,setRes]=useState(null);
+  const [ran,setRan]=useState(false);
   const [fed,setFed]=useState(false);
   const [feeding,setFeeding]=useState(false);
-  function runSim(){ if(busy) return; setBusy(true); setFed(false); pushLog("log_policy");
+  function runSim(){ if(busy) return; setBusy(true); setFed(false); setRan(false); pushLog("log_policy");
     [0,1,2,3].forEach(i=>{
       setTimeout(()=>setChain(c=>{const n=[...c];n[i]="run";return n;}),i*430);
-      setTimeout(()=>{ setChain(c=>{const n=[...c];n[i]="done";return n;}); if(i===3){ setBusy(false); setRes(computePolicy(lv)); } },i*430+360);
+      setTimeout(()=>{ setChain(c=>{const n=[...c];n[i]="done";return n;}); if(i===3){ setBusy(false); setRan(true); } },i*430+360);
     });
   }
-  function feed(){ if(feeding||!res) return; setFeeding(true);
+  function feed(){ if(feeding||!ran) return; setFeeding(true);
     setTimeout(()=>{ setFeeding(false); setFed(true); pushLog("log_feed");
-      addReport({ ref:refNo(), nameKey:"repName_policy", cov, conf:78 });
+      addReport({ ref:refNo(), nameKey:"repName_policy", cov, conf:85 });
     },1500);
   }
-  const levers=ptype==="financing"?["financing"]:ptype==="whiteland"?["whiteland"]:["subsidy"];
-  const allLevers=[["financing","lever_financing",30],["whiteland","lever_whiteland",30],["subsidy","lever_subsidy",30]];
-  const scns=res?[["opt","sc_opt",res.opt],["base","sc_base",res.base],["pess","sc_pess",res.pess]]:[];
   return (<div className="fade">
-    <PageHeader title={t("nav_policy")} sub={t("pol_sub")} right={<AgentBadge name={t("eng_balance")}/>}/>
-    <div className="cols-2">
-      <Section title={t("policyType")}>
-        <div className="field"><div className="bld-inp" style={{maxWidth:320}}>
-          <select className="input" value={ptype} onChange={e=>setPtype(e.target.value)}>
-            <option value="financing">{t("pt_financing")}</option>
-            <option value="whiteland">{t("pt_whiteland")}</option>
-            <option value="subsidy">{t("pt_subsidy")}</option>
-          </select></div></div>
-        {allLevers.map(([f,lk,max])=>(<div key={f} className="field">
-          <label style={{display:"flex",justifyContent:"space-between"}}><span>{t(lk)}</span><span className="mono">{lv[f]>0?"+":""}{lv[f]}%</span></label>
-          <input className="range" type="range" min="0" max={max} step="1" value={lv[f]} onChange={e=>setLv({...lv,[f]:parseInt(e.target.value)})}/>
-        </div>))}
-        <button className="btn" style={{marginTop:6,width:"100%",justifyContent:"center"}} onClick={runSim} disabled={busy}>{busy?t("simulating"):("⚖ "+t("runSim"))}</button>
-        {busy&&<div className="ai-working" style={{marginTop:12}}>✦ {t("simulating")}</div>}
-        <div style={{marginTop:12}}><OrchestrationChain states={chain} nodes={POL_NODES}/></div>
+    <PageHeader title={t("nav_policy")} sub={t("polAB_sub")} right={<AgentBadge name={t("eng_balance")}/>}/>
+    <Section title={t("nav_policy")} right={<button className="btn" onClick={runSim} disabled={busy}>{busy?t("simulating"):("⚖ "+t("runAB"))}</button>}>
+      {busy&&<div className="ai-working" style={{marginBottom:8}}>✦ {t("simulating")}</div>}
+      <OrchestrationChain states={chain} nodes={POL_NODES}/>
+    </Section>
+    {!ran? <div className="card pad muted" style={{minHeight:120,display:"grid",placeItems:"center"}}>⚖ {t("runAB")}</div> :
+    <>
+      <Section title={t("polAB_sub")} sub={t("impactNote")}>
+        <div className="ab-grid"><ABCard which="A"/><ABCard which="B"/></div>
+        <div className="alert-strong" style={{marginTop:14}}>
+          <span className="alert-ico">⚠</span>
+          <div style={{flex:1}}><div className="alert-title">{t("warnB_t")} · {t("policyB")}</div><div className="alert-body">{t("warnB")}</div></div>
+        </div>
       </Section>
-      <div>
-        {!res? <div className="card pad muted" style={{minHeight:160,display:"grid",placeItems:"center"}}>⚖ {t("runSim")}</div> :
-        <>
-          <Section title={t("recos")+" · "+t("impactNote").split(".")[0]} sub={t("impactNote")}>
-            <div className="scn-grid" style={{marginBottom:6}}>
-              {scns.map(([cls,lk,v])=>(<div key={cls} className={"scn "+cls}>
-                <div className="sct">{cls==="opt"?"📈":cls==="base"?"⚖":"📉"} {t(lk)}</div>
-                {[["m_demand",v.demand],["m_supply",v.supply],["m_gap",v.gap],["m_price",v.price]].map(([mk,val])=>(
-                  <div key={mk} className="scrow"><span className="muted">{t(mk)}</span>
-                    <span className="mono" style={{fontWeight:700,color:val>0?(mk==="m_gap"?"var(--danger)":"var(--green-dark)"):(mk==="m_gap"?"var(--green-dark)":"var(--danger)")}}>{val>0?"+":""}{val}%</span></div>))}
-              </div>))}
-            </div>
-          </Section>
-          <Section title={t("recos")} right={<span className="chip gray">{t("confidence")}: 78%</span>}>
-            {["reco1","reco2","reco3"].map((r,i)=>(<div key={r} className="reco"><span className="rk">{i+1}</span><div style={{fontSize:13}}>{t(r)}</div></div>))}
-            <button className="btn btn-ai" style={{marginTop:6,width:"100%",justifyContent:"center"}} onClick={feed} disabled={feeding||fed}>
-              {fed?("✓ "+t("fed")):feeding?("… "+t("feeding")):("🤝 "+t("feedEco"))}</button>
-            {fed&&<div className="eco" style={{marginTop:14}}>
-              <div className="node-box dso flash"><b>{t("eco_dso")}</b></div>
-              <span className="arrow">→</span>
-              <div className="node-box flash">{t("eco_copilot")}</div>
-              <span className="arrow">→</span>
-              <div className="node-box flash">{t("eco_h03")}</div>
-            </div>}
-          </Section>
-        </>}
-      </div>
-    </div>
+      <Section title={t("recs_title")} right={<span className="chip gray">{t("confidence")}: 85%</span>}>
+        {RECS.map((r,i)=>(<div key={i} className="rec">
+          <span className={"rp "+r.pri}>{t("pri_"+r.pri)}</span>
+          <div className="rbody">{t(r.k)}
+            <div className="rmeta"><span>{t("owner")}: <b>{t(r.owner+"_full")}</b></span><span>{t("deadline")}: {r.deadline}</span></div>
+          </div>
+        </div>))}
+        <button className="btn btn-ai" style={{marginTop:8,width:"100%",justifyContent:"center"}} onClick={feed} disabled={feeding||fed}>
+          {fed?("✓ "+t("fed")):feeding?("… "+t("feeding")):("🤝 "+t("feedEco"))}</button>
+        {fed&&<div className="eco" style={{marginTop:14}}>
+          <div className="node-box dso flash"><b>{t("eco_dso")}</b></div><span className="arrow">→</span>
+          <div className="node-box flash">{t("eco_copilot")}</div><span className="arrow">→</span>
+          <div className="node-box flash">{t("eco_h03")}</div>
+        </div>}
+      </Section>
+    </>}
   </div>);
 }
 
@@ -960,6 +1229,92 @@ function Ecosystem(){
 }
 
 /* =========================================================================
+   Macro-Economic Impact (the briefing's UC-09 spine)
+   ========================================================================= */
+function MacroImpact(){
+  const {t,cov}=useStore(); const C=RC; const ok=!!C.ResponsiveContainer;
+  const corr=MACRO_CORR.map(m=>({name:t("ind_"+m.key),demand:m.demand,supply:m.supply,price:m.price}));
+  return (<div className="fade">
+    <PageHeader title={t("nav_macro")} sub={t("macro_sub")} right={<AgentBadge name={t("eng_macro")}/>}/>
+    <div className="shock" style={{marginBottom:16}}><span className="si">⚡</span><span className="stxt">{t("shock_banner")}</span><span className="spill">{t("brief_urgent")}</span></div>
+    <Section title={t("corr_title")} right={<span className="chip gray">{t("confidence")}: 88%</span>}>
+      <div style={{width:"100%",height:280}}>{ok&&
+        <C.ResponsiveContainer><C.BarChart data={corr} margin={{top:6,right:10,left:-6,bottom:4}}>
+          <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:10}} interval={0} angle={-20} textAnchor="end" height={56}/>
+          <C.YAxis domain={[0,1]} tick={{fontSize:10}}/><C.Tooltip/><C.Legend wrapperStyle={{fontSize:11}}/>
+          <C.ReferenceLine y={0.6} stroke="#e32700" strokeDasharray="4 4" label={{value:t("corr_thresh"),fontSize:10,fill:"#e32700",position:"insideTopRight"}}/>
+          <C.Bar dataKey="demand" name={t("m_demandR")} fill="#2563eb" radius={[3,3,0,0]}/>
+          <C.Bar dataKey="supply" name={t("m_supplyR")} fill="#e29700" radius={[3,3,0,0]}/>
+          <C.Bar dataKey="price" name={t("m_priceR")} fill="#1B8354" radius={[3,3,0,0]}/>
+        </C.BarChart></C.ResponsiveContainer>}
+      </div>
+    </Section>
+    <Section title={t("econ_title")}>
+      <div className="scrollx"><table className="tbl">
+        <thead><tr><th></th>{ECON_SCN.map(s=><th key={s.k} className="right-num">{t("sc_"+s.k)} · {s.prob}% {t("prob")}</th>)}</tr></thead>
+        <tbody>
+          {[["p_rate","rate"],["p_inf","inf"],["p_unemp","unemp"],["p_gdp","gdp"]].map(([lk,f])=>(
+            <tr key={f}><td>{t(lk)}</td>{ECON_SCN.map(s=><td key={s.k} className="right-num mono econ-cell">{s[f]}</td>)}</tr>))}
+        </tbody>
+      </table></div>
+    </Section>
+    <Section title={t("vuln_title")} sub={t("vuln_axis")} right={<AgentBadge name={t("eng_macro")}/>}>
+      <div style={{width:"100%",height:360}}>{ok&&
+        <C.ResponsiveContainer><C.BarChart layout="vertical" data={VULN.map(r=>({name:t("rg_"+r.key),v:r.v}))} margin={{top:4,right:24,left:30,bottom:4}}>
+          <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis type="number" domain={[0,100]} tick={{fontSize:10}}/>
+          <C.YAxis type="category" dataKey="name" tick={{fontSize:10}} width={70}/><C.Tooltip/>
+          <C.Bar dataKey="v" radius={[0,3,3,0]}>{VULN.map((r,i)=><C.Cell key={i} fill={r.v>=70?"#b42318":r.v>=40?"#e29700":"#1B8354"}/>)}</C.Bar>
+        </C.BarChart></C.ResponsiveContainer>}
+      </div>
+    </Section>
+  </div>);
+}
+
+/* =========================================================================
+   Developer Value-Chain scorecard (the briefing's UC-08 spine)
+   ========================================================================= */
+function Developers(){
+  const {t}=useStore(); const C=RC; const ok=!!C.ResponsiveContainer;
+  const radar=DEV_DIMS.map(d=>{ const row={dim:t("d_"+d)}; DEVS.slice(0,5).forEach(dv=>row[dv.name]=dv[d]); return row; });
+  const RADC=["#1B8354","#2563eb","#6d5ae6","#e29700","#9aa3ab"];
+  const tiers=[["t1","immediate"],["t2","high"],["t3","medium"]];
+  return (<div className="fade">
+    <PageHeader title={t("nav_dev")} sub={t("dev_sub")} right={<AgentBadge name={t("eng_demand")}/>}/>
+    <div className="cols-2">
+      <Section title={t("dev_score")} sub={t("capacity_note")}>
+        <div className="scrollx"><table className="tbl">
+          <thead><tr><th>{t("tier_dev")}</th><th>{t("grade")}</th><th className="right-num">{t("score")}</th><th>{t("d_quality")}</th><th>{t("d_completion")}</th><th>{t("d_signing")}</th></tr></thead>
+          <tbody>{DEVS.map(d=>(<tr key={d.name}>
+            <td><b>{d.name}</b></td>
+            <td><span className={"dev-grade "+d.grade}>{d.grade}</span></td>
+            <td className="right-num mono" style={{fontWeight:700}}>{d.score}</td>
+            {["quality","completion","signing"].map(k=>(<td key={k}><div className="bar-mini"><span style={{width:d[k]+"%"}}/></div></td>))}
+          </tr>))}</tbody>
+        </table></div>
+      </Section>
+      <Section title={t("dev_score")}>
+        <div style={{width:"100%",height:300}}>{ok&&
+          <C.ResponsiveContainer><C.RadarChart data={radar} margin={{top:8,right:18,left:18,bottom:8}}>
+            <C.PolarGrid/><C.PolarAngleAxis dataKey="dim" tick={{fontSize:10}}/><C.PolarRadiusAxis domain={[0,100]} tick={{fontSize:9}}/>
+            {DEVS.slice(0,5).map((dv,i)=><C.Radar key={dv.name} name={dv.name+" ("+dv.score+"/"+dv.grade+")"} dataKey={dv.name} stroke={RADC[i]} fill={RADC[i]} fillOpacity={0.06} strokeWidth={i<3?2:1}/>)}
+            <C.Legend wrapperStyle={{fontSize:10}}/>
+          </C.RadarChart></C.ResponsiveContainer>}
+        </div>
+      </Section>
+    </div>
+    <Section title={t("tiers_title")}>
+      <div className="scrollx"><table className="tbl">
+        <thead><tr><th>{t("tier")}</th><th>{t("tier_dev")}</th><th>{t("tier_action")}</th><th>{t("tier_out")}</th><th>{t("tier_when")}</th></tr></thead>
+        <tbody>{tiers.map(([tk,pri])=>(<tr key={tk}>
+          <td><span className={"rp "+pri} style={{fontSize:10,fontWeight:800,color:"#fff",borderRadius:6,padding:"3px 8px",background:pri==="immediate"?"var(--danger)":pri==="high"?"var(--amber)":"#1763a6"}}>{t(tk)}</span></td>
+          <td>{t(tk+"d")}</td><td>{t(tk+"a")}</td><td className="mono">{t(tk+"o")}</td><td className="muted">{t(tk+"w")}</td>
+        </tr>))}</tbody>
+      </table></div>
+    </Section>
+  </div>);
+}
+
+/* =========================================================================
    App
    ========================================================================= */
 const SEED_ALERTS=[
@@ -1002,6 +1357,8 @@ function App(){
   let page=null;
   if(route==="chat") page=<ChatAnalysis/>;
   else if(route==="monitor") page=<Monitoring/>;
+  else if(route==="macro") page=<MacroImpact/>;
+  else if(route==="dev") page=<Developers/>;
   else if(route==="policy") page=<PolicySim/>;
   else if(route==="reports") page=<Reports/>;
   else if(route==="cockpit") page=<Cockpit/>;
