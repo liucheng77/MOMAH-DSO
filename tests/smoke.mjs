@@ -63,6 +63,16 @@ const harness = `
     ["Msg.reportBrief",{role:"bot",type:"report",scn:"q_shock",ref:"DSO-2026-1234"}],
     ["Msg.think",{role:"bot",type:"think",scn:"q_demand",steps:[{eng:"demand",k:"think_run",st:"ok"}]}],
     ["Msg.user",{role:"user",text:"hi"}],
+    ["Msg.plan",{role:"bot",type:"plan",states:["idle","run","done","idle","idle","idle"]}],
+    ["Msg.hist",{role:"bot",type:"hist"}],
+    ["Msg.summary",{role:"bot",type:"summary"}],
+    ["Msg.engineLoad",{role:"bot",type:"engine",idx:0,loading:true}],
+    ["Msg.engine0",{role:"bot",type:"engine",idx:0,loading:false}],
+    ["Msg.engine1",{role:"bot",type:"engine",idx:1,loading:false}],
+    ["Msg.engine2",{role:"bot",type:"engine",idx:2,loading:false}],
+    ["Msg.engine3",{role:"bot",type:"engine",idx:3,loading:false}],
+    ["Msg.engine4",{role:"bot",type:"engine",idx:4,loading:false}],
+    ["Msg.engine5",{role:"bot",type:"engine",idx:5,loading:false}],
   ];
   let ok=0, fail=0;
   for(const lang of ["en","ar","zh"]){
