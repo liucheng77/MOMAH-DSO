@@ -68,7 +68,7 @@ function computePolicy(lv){
 const I18N = {
   en:{
     appName:"Demand & Supply Optimizer",
-    sso_title:"Momrah Single Sign-On", sso_sub:"Unified national access to the Ministry of Municipalities & Housing digital services.",
+    sso_title:"MoMAH Single Sign-On", sso_sub:"Unified national access to the Ministry of Municipalities & Housing digital services.",
     brandLine:"Demand & Supply Optimizer", signInTitle:"Sign In", identity:"Identity", password:"Password",
     securityCode:"Security code", or_:"or", login_btn:"Login", forgotPwd:"Forgot password?",
     nic1:"NIC", nic2:"National Identity Card", noAccount:"Don't have an account?", createAccount:"Create New Account",
@@ -658,7 +658,7 @@ function Login(){
     <div className="bld-center"><div className="bld-wrap"><div className="bld-row2">
       <div className="bld-brand-area">
         <div className="bld-logo">
-          <img className="bld-logo-img" src="/assets/logo.png" alt="MoMaH" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/logo.png";} else if(f==="1"){im.dataset.f="2";im.src="assets/logo.png";} else im.style.display="none";}}/>
+          <img className="bld-logo-img" src="/assets/logo.png" alt="MoMAH" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/logo.png";} else if(f==="1"){im.dataset.f="2";im.src="assets/logo.png";} else im.style.display="none";}}/>
           <span className="bld-logo-cap">{t("brandLine")}</span>
         </div>
         <h3 style={{color:"#fff"}}>{t("sso_title")}</h3>
@@ -711,7 +711,7 @@ function TopBar(){
   const [open,setOpen]=useState(false);
   return (<div className="topbar">
     <div className="brand">
-      <img className="topbar-logo" src="/assets/logo.png" alt="MoMaH" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/logo.png";} else if(f==="1"){im.dataset.f="2";im.src="assets/logo.png";} else im.style.display="none";}}/>
+      <img className="topbar-logo" src="/assets/logo.png" alt="MoMAH" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/logo.png";} else if(f==="1"){im.dataset.f="2";im.src="assets/logo.png";} else im.style.display="none";}}/>
       <span className="topbar-sep"/>
       <span className="topbar-app">{t("appName")}</span>
     </div>
