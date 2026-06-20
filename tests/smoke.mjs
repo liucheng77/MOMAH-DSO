@@ -13,6 +13,7 @@ let src = fs.readFileSync(path.join(__dirname, "..", "src", "App.jsx"), "utf8");
 src = src
   .replace('import React, { useState, useMemo, useEffect, useRef, createContext, useContext } from "react";', "")
   .replace('import * as RC from "recharts";', "")
+  .replace('import { REPORTS_B64 } from "./reports-data.js";', "const REPORTS_B64={};")
   .replace(/\nexport default App;\s*$/, "\n");
 const js = esbuild.transformSync(src, { loader: "jsx", jsx: "transform", jsxFactory: "createElement", jsxFragment: "Fragment" }).code;
 
@@ -38,8 +39,8 @@ const useRef = (i) => ({ current: i ?? null });
 const useContext = (ctx) => (ctx && "_v" in ctx ? ctx._v : null);
 const React = { createElement, Fragment };
 const RC = new Proxy({}, { get: () => (() => null) });
-const win = { location: { search: "" }, matchMedia: () => ({ matches: false, addEventListener: noop }), devicePixelRatio: 1, addEventListener: noop, removeEventListener: noop, open: noop, print: noop, innerWidth: 1280 };
-const doc = { documentElement: {}, getElementById: () => ({ textContent: "", getContext: () => null, clientWidth: 600 }), addEventListener: noop, createElement: () => ({ getContext: () => null }), body: {} };
+const win = { location: { search: "" }, matchMedia: () => ({ matches: false, addEventListener: noop }), devicePixelRatio: 1, addEventListener: noop, removeEventListener: noop, open: noop, print: noop, atob: (s) => s, innerWidth: 1280 };
+const doc = { documentElement: {}, getElementById: () => ({ textContent: "", getContext: () => null, clientWidth: 600 }), addEventListener: noop, createElement: () => ({ getContext: () => null }), body: { appendChild: noop, removeChild: noop } };
 
 const harness = `
   function makeStore(lang, user){
@@ -91,6 +92,10 @@ const harness = `
     }
     try{ render(createElement(Ctx.Provider,{value:makeStore(lang,"analyst")}, createElement(StoryStepper,{states:["done","done","run","idle","idle","idle","idle"]}))); ok++; }
     catch(e){ fail++; console.log("FAIL StoryStepper ["+lang+"]: "+(e&&e.message||e)); }
+    try{ render(createElement(Ctx.Provider,{value:makeStore(lang,"analyst")}, createElement(StoryStepper,{states:null}))); ok++; }
+    catch(e){ fail++; console.log("FAIL StoryStepper.idle ["+lang+"]: "+(e&&e.message||e)); }
+    try{ render(createElement(Ctx.Provider,{value:makeStore(lang,"analyst")}, createElement(Modal,{title:"t",onClose:function(){},children:"x"}))); ok++; }
+    catch(e){ fail++; console.log("FAIL Modal ["+lang+"]: "+(e&&e.message||e)); }
   }
   REPORT(ok, fail);
 `;

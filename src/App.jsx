@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef, createContext, useContext } from "react";
 import * as RC from "recharts";
+import { REPORTS_B64 } from "./reports-data.js";
 
 /* =========================================================================
    Demand & Supply Optimizer (DSO · AI_H_01) — interactive demo.
@@ -720,6 +721,50 @@ Object.assign(I18N.ar, {
   conv_title:"معدّل التحويل حسب الشريحة", convTarget:"المستهدف ٧٠٪", rg_national:"المتوسط الوطني", region:"المنطقة",
 });
 
+/* reports center + agent-log health events */
+Object.assign(I18N.en, {
+  rp_weekly:"Weekly Housing Market Snapshot", rp_monthly:"Monthly Housing Market Performance", rp_quarterly:"Quarterly Strategic Report",
+  periodic_title:"Periodic reports", generated_title:"Generated reports", preview:"Preview", close:"Close", viewDetail:"View detail",
+  he_moj:"DS-07 price feed degraded · 3-day delay",
+  he_moj_d:"The MOJ real-estate price feed (DS-07) is delayed beyond 50% of its SLA (3 days). Analysis proceeded on the last valid snapshot; price-trend confidence dropped 95% → 88%. The Data Manager was auto-notified (ticket #DQ-2407). Resolve the source pipeline before the next quarterly refresh.",
+  he_anom:"Anomaly · Eastern demand +3.2σ",
+  he_anom_d:"Eastern-Region demand deviated +3.2 standard deviations from the 12-week moving average — beyond the 3σ threshold. The engine flagged the value and requested expert review instead of feeding it downstream. Likely cause: an oil-sector employment cycle; verify before using in forecasts.",
+  he_conv:"Conversion dip · Makkah 52%",
+  he_conv_d:"Qualification → signing conversion in Makkah fell to 52%, below the 60% intervention threshold. Driver: developer-margin disincentives on affordable units. Recommended: weekly monitoring + targeted incentive; escalate to the Planning Manager if it persists two more weeks.",
+  he_timeout:"Macro engine retry · SAMA feed timeout",
+  he_timeout_d:"The macro-economic engine hit a timeout fetching the SAMA rate feed and retried automatically (succeeded on attempt 2). No data loss; the cached prior value was used for under 2 minutes. If timeouts recur, check the SAMA API gateway.",
+  he_stale:"Private-market feed stale · 3 days",
+  he_stale_d:"The private-market data source (DS-10) has not refreshed within its weekly SLA (3 days late). Private-coverage outputs carry a reduced-confidence caveat (80% maintained). The monitor uses the last valid snapshot and notified the Data Manager; total-market figures are unaffected.",
+});
+Object.assign(I18N.zh, {
+  rp_weekly:"每周住房市场快照", rp_monthly:"月度住房市场绩效报告", rp_quarterly:"季度住房市场战略报告",
+  periodic_title:"周期报告", generated_title:"已生成报告", preview:"预览", close:"关闭", viewDetail:"查看详情",
+  he_moj:"DS-07 房价源降级 · 延迟 3 天",
+  he_moj_d:"司法部房价源(DS-07)延迟超过 SLA 的 50%(3 天)。分析沿用最近有效快照;价格趋势置信度由 95% 降至 88%。已自动通知数据经理(工单 #DQ-2407)。请在下次季度刷新前修复该数据管线。",
+  he_anom:"异常 · 东部省需求 +3.2σ",
+  he_anom_d:"东部省需求较 12 周移动平均偏离 +3.2 个标准差,超过 3σ 阈值。引擎已标记该值并请求专家复核,未直接向下游传递。可能原因:石油行业就业周期;在用于预测前请先核实。",
+  he_conv:"转化率下滑 · 麦加 52%",
+  he_conv_d:"麦加的资格→签约转化率降至 52%,低于 60% 干预阈值。驱动因素:可负担房型上开发商利润偏低的负向激励。建议:每周监控 + 定向激励;若再持续两周则上报规划经理。",
+  he_timeout:"宏观引擎重试 · SAMA 源超时",
+  he_timeout_d:"宏观经济引擎在拉取 SAMA 利率源时超时并自动重试(第 2 次成功)。无数据丢失;在不到 2 分钟内沿用了缓存的上一值。若超时反复出现,请检查 SAMA API 网关。",
+  he_stale:"私有市场源陈旧 · 3 天",
+  he_stale_d:"私有市场数据源(DS-10)未在每周 SLA 内刷新(已迟 3 天)。私有覆盖的输出附带降置信度提示(维持 80%)。监控沿用最近有效快照并已通知数据经理;全市场数据不受影响。",
+});
+Object.assign(I18N.ar, {
+  rp_weekly:"لقطة سوق السكن الأسبوعية", rp_monthly:"أداء سوق السكن الشهري", rp_quarterly:"التقرير الاستراتيجي الفصلي",
+  periodic_title:"التقارير الدورية", generated_title:"التقارير المولّدة", preview:"معاينة", close:"إغلاق", viewDetail:"عرض التفاصيل",
+  he_moj:"تدهور مصدر أسعار DS-07 · تأخّر ٣ أيام",
+  he_moj_d:"تأخّر مصدر أسعار العقار (DS-07) بأكثر من ٥٠٪ من SLA (٣ أيام). تابع التحليل على آخر لقطة صالحة؛ انخفضت ثقة اتجاه السعر من ٩٥٪ إلى ٨٨٪. أُبلغ مدير البيانات آلياً (تذكرة #DQ-2407). يُرجى معالجة المصدر قبل التحديث الفصلي القادم.",
+  he_anom:"شذوذ · طلب الشرقية +٣٫٢σ",
+  he_anom_d:"انحرف طلب المنطقة الشرقية +٣٫٢ انحراف معياري عن متوسط ١٢ أسبوعاً — تجاوز عتبة ٣σ. وسم المحرك القيمة وطلب مراجعة خبير بدل تمريرها. السبب المرجّح: دورة توظيف قطاع النفط؛ تحقّق قبل الاستخدام في التنبؤ.",
+  he_conv:"انخفاض التحويل · مكة ٥٢٪",
+  he_conv_d:"انخفض التحويل من التأهيل إلى التوقيع في مكة إلى ٥٢٪، دون عتبة التدخل ٦٠٪. السبب: ضعف هامش المطوّر على الوحدات الميسورة. يُوصى بمراقبة أسبوعية وحافز موجّه؛ ويُرفع لمدير التخطيط إذا استمر أسبوعين آخرين.",
+  he_timeout:"إعادة محاولة المحرك الكلي · مهلة مصدر ساما",
+  he_timeout_d:"واجه المحرك الاقتصادي الكلي مهلة عند جلب مصدر فائدة ساما وأعاد المحاولة آلياً (نجح في المحاولة ٢). لا فقد للبيانات؛ استُخدمت القيمة المخزّنة لأقل من دقيقتين. إذا تكررت المهلات فافحص بوابة واجهة ساما.",
+  he_stale:"قِدَم مصدر السوق الخاص · ٣ أيام",
+  he_stale_d:"لم يُحدّث مصدر السوق الخاص (DS-10) ضمن SLA الأسبوعي (متأخر ٣ أيام). تحمل مخرجات التغطية الخاصة تنويه ثقة مخفّضة (٨٠٪ محفوظة). يستخدم المراقب آخر لقطة صالحة وأبلغ مدير البيانات؛ أرقام السوق الكلي غير متأثرة.",
+});
+
 /* historical series (storyline step 2) */
 const HIST = [
   {q:"22Q1",r:1.00,rd:15800,rs:14200},{q:"22Q2",r:1.25,rd:16100,rs:14300},{q:"22Q3",r:1.50,rd:16300,rs:14500},{q:"22Q4",r:1.75,rd:16200,rs:14700},
@@ -792,7 +837,7 @@ function Section({title,sub,right,children,className}){
     {children}</div>);
 }
 function Progress({v,color}){ return (<div className="progress"><span style={{width:Math.min(100,v*100)+"%",background:color||"var(--green)"}}/></div>); }
-function PageHeader({title,sub,right}){ return (<div className="page-h"><div><h1>{title}</h1>{sub&&<div className="sub">{sub}</div>}</div>{right}</div>); }
+function PageHeader({title,sub,right,cls}){ return (<div className={"page-h"+(cls?" "+cls:"")}><div><h1>{title}</h1>{sub&&<div className="sub">{sub}</div>}</div>{right}</div>); }
 
 /* =========================================================================
    Login (Balady SSO style)
@@ -1413,7 +1458,7 @@ function ChatAnalysis(){
 
   const presets=["q_shock","q_history","q_demand","q_gap","q_vague"];
   return (<div className="fade">
-    <PageHeader title={t("nav_chat")} sub={t("chat_sub")} right={<StoryStepper states={storyStates}/>}/>
+    <PageHeader title={t("nav_chat")} sub={t("chat_sub")} cls="ph-end" right={<StoryStepper states={storyStates}/>}/>
     <div className="card pad" style={{display:"flex",flexDirection:"column"}}>
       <div className="preset-row">
         <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{t("presets")}</span>
@@ -1640,30 +1685,93 @@ function PolicySim(){
 /* =========================================================================
    Reports
    ========================================================================= */
+function Modal({title,onClose,children,wide}){
+  return (<div className="modal-ov" onClick={onClose}>
+    <div className={"modal-box fade"+(wide?" wide":"")} onClick={e=>e.stopPropagation()}>
+      <div className="modal-head"><h3>{title}</h3><button className="modal-x" onClick={onClose} aria-label="close">✕</button></div>
+      <div className="modal-body">{children}</div>
+    </div></div>);
+}
+const REPORTS_META=[
+  {id:"weekly",   icon:"⚡", color:"#2563eb", nameKey:"rp_weekly",   ref:"DSO-WR-2026-W25", date:"22 Jun 2026 · 06:00", cov:"ministry"},
+  {id:"monthly",  icon:"📊", color:"#059669", nameKey:"rp_monthly",  ref:"DSO-MR-2026-06",  date:"01 Jul 2026 · 06:00", cov:"total"},
+  {id:"quarterly",icon:"🏛", color:"#7c3aed", nameKey:"rp_quarterly",ref:"DSO-QR-2026-Q2",  date:"30 Jun 2026 · 09:35", cov:"total"},
+];
+const HEALTH_EVENTS=[
+  {sev:"error", ts:"06:12",     k:"he_moj",     dk:"he_moj_d"},
+  {sev:"warn",  ts:"05:48",     k:"he_anom",    dk:"he_anom_d"},
+  {sev:"warn",  ts:"Sun 06:00", k:"he_conv",    dk:"he_conv_d"},
+  {sev:"error", ts:"04:30",     k:"he_timeout", dk:"he_timeout_d"},
+  {sev:"warn",  ts:"3d",        k:"he_stale",   dk:"he_stale_d"},
+];
+function decodeReport(id){ try{ return decodeURIComponent(escape(window.atob(REPORTS_B64[id]||""))); }catch(e){ try{ return window.atob(REPORTS_B64[id]||""); }catch(e2){ return ""; } } }
+function downloadReport(id){
+  try{ const html=decodeReport(id); const blob=new Blob([html],{type:"text/html;charset=utf-8"}); const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download="DSO_"+id+"_report.html"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }catch(e){ window.print(); }
+}
 function Reports(){
   const {t,reports,log,cov}=useStore();
+  const [preview,setPreview]=useState(null);
+  const [health,setHealth]=useState(null);
+  const pr=preview?REPORTS_META.find(x=>x.id===preview):null;
   return (<div className="fade">
     <PageHeader title={t("nav_reports")} sub={t("rep_sub")} right={<AgentBadge name={t("eng_orch")}/>}/>
-    <Section title={t("nav_reports")}>
-      {reports.length===0? <div className="muted">{t("noReports")}</div> :
+    <Section title={t("periodic_title")} right={<span className="chip">{REPORTS_META.length} {t("live")}</span>}>
+      <div className="scrollx"><table className="tbl">
+        <thead><tr><th>{t("rep_title")}</th><th>{t("rep_ref")}</th><th>{t("rep_cov")}</th><th>{t("rep_time")}</th><th></th></tr></thead>
+        <tbody>{REPORTS_META.map(r=>(<tr key={r.id} style={{cursor:"pointer"}} onClick={()=>setPreview(r.id)}>
+          <td><span style={{color:r.color,fontWeight:700}}>{r.icon} {t(r.nameKey)}</span></td>
+          <td className="mono"><span className="wo">{r.ref}</span></td>
+          <td><span className="chip gray">{t("cov_"+r.cov)}</span></td>
+          <td className="muted" style={{whiteSpace:"nowrap"}}>{r.date}</td>
+          <td className="right-num" style={{whiteSpace:"nowrap"}}>
+            <button className="btn secondary sm" onClick={e=>{e.stopPropagation();setPreview(r.id);}}>👁 {t("preview")}</button>
+            <button className="btn sm" style={{marginInlineStart:6}} onClick={e=>{e.stopPropagation();downloadReport(r.id);}}>⬇</button>
+          </td>
+        </tr>))}</tbody>
+      </table></div>
+    </Section>
+    {reports.length>0&&<Section title={t("generated_title")}>
       <div className="scrollx"><table className="tbl">
         <thead><tr><th>{t("rep_ref")}</th><th>{t("rep_title")}</th><th>{t("rep_cov")}</th><th className="right-num">{t("rep_conf")}</th><th>{t("rep_time")}</th><th></th></tr></thead>
         <tbody>{reports.map((r,i)=>(<tr key={i}>
-          <td className="mono"><span className="wo">{r.ref}</span></td>
-          <td>{t(r.nameKey)}</td>
+          <td className="mono"><span className="wo">{r.ref}</span></td><td>{t(r.nameKey)}</td>
           <td><span className="chip gray">{t("cov_"+r.cov)}</span></td>
           <td className="right-num mono" style={{color:"var(--green-dark)",fontWeight:700}}>{r.conf}%</td>
           <td className="muted" style={{whiteSpace:"nowrap"}}>{r.time}</td>
           <td className="right-num"><button className="btn sm" onClick={()=>window.print()}>⬇</button></td>
         </tr>))}</tbody>
-      </table></div>}
-    </Section>
+      </table></div>
+    </Section>}
     <Section title={t("agentLog")} right={<span className="chip"><span className="live-dot" style={{marginInlineEnd:4}}/>{t("live")}</span>}>
-      <div className="timeline">
-        {log.slice(0,12).map((l,i)=>(<div key={i} className="ev"><div style={{fontSize:12.5}}>{l.text}</div><div className="muted" style={{fontSize:11}}>{l.ts}</div></div>))}
-        {log.length===0&&<div className="muted">{t("noItems")}</div>}
+      <div className="loglist">
+        {HEALTH_EVENTS.map((h,i)=>(<div key={"h"+i} className={"logrow "+h.sev} onClick={()=>setHealth(h)} title={t("viewDetail")}>
+          <span className={"chip "+(h.sev==="error"?"danger":"amber")}>{h.sev==="error"?"✕":"⚠"} {t("sev_"+(h.sev==="error"?"red":"amber"))}</span>
+          <span style={{flex:1,fontSize:12.5,fontWeight:600}}>{t(h.k)}</span>
+          <span className="muted" style={{fontSize:11,whiteSpace:"nowrap"}}>{h.ts}</span>
+          <span className="logmore">{t("viewDetail")} →</span>
+        </div>))}
+        {log.slice(0,8).map((l,i)=>(<div key={"l"+i} className="logrow info">
+          <span className="dot" style={{background:"var(--green)",flex:"0 0 auto"}}/>
+          <span style={{flex:1,fontSize:12.5}} className="muted">{l.text}</span>
+          <span className="muted" style={{fontSize:11,whiteSpace:"nowrap"}}>{l.ts}</span>
+        </div>))}
+        {log.length===0&&HEALTH_EVENTS.length===0&&<div className="muted">{t("noItems")}</div>}
       </div>
     </Section>
+    {pr&&<Modal wide title={<span style={{color:pr.color}}>{pr.icon} {t(pr.nameKey)}</span>} onClose={()=>setPreview(null)}>
+      <iframe title="report" srcDoc={decodeReport(preview)} style={{width:"100%",height:"66vh",border:"1px solid var(--line)",borderRadius:8,background:"#fff"}}/>
+      <div style={{display:"flex",gap:8,marginTop:12,justifyContent:"flex-end"}}>
+        <button className="btn secondary" onClick={()=>setPreview(null)}>{t("close")}</button>
+        <button className="btn" onClick={()=>downloadReport(preview)}>⬇ {t("download")}</button>
+      </div>
+    </Modal>}
+    {health&&<Modal title={<span className="sect-right"><span className={"chip "+(health.sev==="error"?"danger":"amber")}>{health.sev==="error"?"✕":"⚠"}</span> {t(health.k)}</span>} onClose={()=>setHealth(null)}>
+      <div style={{fontSize:13.5,lineHeight:1.75}}>{t(health.dk)}</div>
+      <div style={{display:"flex",justifyContent:"flex-end",marginTop:16}}><button className="btn secondary" onClick={()=>setHealth(null)}>{t("close")}</button></div>
+    </Modal>}
   </div>);
 }
 

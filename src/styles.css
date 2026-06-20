@@ -522,6 +522,29 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 /* compact section titles inside chat engine cards */
 .mini-t{font-size:12px;font-weight:700;color:var(--muted);margin:12px 0 6px}
 
+/* align the chat header's orchestrator status with the subtitle line */
+.page-h.ph-end{align-items:flex-end}
+
+/* reports center: modal preview + clickable health log */
+.modal-ov{position:fixed;inset:0;background:rgba(16,33,28,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.modal-box{background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.32);width:560px;max-width:100%;max-height:88vh;overflow:auto}
+.modal-box.wide{width:980px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;border-radius:14px 14px 0 0;z-index:1}
+.modal-head h3{font-size:15.5px;font-weight:700}
+.modal-x{background:none;border:none;font-size:15px;color:var(--muted);cursor:pointer;width:30px;height:30px;border-radius:8px;line-height:1}
+.modal-x:hover{background:#f0f4f1;color:var(--ink)}
+.modal-body{padding:18px 20px}
+/* compact, scrollable agent log */
+.loglist{max-height:210px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;padding-inline-end:4px}
+.logrow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;border-bottom:1px solid var(--line)}
+.logrow:last-child{border-bottom:none}
+.logrow.warn,.logrow.error{cursor:pointer}
+.logrow.warn:hover{background:var(--amber-50)}
+.logrow.error:hover{background:var(--danger-50)}
+.logrow .logmore{font-size:11px;font-weight:700;color:var(--green-dark);white-space:nowrap;opacity:0;transition:opacity .15s}
+.logrow.warn:hover .logmore,.logrow.error:hover .logmore{opacity:1}
+@media(max-width:640px){.logrow .logmore{display:none}}
+
 /* orchestrator status — lives in the page header's top-right slot.
    Idle shows the "Orchestrator Agent · auto" badge; during analysis it morphs into this live
    progress bar, in the agent indigo/purple palette so it never reads as green message content. */

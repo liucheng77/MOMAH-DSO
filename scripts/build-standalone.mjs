@@ -15,10 +15,13 @@ let code = fs.readFileSync(path.join(root, "src", "App.jsx"), "utf8").replaceAll
 const BUILD = new Date().toLocaleString("en-CA", { timeZone: "Asia/Riyadh",
   year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })
   .replace(", ", " ") + " AST";
+// inline the base64 reports data (export → const), so the single-file build is self-contained
+const reportsData = fs.readFileSync(path.join(root, "src", "reports-data.js"), "utf8").replace("export const", "const");
 code = code
   .replace('import React, { useState, useMemo, useEffect, useRef, createContext, useContext } from "react";',
            'const { useState, useMemo, useEffect, useRef, createContext, useContext } = React;')
   .replace('import * as RC from "recharts";', 'const RC = window.Recharts || {};')
+  .replace('import { REPORTS_B64 } from "./reports-data.js";', reportsData)
   .replaceAll('"@@BUILD@@"', JSON.stringify(BUILD))
   .replace(/\nexport default App;\s*$/, "\n");
 code += '\nReactDOM.createRoot(document.getElementById("root")).render(<App />);\n';
