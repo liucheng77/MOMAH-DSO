@@ -1707,15 +1707,19 @@ const HEALTH_EVENTS=[
   {sev:"error", k:"he_timeout", dk:"he_timeout_d"},
   {sev:"warn",  k:"he_stale",   dk:"he_stale_d"},
 ];
-// seed a real-time log mixing healthy info ticks with a few clickable unhealthy events
+// seed a rich real-time log: mostly healthy info ticks, with the occasional clickable unhealthy event
+const LOG_NORMAL=["log_scan","log_route","log_cross","log_idle","log_idle","log_feed","log_policy",
+  ["log_report","DSO-WR-2026-W25"],["log_report","DSO-MR-2026-06"],["log_route"]];
 function seedLog(t){
-  const seq=[{k:"log_scan"},{h:0},{k:"log_route"},{k:"log_idle"},{h:2},{k:"log_cross"},
-    {k:"log_report",e:"DSO-WR-2026-W25"},{h:1},{k:"log_feed"},{k:"log_idle"},{h:4},{k:"log_scan"},{k:"log_route"},{h:3}];
-  const base=Date.now();
-  return seq.map((it,i)=>{ const ts=new Date(base-i*41000).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
-    if(it.h!==undefined){ const ev=HEALTH_EVENTS[it.h]; return {ts,text:t(ev.k),health:ev}; }
-    return {ts, text: it.e? (t(it.k)+" "+it.e) : t(it.k)};
-  });
+  const out=[]; const base=Date.now(); let off=0;
+  for(let i=0;i<34;i++){
+    const ts=new Date(base-off*1000).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+    off += 4+Math.floor(Math.random()*9);
+    if(i>0 && i%5===0){ const ev=HEALTH_EVENTS[((i/5)-1)%HEALTH_EVENTS.length]; out.push({ts,text:t(ev.k),health:ev}); }
+    else { const n=LOG_NORMAL[Math.floor(Math.random()*LOG_NORMAL.length)];
+      out.push({ts, text: Array.isArray(n)? (t(n[0])+" "+n[1]) : t(n)}); }
+  }
+  return out;
 }
 function decodeReport(id){ try{ return decodeURIComponent(escape(window.atob(REPORTS_B64[id]||""))); }catch(e){ try{ return window.atob(REPORTS_B64[id]||""); }catch(e2){ return ""; } } }
 function downloadReport(id){
@@ -1760,17 +1764,18 @@ function Reports(){
     </Section>}
     <Section title={t("agentLog")} right={<span className="chip"><span className="live-dot" style={{marginInlineEnd:4}}/>{t("live")}</span>}>
       <div className="loglist">
-        {log.slice(0,30).map((l,i)=> l.health
+        {log.slice(0,40).map((l,i)=> l.health
           ? (<div key={i} className={"logrow "+l.health.sev} onClick={()=>setHealth(l.health)} title={t("viewDetail")}>
-              <span className={"chip "+(l.health.sev==="error"?"danger":"amber")}>{l.health.sev==="error"?"✕":"⚠"} {t("sev_"+(l.health.sev==="error"?"red":"amber"))}</span>
-              <span style={{flex:1,fontSize:12.5,fontWeight:600}}>{l.text}</span>
-              <span className="muted" style={{fontSize:11,whiteSpace:"nowrap"}}>{l.ts}</span>
+              <span className={"chip logchip "+(l.health.sev==="error"?"danger":"amber")}>{l.health.sev==="error"?"✕":"⚠"} {t("sev_"+(l.health.sev==="error"?"red":"amber"))}</span>
+              <span className="logtext" style={{fontWeight:600}}>{l.text}</span>
+              <span className="muted logts">{l.ts}</span>
               <span className="logmore">{t("viewDetail")} →</span>
             </div>)
           : (<div key={i} className="logrow info">
-              <span className="dot" style={{background:"var(--green)",flex:"0 0 auto"}}/>
-              <span style={{flex:1,fontSize:12.5}} className="muted">{l.text}</span>
-              <span className="muted" style={{fontSize:11,whiteSpace:"nowrap"}}>{l.ts}</span>
+              <span className="dot logdot" style={{background:"var(--green)"}}/>
+              <span className="logtext muted">{l.text}</span>
+              <span className="muted logts">{l.ts}</span>
+              <span className="logmore" aria-hidden="true"/>
             </div>)
         )}
         {log.length===0&&<div className="muted">{t("noItems")}</div>}
