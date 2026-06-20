@@ -545,8 +545,16 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 .modal-x{background:none;border:none;font-size:15px;color:var(--muted);cursor:pointer;width:30px;height:30px;border-radius:8px;line-height:1}
 .modal-x:hover{background:#f0f4f1;color:var(--ink)}
 .modal-body{padding:18px 20px}
+/* Reports page fills the content area; the agent-log card flexes to end just above the
+   fixed bottom "Agent activity" strip (no overlap), with the log scrolling inside. */
+.reports-page{display:flex;flex-direction:column;height:calc(100vh - var(--topbar-h) - 70px)}
+.reports-page>.card{flex:0 0 auto}
+.reports-page>.logsection{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;margin-bottom:0!important}
+.logsection .page-h{flex:0 0 auto}
+.logsection .loglist{flex:1 1 auto;min-height:120px;max-height:none}
+@media(max-width:820px){.reports-page{height:auto}.reports-page>.logsection{min-height:340px}.logsection .loglist{max-height:60vh}}
 /* tall, scrollable real-time agent log */
-.loglist{max-height:560px;min-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;padding-inline-end:4px}
+.loglist{max-height:560px;min-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;padding-inline-end:4px}
 .logrow{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;border-bottom:1px solid var(--line)}
 .logrow:last-child{border-bottom:none}
 .logrow.warn,.logrow.error{cursor:pointer}
@@ -615,7 +623,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-20 22:34 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-20 22:42 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2336,7 +2344,7 @@ function Reports(){
   const [preview,setPreview]=useState(null);
   const [health,setHealth]=useState(null);
   const pr=preview?REPORTS_META.find(x=>x.id===preview):null;
-  return (<div className="fade">
+  return (<div className="fade reports-page">
     <PageHeader title={t("nav_reports")} sub={t("rep_sub")} right={<AgentBadge name={t("eng_orch")}/>}/>
     <Section title={t("periodic_title")} right={<span className="chip">{REPORTS_META.length} {t("live")}</span>}>
       <div className="scrollx"><table className="tbl">
@@ -2365,7 +2373,7 @@ function Reports(){
         </tr>))}</tbody>
       </table></div>
     </Section>}
-    <Section title={t("agentLog")} right={<span className="chip"><span className="live-dot" style={{marginInlineEnd:4}}/>{t("live")}</span>}>
+    <Section className="logsection" title={t("agentLog")} right={<span className="chip"><span className="live-dot" style={{marginInlineEnd:4}}/>{t("live")}</span>}>
       <div className="loglist">
         {log.slice(0,40).map((l,i)=> l.health
           ? (<div key={i} className={"logrow "+l.health.sev} onClick={()=>setHealth(l.health)} title={t("viewDetail")}>

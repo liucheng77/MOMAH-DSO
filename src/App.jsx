@@ -1733,7 +1733,7 @@ function Reports(){
   const [preview,setPreview]=useState(null);
   const [health,setHealth]=useState(null);
   const pr=preview?REPORTS_META.find(x=>x.id===preview):null;
-  return (<div className="fade">
+  return (<div className="fade reports-page">
     <PageHeader title={t("nav_reports")} sub={t("rep_sub")} right={<AgentBadge name={t("eng_orch")}/>}/>
     <Section title={t("periodic_title")} right={<span className="chip">{REPORTS_META.length} {t("live")}</span>}>
       <div className="scrollx"><table className="tbl">
@@ -1762,7 +1762,7 @@ function Reports(){
         </tr>))}</tbody>
       </table></div>
     </Section>}
-    <Section title={t("agentLog")} right={<span className="chip"><span className="live-dot" style={{marginInlineEnd:4}}/>{t("live")}</span>}>
+    <Section className="logsection" title={t("agentLog")} right={<span className="chip"><span className="live-dot" style={{marginInlineEnd:4}}/>{t("live")}</span>}>
       <div className="loglist">
         {log.slice(0,40).map((l,i)=> l.health
           ? (<div key={i} className={"logrow "+l.health.sev} onClick={()=>setHealth(l.health)} title={t("viewDetail")}>
