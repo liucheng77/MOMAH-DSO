@@ -1319,6 +1319,7 @@ function StoryStepper({states}){
   const cur=states.findIndex(s=>s==="run");
   const cap = cur>=0 ? t(STORY[cur].name) : (done>=STORY.length? ("✓ "+t("agent_done")) : "");
   return (<div className="stepper">
+    <span className="stepper-badge">{GearIcon}{t("eng_orch")}</span>
     <div className="stepper-nodes">
       {STORY.map((st,i)=>(<React.Fragment key={i}>
         {i>0&&<span className={"stepper-line"+(states[i-1]==="done"?" on":"")}/>}
