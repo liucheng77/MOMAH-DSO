@@ -548,21 +548,22 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 /* orchestrator status — lives in the page header's top-right slot.
    Idle shows the "Orchestrator Agent · auto" badge; during analysis it morphs into this live
    progress bar, in the agent indigo/purple palette so it never reads as green message content. */
-.stepper{display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;max-width:100%;
-  background:rgba(247,245,255,.97);border:1px solid #e4dcfb;border-radius:999px;padding:5px 11px;box-shadow:0 2px 10px rgba(79,70,229,.12);animation:fade .25s ease}
+.stepper{display:inline-flex;align-items:center;gap:9px;flex-wrap:nowrap;width:560px;max-width:100%;
+  background:rgba(247,245,255,.97);border:1px solid #e4dcfb;border-radius:999px;padding:5px 11px;box-shadow:0 2px 10px rgba(79,70,229,.12)}
+@media(max-width:1180px){.stepper{width:auto}}
 .stepper-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap;
   background:linear-gradient(120deg,#4f46e5 0%,#6d5ae6 45%,#2563eb 100%);border:1px solid rgba(255,255,255,.18);
   border-radius:999px;padding:3px 11px;box-shadow:0 2px 8px rgba(79,70,229,.28)}
 .stepper-badge .ic-gear{filter:brightness(0) invert(1);animation:gearspin 8s linear infinite}
-.stepper-nodes{display:flex;align-items:center;gap:4px;flex-wrap:wrap;flex:1}
-.stepper-node{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;flex:0 0 auto;
+.stepper-nodes{display:flex;align-items:center;gap:3px;flex-wrap:nowrap;flex:1 1 auto;justify-content:center}
+.stepper-node{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex:0 0 auto;
   background:#eceaf6;color:#8b86a8;border:1px solid #e0dcf0;transition:.25s}
 .stepper-node.run{background:linear-gradient(120deg,#4f46e5,#6d5ae6);color:#fff;border-color:#6d5ae6;box-shadow:0 0 0 0 rgba(109,90,230,.5);animation:steppulse 1.4s infinite}
 @keyframes steppulse{0%{box-shadow:0 0 0 0 rgba(109,90,230,.5)}70%{box-shadow:0 0 0 7px rgba(109,90,230,0)}100%{box-shadow:0 0 0 0 rgba(109,90,230,0)}}
 .stepper-node.done{background:#4f46e5;color:#fff;border-color:#4f46e5}
-.stepper-line{width:14px;height:2px;background:#e0dcf0;flex:0 0 auto}
+.stepper-line{width:9px;height:2px;background:#e0dcf0;flex:0 0 auto}
 .stepper-line.on{background:#6d5ae6}
-.stepper-cap{font-size:12px;font-weight:700;color:#5a4ad1;white-space:nowrap}
+.stepper-cap{font-size:12px;font-weight:700;color:#5a4ad1;white-space:nowrap;flex:0 0 auto;width:148px;overflow:hidden;text-overflow:ellipsis;text-align:end}
 @media(max-width:640px){.stepper-cap{display:none}.stepper-line{width:8px}}
 
 /* build/version stamp — bottom-left corner */
