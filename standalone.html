@@ -533,11 +533,11 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 /* compact section titles inside chat engine cards */
 .mini-t{font-size:12px;font-weight:700;color:var(--muted);margin:12px 0 6px}
 
-/* sticky one-line orchestration stepper (pins to top of chat scroll)
-   — uses the "Orchestrator Agent" indigo/purple palette so it never reads as green message content */
-.stepper{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  background:rgba(247,245,255,.97);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
-  border:1px solid #e4dcfb;border-radius:10px;padding:7px 12px;margin-bottom:12px;box-shadow:0 2px 10px rgba(79,70,229,.10)}
+/* orchestrator status — lives in the page header's top-right slot.
+   Idle shows the "Orchestrator Agent · auto" badge; during analysis it morphs into this live
+   progress bar, in the agent indigo/purple palette so it never reads as green message content. */
+.stepper{display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap;max-width:100%;
+  background:rgba(247,245,255,.97);border:1px solid #e4dcfb;border-radius:999px;padding:5px 11px;box-shadow:0 2px 10px rgba(79,70,229,.12);animation:fade .25s ease}
 .stepper-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap;
   background:linear-gradient(120deg,#4f46e5 0%,#6d5ae6 45%,#2563eb 100%);border:1px solid rgba(255,255,255,.18);
   border-radius:999px;padding:3px 11px;box-shadow:0 2px 8px rgba(79,70,229,.28)}
@@ -584,7 +584,7 @@ const RC = window.Recharts || {};
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-20 21:29 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-20 21:39 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -1886,8 +1886,10 @@ ${row(["Report generation","Half day","38 seconds"])}${row(["Headcount","5 cross
     setTimeout(()=>URL.revokeObjectURL(url),1500);
   }catch(e){ window.print(); }
 }
+// Orchestrator status: idle → "Orchestrator Agent · auto" badge; running → live progress (same slot).
 function StoryStepper({states}){
   const {t}=useStore();
+  if(!states) return <AgentBadge name={t("eng_orch")}/>;
   const done=states.filter(s=>s==="done").length;
   const cur=states.findIndex(s=>s==="run");
   const cap = cur>=0 ? t(STORY[cur].name) : (done>=STORY.length? ("✓ "+t("agent_done")) : "");
@@ -1984,7 +1986,7 @@ function ChatAnalysis(){
 
   const presets=["q_shock","q_history","q_demand","q_gap","q_vague"];
   return (<div className="fade">
-    <PageHeader title={t("nav_chat")} sub={t("chat_sub")} right={<AgentBadge name={t("eng_orch")}/>}/>
+    <PageHeader title={t("nav_chat")} sub={t("chat_sub")} right={<StoryStepper states={storyStates}/>}/>
     <div className="card pad" style={{display:"flex",flexDirection:"column"}}>
       <div className="preset-row">
         <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{t("presets")}</span>
@@ -1992,7 +1994,6 @@ function ChatAnalysis(){
       </div>
       <div className="chat-wrap">
         <div className="chat-scroll" ref={scrollRef}>
-          {storyStates&&<StoryStepper states={storyStates}/>}
           {msgs.length===0&&<div className="muted" style={{textAlign:"center",margin:"30px 0",fontSize:13}}>✦ {t("chat_sub")}</div>}
           {msgs.map(m=><Msg key={m.id} m={m} onGenReport={genReport} onRoute={setRoute} onRun={run}/>)}
         </div>

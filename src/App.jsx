@@ -1313,8 +1313,10 @@ ${row(["Report generation","Half day","38 seconds"])}${row(["Headcount","5 cross
     setTimeout(()=>URL.revokeObjectURL(url),1500);
   }catch(e){ window.print(); }
 }
+// Orchestrator status: idle → "Orchestrator Agent · auto" badge; running → live progress (same slot).
 function StoryStepper({states}){
   const {t}=useStore();
+  if(!states) return <AgentBadge name={t("eng_orch")}/>;
   const done=states.filter(s=>s==="done").length;
   const cur=states.findIndex(s=>s==="run");
   const cap = cur>=0 ? t(STORY[cur].name) : (done>=STORY.length? ("✓ "+t("agent_done")) : "");
@@ -1411,7 +1413,7 @@ function ChatAnalysis(){
 
   const presets=["q_shock","q_history","q_demand","q_gap","q_vague"];
   return (<div className="fade">
-    <PageHeader title={t("nav_chat")} sub={t("chat_sub")} right={<AgentBadge name={t("eng_orch")}/>}/>
+    <PageHeader title={t("nav_chat")} sub={t("chat_sub")} right={<StoryStepper states={storyStates}/>}/>
     <div className="card pad" style={{display:"flex",flexDirection:"column"}}>
       <div className="preset-row">
         <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{t("presets")}</span>
@@ -1419,7 +1421,6 @@ function ChatAnalysis(){
       </div>
       <div className="chat-wrap">
         <div className="chat-scroll" ref={scrollRef}>
-          {storyStates&&<StoryStepper states={storyStates}/>}
           {msgs.length===0&&<div className="muted" style={{textAlign:"center",margin:"30px 0",fontSize:13}}>✦ {t("chat_sub")}</div>}
           {msgs.map(m=><Msg key={m.id} m={m} onGenReport={genReport} onRoute={setRoute} onRun={run}/>)}
         </div>
