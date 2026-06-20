@@ -688,6 +688,38 @@ Object.assign(I18N.ar, {
   y1impact:"أثر السنة ١ (الأساس)", dominant:"المحرّك المهيمن",
 });
 
+/* i18n for the data-quality card + extra figures */
+Object.assign(I18N.en, {
+  eng_dq:"Data Quality Monitor", engd_dq:"Verifies 11 sources before analysis.",
+  f_dq:"All 11 sources verified in 12s. DS-07 (MOJ price) degraded (3-day delay) → price confidence 95%→88%; Data Manager auto-notified.",
+  ws1:"pulling data sources…", ws2:"running the model…", ws3:"composing results…",
+  y1_title:"Base-case Y1 impact", y1_demand:"Demand Δ", y1_price:"Price Δ", y1_conv:"Conversion",
+  prepost_title:"Demand by segment — pre vs post shock", pre_label:"Pre-shock (2026)", post_label:"Post-shock (2028)",
+  rootcause_title:"Root-cause decomposition · Riyadh Seg A",
+  rc_demand:"Demand surge (B→A)", rc_pipeline:"Pipeline mismatch", rc_conv:"Low conversion", rc_dev:"Developer deprioritization",
+  conv_title:"Conversion rate by segment", convTarget:"target 70%", rg_national:"National avg", region:"Region",
+});
+Object.assign(I18N.zh, {
+  eng_dq:"数据质量监控", engd_dq:"分析前校验 11 个数据源。",
+  f_dq:"11 个源 12 秒内全部校验。DS-07(司法部房价)降级(延迟 3 天)→ 价格置信度 95%→88%;已自动通知数据经理。",
+  ws1:"拉取数据源…", ws2:"运行模型…", ws3:"组合结果…",
+  y1_title:"基准情景 Y1 影响", y1_demand:"需求 Δ", y1_price:"价格 Δ", y1_conv:"转化率",
+  prepost_title:"各段需求 —— 冲击前 vs 冲击后", pre_label:"冲击前(2026)", post_label:"冲击后(2028)",
+  rootcause_title:"根因分解 · 利雅得 A 段",
+  rc_demand:"需求激增(B→A)", rc_pipeline:"管道错配", rc_conv:"低转化率", rc_dev:"开发商优先级低",
+  conv_title:"各段转化率", convTarget:"目标 70%", rg_national:"全国平均", region:"地区",
+});
+Object.assign(I18N.ar, {
+  eng_dq:"مراقبة جودة البيانات", engd_dq:"تتحقق من ١١ مصدراً قبل التحليل.",
+  f_dq:"تم التحقق من ١١ مصدراً خلال ١٢ث. تدهور DS-07 (تأخّر ٣ أيام) ← ثقة السعر ٩٥٪←٨٨٪؛ أُبلغ مدير البيانات آلياً.",
+  ws1:"سحب المصادر…", ws2:"تشغيل النموذج…", ws3:"تجميع النتائج…",
+  y1_title:"أثر السنة ١ (الأساس)", y1_demand:"تغيّر الطلب", y1_price:"تغيّر السعر", y1_conv:"التحويل",
+  prepost_title:"الطلب حسب الشريحة — قبل وبعد الصدمة", pre_label:"قبل (٢٠٢٦)", post_label:"بعد (٢٠٢٨)",
+  rootcause_title:"تحليل السبب الجذري · الرياض الشريحة A",
+  rc_demand:"تضخّم الطلب (B←A)", rc_pipeline:"عدم تطابق الخط", rc_conv:"تحويل منخفض", rc_dev:"تدنّي أولوية المطوّر",
+  conv_title:"معدّل التحويل حسب الشريحة", convTarget:"المستهدف ٧٠٪", rg_national:"المتوسط الوطني", region:"المنطقة",
+});
+
 /* historical series (storyline step 2) */
 const HIST = [
   {q:"22Q1",r:1.00,rd:15800,rs:14200},{q:"22Q2",r:1.25,rd:16100,rs:14300},{q:"22Q3",r:1.50,rd:16300,rs:14500},{q:"22Q4",r:1.75,rd:16200,rs:14700},
@@ -708,15 +740,27 @@ const CORE = [
   {sev:"crit",k:"cf1"},{sev:"crit",k:"cf2"},{sev:"crit",k:"cf3"},
   {sev:"high",k:"cf4"},{sev:"pos",k:"cf5"},{sev:"high",k:"cf6"},
 ];
-// progressive engine sequence (the six agents, in order)
+// progressive agent sequence (data quality first, then the six engines, in order)
 const STORY = [
-  {key:"macro",  name:"eng_macro",  icon:"🌐", time:"47s", viz:"macro",  f:"f_macro",  conf:88},
-  {key:"demand", name:"eng_demand", icon:"📈", time:"31s", viz:"segments",f:"f_demand", conf:91},
-  {key:"balance",name:"eng_balance",icon:"⚖", time:"28s", viz:"heatmap", f:"f_gap",    conf:86},
-  {key:"plan",   name:"eng_plan",   icon:"🏗", time:"35s", viz:"pipeline",f:"f_plan",   conf:85},
-  {key:"dev",    name:"eng_dev",    icon:"👷", time:"22s", viz:"dev",     f:"f_dev",    conf:87},
-  {key:"policy", name:"eng_policy", icon:"⚖", time:"41s", viz:"policy",  f:"f_policy", conf:85},
+  {key:"dq",     name:"eng_dq",     icon:"◉", time:"12s", dur:1400, viz:"dq",      f:"f_dq",     conf:94},
+  {key:"macro",  name:"eng_macro",  icon:"🌐", time:"47s", dur:2400, viz:"macro",   f:"f_macro",  conf:88},
+  {key:"demand", name:"eng_demand", icon:"📈", time:"31s", dur:2000, viz:"segments",f:"f_demand", conf:91},
+  {key:"balance",name:"eng_balance",icon:"⚖", time:"28s", dur:1900, viz:"heatmap", f:"f_gap",    conf:86},
+  {key:"plan",   name:"eng_plan",   icon:"🏗", time:"35s", dur:2100, viz:"pipeline",f:"f_plan",   conf:85},
+  {key:"dev",    name:"eng_dev",    icon:"👷", time:"22s", dur:1800, viz:"dev",     f:"f_dev",    conf:87},
+  {key:"policy", name:"eng_policy", icon:"⚖", time:"41s", dur:2200, viz:"policy",  f:"f_policy", conf:85},
 ];
+// extra figures from the PDF
+const Y1_IMPACT=[
+  {region:"riyadh",  demand:-7.2, price:-4.1, conv:"61% (−8pp)"},
+  {region:"eastern", demand:-5.8, price:-3.2, conv:"65% (−5pp)"},
+  {region:"national",demand:-4.3, price:-2.8, conv:"68% (−4pp)"},
+];
+const PREPOST=[
+  {seg:"A",pre:14200,delta:4900},{seg:"B",pre:11800,delta:-2400},{seg:"C",pre:18900,delta:-1300},
+  {seg:"D",pre:15300,delta:-700},{seg:"E",pre:7400,delta:200},
+];
+const ROOTCAUSE=[ {k:"rc_demand",pct:48},{k:"rc_pipeline",pct:32},{k:"rc_conv",pct:14},{k:"rc_dev",pct:6} ];
 
 /* =========================================================================
    Store / helpers
@@ -1043,18 +1087,83 @@ function HistChart(){
       <C.Line yAxisId="r" type="monotone" dataKey="r" name={t("hist_rate")} stroke="#e32700" strokeWidth={1.6} strokeDasharray="4 3" dot={false}/>
     </C.LineChart></C.ResponsiveContainer></div>);
 }
+function DataQualityMini(){
+  const {t}=useStore();
+  return (<div style={{marginTop:8}}>
+    <SourceStrip/>
+    <div className="meta" style={{marginTop:10}}>
+      <span className="chip">{t("dq_score")}: 94.2/100</span>
+      <span className="chip amber">DS-07 ⚠ 95% → 88%</span>
+      <span className="chip gray">{t("dq_ticket")} · #DQ-2407</span>
+    </div>
+  </div>);
+}
 function MacroMini(){
   const {t}=useStore(); const C=RC;
-  const top=MACRO_CORR.filter(m=>["int","pop","gdp","inf"].includes(m.key)).map(m=>({name:t("ind_"+m.key),demand:m.demand,price:m.price}));
+  const corr=MACRO_CORR.map(m=>({name:t("ind_"+m.key),demand:m.demand,supply:m.supply,price:m.price}));
   return (<div style={{marginTop:8}}>
-    {C.ResponsiveContainer&&<div style={{width:"100%",height:150}}><C.ResponsiveContainer>
-      <C.BarChart data={top} margin={{top:4,right:8,left:-12,bottom:0}}>
-        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:9}}/><C.YAxis domain={[0,1]} tick={{fontSize:9}}/>
-        <C.Tooltip/><C.ReferenceLine y={0.6} stroke="#e32700" strokeDasharray="4 4"/>
+    <div className="mini-t">{t("corr_title")}</div>
+    {C.ResponsiveContainer&&<div style={{width:"100%",height:175}}><C.ResponsiveContainer>
+      <C.BarChart data={corr} margin={{top:4,right:8,left:-14,bottom:0}}>
+        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:8.5}} interval={0} angle={-18} textAnchor="end" height={44}/><C.YAxis domain={[0,1]} tick={{fontSize:9}}/>
+        <C.Tooltip/><C.Legend wrapperStyle={{fontSize:9}}/><C.ReferenceLine y={0.6} stroke="#e32700" strokeDasharray="4 4"/>
         <C.Bar dataKey="demand" name={t("m_demandR")} fill="#2563eb" radius={[2,2,0,0]}/>
+        <C.Bar dataKey="supply" name={t("m_supplyR")} fill="#e29700" radius={[2,2,0,0]}/>
         <C.Bar dataKey="price" name={t("m_priceR")} fill="#1B8354" radius={[2,2,0,0]}/>
       </C.BarChart></C.ResponsiveContainer></div>}
-    <div className="meta" style={{marginTop:6}}>{ECON_SCN.map(s=><span key={s.k} className="chip gray">{t("sc_"+s.k)} {s.prob}% · {s.rate}</span>)}</div>
+    <div className="mini-t">{t("econ_title")}</div>
+    <div className="scrollx"><table className="tbl">
+      <thead><tr><th></th>{ECON_SCN.map(s=><th key={s.k} className="right-num">{t("sc_"+s.k)} {s.prob}%</th>)}</tr></thead>
+      <tbody>{[["p_rate","rate"],["p_inf","inf"],["p_unemp","unemp"],["p_gdp","gdp"]].map(([lk,f])=>(
+        <tr key={f}><td>{t(lk)}</td>{ECON_SCN.map(s=><td key={s.k} className="right-num mono">{s[f]}</td>)}</tr>))}</tbody>
+    </table></div>
+    <div className="mini-t">{t("y1_title")}</div>
+    <div className="scrollx"><table className="tbl">
+      <thead><tr><th>{t("region")}</th><th className="right-num">{t("y1_demand")}</th><th className="right-num">{t("y1_price")}</th><th className="right-num">{t("y1_conv")}</th></tr></thead>
+      <tbody>{Y1_IMPACT.map(r=>(<tr key={r.region}><td>{t("rg_"+r.region)}</td>
+        <td className="right-num mono" style={{color:"var(--danger)",fontWeight:700}}>{r.demand}%</td>
+        <td className="right-num mono" style={{color:"var(--danger)"}}>{r.price}%</td>
+        <td className="right-num mono">{r.conv}</td></tr>))}</tbody>
+    </table></div>
+    <div className="mini-t">{t("vuln_title")}</div>
+    <VulnChart h={300}/>
+  </div>);
+}
+function PrePostBars(){
+  const {t}=useStore(); const C=RC; if(!C.ResponsiveContainer) return null;
+  const data=PREPOST.map(p=>({name:"Seg "+p.seg,pre:p.pre,post:p.pre+p.delta}));
+  return (<div style={{marginTop:8}}>
+    <div className="mini-t">{t("prepost_title")}</div>
+    <div style={{width:"100%",height:165}}><C.ResponsiveContainer>
+      <C.BarChart data={data} margin={{top:4,right:8,left:-12,bottom:0}}>
+        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:9}}/><C.YAxis tick={{fontSize:9}} tickFormatter={v=>(v/1000)+"K"}/><C.Tooltip/><C.Legend wrapperStyle={{fontSize:9}}/>
+        <C.Bar dataKey="pre" name={t("pre_label")} fill="#9aa3ab" radius={[2,2,0,0]}/>
+        <C.Bar dataKey="post" name={t("post_label")} fill="#e32700" radius={[2,2,0,0]}/>
+      </C.BarChart></C.ResponsiveContainer></div>
+  </div>);
+}
+function RootCauseBars(){
+  const {t}=useStore();
+  return (<div style={{marginTop:8}}>
+    <div className="mini-t">{t("rootcause_title")}</div>
+    {ROOTCAUSE.map(r=>(<div key={r.k} style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
+      <span style={{width:170,fontSize:11.5}}>{t(r.k)}</span>
+      <div className="bar-mini" style={{flex:1}}><span style={{width:r.pct+"%",background:r.pct>=40?"#e32700":r.pct>=20?"#e29700":"#1B8354"}}/></div>
+      <span className="mono" style={{fontSize:11.5,width:34,textAlign:"end",fontWeight:700}}>{r.pct}%</span>
+    </div>))}
+  </div>);
+}
+function ConvBars(){
+  const {t}=useStore(); const C=RC; if(!C.ResponsiveContainer) return null;
+  const data=PIPELINE.map(p=>({name:"Seg "+p.seg,conv:p.conv}));
+  return (<div style={{marginTop:8}}>
+    <div className="mini-t">{t("conv_title")} · {t("convTarget")}</div>
+    <div style={{width:"100%",height:150}}><C.ResponsiveContainer>
+      <C.BarChart data={data} margin={{top:4,right:8,left:-16,bottom:0}}>
+        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:9}}/><C.YAxis domain={[0,100]} tick={{fontSize:9}}/><C.Tooltip/>
+        <C.ReferenceLine y={70} stroke="#1763a6" strokeDasharray="4 4"/>
+        <C.Bar dataKey="conv" radius={[2,2,0,0]}>{PIPELINE.map((p,i)=><C.Cell key={i} fill={p.conv<60?"#e32700":p.conv>=75?"#1B8354":"#e29700"}/>)}</C.Bar>
+      </C.BarChart></C.ResponsiveContainer></div>
   </div>);
 }
 function PipelineMini(){
@@ -1070,7 +1179,7 @@ function PipelineMini(){
         <td className="right-num">{p.cover==="surplus"?<span className="chip">{t("surplus")}</span>:<b style={{color:p.seg==="A"?"var(--danger)":"inherit"}}>{p.cover}</b>}</td>
       </tr>))}</tbody>
     </table></div>
-    <div style={{fontSize:12,fontWeight:700,color:"var(--muted)",margin:"10px 0 6px"}}>{t("closure_title")}</div>
+    <div className="mini-t">{t("closure_title")}</div>
     {CLOSURE.map(c=>(<div key={c.k} style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
       <span style={{width:150,fontSize:11.5}}>{t(c.k)}</span>
       <div className="bar-mini" style={{flex:1}}><span style={{width:c.v+"%",background:c.v>=80?"#1B8354":c.v>=55?"#e29700":"#e32700"}}/></div>
@@ -1080,13 +1189,23 @@ function PipelineMini(){
 }
 function DevMini(){
   const {t}=useStore();
+  const tiers=[["t1","immediate"],["t2","high"],["t3","medium"]];
   return (<div style={{marginTop:8}}>
-    <div style={{fontSize:12,fontWeight:700,color:"var(--muted)",marginBottom:6}}>{t("dev_top")}</div>
-    <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:8}}>
-      {DEVS.filter(d=>d.grade==="A").map(d=>(<span key={d.name} className="chip" style={{background:"var(--green-50)",color:"var(--green-dark)"}}>
-        <span className="dev-grade A" style={{width:18,height:18,fontSize:10,marginInlineEnd:5}}>A</span>{d.name} · {d.score}</span>))}
-    </div>
-    <div className="muted" style={{fontSize:12}}>{t("tiers_short")}</div>
+    <div className="mini-t">{t("dev_score")}</div>
+    <DevRadar h={260}/>
+    <div className="scrollx" style={{marginTop:6}}><table className="tbl">
+      <thead><tr><th>{t("tier_dev")}</th><th>{t("grade")}</th><th className="right-num">{t("score")}</th><th>{t("d_quality")}</th><th>{t("d_completion")}</th><th>{t("d_signing")}</th></tr></thead>
+      <tbody>{DEVS.map(d=>(<tr key={d.name}>
+        <td><b>{d.name}</b></td><td><span className={"dev-grade "+d.grade}>{d.grade}</span></td>
+        <td className="right-num mono" style={{fontWeight:700}}>{d.score}</td>
+        {["quality","completion","signing"].map(k=><td key={k}><div className="bar-mini"><span style={{width:d[k]+"%"}}/></div></td>)}
+      </tr>))}</tbody>
+    </table></div>
+    <div className="mini-t">{t("tiers_title")}</div>
+    {tiers.map(([tk,pri])=>(<div key={tk} className="rec" style={{padding:"8px 10px",marginBottom:6}}>
+      <span className={"rp "+pri}>{t(tk)}</span>
+      <div className="rbody" style={{fontSize:12}}>{t(tk+"d")} · {t(tk+"a")}{t(tk+"o")!=="—"?<b> → {t(tk+"o")}</b>:""}</div>
+    </div>))}
   </div>);
 }
 function PolicyMini(){
@@ -1097,23 +1216,27 @@ function PolicyMini(){
   </div>);
 }
 function EngViz({kind}){
+  const {t}=useStore();
+  if(kind==="dq") return <DataQualityMini/>;
   if(kind==="macro") return <MacroMini/>;
-  if(kind==="segments") return (<><SegChart/><MigrationBars/></>);
-  if(kind==="heatmap") return <GapHeatmap/>;
-  if(kind==="pipeline") return <PipelineMini/>;
+  if(kind==="segments") return (<><div className="mini-t">{t("chart_segT")}</div><SegChart/><MigrationBars/><PrePostBars/></>);
+  if(kind==="heatmap") return (<><div className="mini-t">{t("heat_title")}</div><GapHeatmap/><RootCauseBars/></>);
+  if(kind==="pipeline") return (<><PipelineMini/><ConvBars/></>);
   if(kind==="dev") return <DevMini/>;
   if(kind==="policy") return <PolicyMini/>;
   return null;
 }
 function EngineCard({idx,loading}){
   const {t}=useStore(); const st=STORY[idx];
+  const [sub,setSub]=useState(0);
+  useEffect(()=>{ if(!loading){ setSub(0); return; } const id=setInterval(()=>setSub(s=>(s+1)%3),720); return ()=>clearInterval(id); },[loading]);
   return (<div className="msg bot"><div className="av">{st.icon}</div>
     <div className="bubble" style={{maxWidth:"100%",width:"100%"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:loading?0:6}}>
         <b style={{fontSize:13.5}}>{st.icon} {t(st.name)}</b>
         <span className={"chip "+(loading?"info":"")}>{loading?("⟳ "+t("agent_running")):("✓ "+st.time)}</span>
       </div>
-      {loading? <div className="ai-working" style={{margin:"4px 0 0"}}>✦ {t(st.name)} · {t("agent_running")}</div> :
+      {loading? <div className="ai-working" style={{margin:"4px 0 0"}}>✦ {t(st.name)} · {t("ws"+(sub+1))}</div> :
       <>
         <EngViz kind={st.viz}/>
         <div className="banner" style={{marginTop:10}}>💡 {t(st.f)}</div>
@@ -1190,11 +1313,27 @@ ${row(["Report generation","Half day","38 seconds"])}${row(["Headcount","5 cross
     setTimeout(()=>URL.revokeObjectURL(url),1500);
   }catch(e){ window.print(); }
 }
+function StoryStepper({states}){
+  const {t}=useStore();
+  const done=states.filter(s=>s==="done").length;
+  const cur=states.findIndex(s=>s==="run");
+  const cap = cur>=0 ? t(STORY[cur].name) : (done>=STORY.length? ("✓ "+t("agent_done")) : "");
+  return (<div className="stepper">
+    <div className="stepper-nodes">
+      {STORY.map((st,i)=>(<React.Fragment key={i}>
+        {i>0&&<span className={"stepper-line"+(states[i-1]==="done"?" on":"")}/>}
+        <span className={"stepper-node "+(states[i]||"idle")} title={t(st.name)}>{states[i]==="done"?"✓":st.icon}</span>
+      </React.Fragment>))}
+    </div>
+    <span className="stepper-cap">{done}/{STORY.length}{cap?(" · "+cap):""}</span>
+  </div>);
+}
 function ChatAnalysis(){
   const {t,cov,setRoute,pushLog,addReport,seed,clearSeed}=useStore();
   const [msgs,setMsgs]=useState([]);
   const [busy,setBusy]=useState(false);
   const [input,setInput]=useState("");
+  const [storyStates,setStoryStates]=useState(null);
   const scrollRef=useRef(null);
   const idRef=useRef(0);
   useEffect(()=>{ if(scrollRef.current) scrollRef.current.scrollTop=scrollRef.current.scrollHeight; },[msgs,busy]);
@@ -1203,6 +1342,7 @@ function ChatAnalysis(){
   function run(scnId){
     if(busy) return;
     const scn=SCN[scnId]; if(!scn) return;
+    setStoryStates(null);
     push({role:"user",text:t(scnId)});
     if(scn.type==="handoff"){ pushLog("log_policy"); setTimeout(()=>setRoute("policy"),500);
       push({role:"bot",type:"text",text:t("a_demand")? "↪ "+t("nav_policy") : ""}); return; }
@@ -1230,23 +1370,25 @@ function ChatAnalysis(){
     push({role:"bot",type:"report",scn:scnId,ref});
     pushLog("log_report",ref);
   }
-  // progressive multi-agent storyline: question → engines stream in one-by-one → summary
+  // progressive multi-agent storyline: question → agents stream in one-by-one → summary
   function runStory(){
     if(busy) return;
+    setStoryStates(STORY.map(()=>"idle"));
     push({role:"user",text:t("q_shock")});
     setBusy(true); pushLog("log_cross");
-    const planId=push({role:"bot",type:"plan",states:STORY.map(()=>"idle")});
-    const setState=(i,v)=>setMsgs(prev=>prev.map(m=>m.id===planId?{...m,states:m.states.map((s,idx)=>idx===i?v:s)}:m));
+    push({role:"bot",type:"text",text:"✦ "+t("plan_title")+" — "+t("story_intro")});
+    const setSt=(i,v)=>setStoryStates(prev=>{ const n=[...(prev||STORY.map(()=>"idle"))]; n[i]=v; return n; });
     const step=(i)=>{
-      if(i>=STORY.length){ setTimeout(()=>{ push({role:"bot",type:"summary"}); setBusy(false); pushLog("log_report"); },700); return; }
-      setState(i,"run"); pushLog("log_route");
+      if(i>=STORY.length){ setTimeout(()=>{ push({role:"bot",type:"summary"}); setBusy(false); pushLog("log_report"); },900); return; }
+      setSt(i,"run"); pushLog("log_route");
       const eid=push({role:"bot",type:"engine",idx:i,loading:true});
-      setTimeout(()=>{ setMsgs(prev=>prev.map(m=>m.id===eid?{...m,loading:false}:m)); setState(i,"done"); setTimeout(()=>step(i+1),780); },1150);
+      setTimeout(()=>{ setMsgs(prev=>prev.map(m=>m.id===eid?{...m,loading:false}:m)); setSt(i,"done"); setTimeout(()=>step(i+1),900); }, STORY[i].dur);
     };
-    setTimeout(()=>step(0),500);
+    setTimeout(()=>step(0),650);
   }
   function runHistory(){
     if(busy) return;
+    setStoryStates(null);
     push({role:"user",text:t("q_history")});
     setBusy(true); pushLog("log_route");
     setTimeout(()=>{ push({role:"bot",type:"hist"}); setBusy(false); },900);
@@ -1276,6 +1418,7 @@ function ChatAnalysis(){
       </div>
       <div className="chat-wrap">
         <div className="chat-scroll" ref={scrollRef}>
+          {storyStates&&<StoryStepper states={storyStates}/>}
           {msgs.length===0&&<div className="muted" style={{textAlign:"center",margin:"30px 0",fontSize:13}}>✦ {t("chat_sub")}</div>}
           {msgs.map(m=><Msg key={m.id} m={m} onGenReport={genReport} onRoute={setRoute} onRun={run}/>)}
         </div>
@@ -1563,6 +1706,28 @@ function Ecosystem(){
   return (<div className="fade"><PageHeader title={t("nav_eco")} sub={t("eco_sub")}/><EcosystemBlock/></div>);
 }
 
+/* shared charts (used by pages and chat engine cards) */
+function VulnChart({h}){
+  const {t}=useStore(); const C=RC; if(!C.ResponsiveContainer) return null;
+  return (<div style={{width:"100%",height:h||300}}><C.ResponsiveContainer>
+    <C.BarChart layout="vertical" data={VULN.map(r=>({name:t("rg_"+r.key),v:r.v}))} margin={{top:4,right:24,left:30,bottom:4}}>
+      <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis type="number" domain={[0,100]} tick={{fontSize:10}}/>
+      <C.YAxis type="category" dataKey="name" tick={{fontSize:10}} width={70}/><C.Tooltip/>
+      <C.Bar dataKey="v" radius={[0,3,3,0]}>{VULN.map((r,i)=><C.Cell key={i} fill={r.v>=70?"#b42318":r.v>=40?"#e29700":"#1B8354"}/>)}</C.Bar>
+    </C.BarChart></C.ResponsiveContainer></div>);
+}
+const DEV_RADC=["#1B8354","#2563eb","#6d5ae6","#e29700","#9aa3ab"];
+function DevRadar({h}){
+  const {t}=useStore(); const C=RC; if(!C.ResponsiveContainer) return null;
+  const radar=DEV_DIMS.map(d=>{ const row={dim:t("d_"+d)}; DEVS.slice(0,5).forEach(dv=>row[dv.name]=dv[d]); return row; });
+  return (<div style={{width:"100%",height:h||300}}><C.ResponsiveContainer>
+    <C.RadarChart data={radar} margin={{top:8,right:18,left:18,bottom:8}}>
+      <C.PolarGrid/><C.PolarAngleAxis dataKey="dim" tick={{fontSize:10}}/><C.PolarRadiusAxis domain={[0,100]} tick={{fontSize:9}}/>
+      {DEVS.slice(0,5).map((dv,i)=><C.Radar key={dv.name} name={dv.name+" ("+dv.score+"/"+dv.grade+")"} dataKey={dv.name} stroke={DEV_RADC[i]} fill={DEV_RADC[i]} fillOpacity={0.06} strokeWidth={i<3?2:1}/>)}
+      <C.Legend wrapperStyle={{fontSize:10}}/>
+    </C.RadarChart></C.ResponsiveContainer></div>);
+}
+
 /* =========================================================================
    Macro-Economic Impact (the briefing's UC-09 spine)
    ========================================================================= */
@@ -1594,13 +1759,7 @@ function MacroImpact(){
       </table></div>
     </Section>
     <Section title={t("vuln_title")} sub={t("vuln_axis")} right={<AgentBadge name={t("eng_macro")}/>}>
-      <div style={{width:"100%",height:360}}>{ok&&
-        <C.ResponsiveContainer><C.BarChart layout="vertical" data={VULN.map(r=>({name:t("rg_"+r.key),v:r.v}))} margin={{top:4,right:24,left:30,bottom:4}}>
-          <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis type="number" domain={[0,100]} tick={{fontSize:10}}/>
-          <C.YAxis type="category" dataKey="name" tick={{fontSize:10}} width={70}/><C.Tooltip/>
-          <C.Bar dataKey="v" radius={[0,3,3,0]}>{VULN.map((r,i)=><C.Cell key={i} fill={r.v>=70?"#b42318":r.v>=40?"#e29700":"#1B8354"}/>)}</C.Bar>
-        </C.BarChart></C.ResponsiveContainer>}
-      </div>
+      <VulnChart h={360}/>
     </Section>
   </div>);
 }
@@ -1628,13 +1787,7 @@ function Developers(){
         </table></div>
       </Section>
       <Section title={t("dev_score")}>
-        <div style={{width:"100%",height:300}}>{ok&&
-          <C.ResponsiveContainer><C.RadarChart data={radar} margin={{top:8,right:18,left:18,bottom:8}}>
-            <C.PolarGrid/><C.PolarAngleAxis dataKey="dim" tick={{fontSize:10}}/><C.PolarRadiusAxis domain={[0,100]} tick={{fontSize:9}}/>
-            {DEVS.slice(0,5).map((dv,i)=><C.Radar key={dv.name} name={dv.name+" ("+dv.score+"/"+dv.grade+")"} dataKey={dv.name} stroke={RADC[i]} fill={RADC[i]} fillOpacity={0.06} strokeWidth={i<3?2:1}/>)}
-            <C.Legend wrapperStyle={{fontSize:10}}/>
-          </C.RadarChart></C.ResponsiveContainer>}
-        </div>
+        <DevRadar h={300}/>
       </Section>
     </div>
     <Section title={t("tiers_title")}>

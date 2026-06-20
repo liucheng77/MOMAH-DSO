@@ -63,16 +63,17 @@ const harness = `
     ["Msg.reportBrief",{role:"bot",type:"report",scn:"q_shock",ref:"DSO-2026-1234"}],
     ["Msg.think",{role:"bot",type:"think",scn:"q_demand",steps:[{eng:"demand",k:"think_run",st:"ok"}]}],
     ["Msg.user",{role:"user",text:"hi"}],
-    ["Msg.plan",{role:"bot",type:"plan",states:["idle","run","done","idle","idle","idle"]}],
+    ["Msg.plan",{role:"bot",type:"plan",states:["idle","run","done","idle","idle","idle","idle"]}],
     ["Msg.hist",{role:"bot",type:"hist"}],
     ["Msg.summary",{role:"bot",type:"summary"}],
-    ["Msg.engineLoad",{role:"bot",type:"engine",idx:0,loading:true}],
-    ["Msg.engine0",{role:"bot",type:"engine",idx:0,loading:false}],
-    ["Msg.engine1",{role:"bot",type:"engine",idx:1,loading:false}],
-    ["Msg.engine2",{role:"bot",type:"engine",idx:2,loading:false}],
-    ["Msg.engine3",{role:"bot",type:"engine",idx:3,loading:false}],
-    ["Msg.engine4",{role:"bot",type:"engine",idx:4,loading:false}],
-    ["Msg.engine5",{role:"bot",type:"engine",idx:5,loading:false}],
+    ["Msg.engineLoad",{role:"bot",type:"engine",idx:1,loading:true}],
+    ["Msg.engine0dq",{role:"bot",type:"engine",idx:0,loading:false}],
+    ["Msg.engine1macro",{role:"bot",type:"engine",idx:1,loading:false}],
+    ["Msg.engine2demand",{role:"bot",type:"engine",idx:2,loading:false}],
+    ["Msg.engine3gap",{role:"bot",type:"engine",idx:3,loading:false}],
+    ["Msg.engine4supply",{role:"bot",type:"engine",idx:4,loading:false}],
+    ["Msg.engine5dev",{role:"bot",type:"engine",idx:5,loading:false}],
+    ["Msg.engine6policy",{role:"bot",type:"engine",idx:6,loading:false}],
   ];
   let ok=0, fail=0;
   for(const lang of ["en","ar","zh"]){
@@ -88,6 +89,8 @@ const harness = `
       try{ render(createElement(Ctx.Provider,{value:makeStore(lang,"planner")}, createElement(ABCard,{which:w}))); ok++; }
       catch(e){ fail++; console.log("FAIL ABCard."+w+" ["+lang+"]: "+(e&&e.message||e)); }
     }
+    try{ render(createElement(Ctx.Provider,{value:makeStore(lang,"analyst")}, createElement(StoryStepper,{states:["done","done","run","idle","idle","idle","idle"]}))); ok++; }
+    catch(e){ fail++; console.log("FAIL StoryStepper ["+lang+"]: "+(e&&e.message||e)); }
   }
   REPORT(ok, fail);
 `;
