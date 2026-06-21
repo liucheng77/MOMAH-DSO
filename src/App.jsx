@@ -631,7 +631,7 @@ Object.assign(I18N.en, {
   closure_title:"Gap-closure scenarios (Riyadh Seg A)",
   cl1:"Status quo", cl2:"+A-grade devs", cl3:"+100% conv. (unreal.)", cl4:"+devs + Policy A",
   dev_top:"A-grade developers (Segment A)", tiers_short:"Tier-1 negotiate now · Tier-2 +15% subsidy · Tier-3 monitor",
-  downloadBrief:"Download briefing (HTML)", genBrief2:"Generate ministerial briefing",
+  downloadBrief:"Download briefing (PDF)", genBrief2:"Generate ministerial briefing",
   y1impact:"Base-case Y1 impact", dominant:"dominant driver",
 });
 Object.assign(I18N.zh, {
@@ -664,7 +664,7 @@ Object.assign(I18N.zh, {
   closure_title:"缺口闭合情景(利雅得 A 段)",
   cl1:"维持现状", cl2:"+A 级开发商", cl3:"+100% 转化(不现实)", cl4:"+开发商 + 政策 A",
   dev_top:"A 级开发商(A 段)", tiers_short:"一级立即谈判 · 二级 +15% 补贴 · 三级观察",
-  downloadBrief:"下载简报(HTML)", genBrief2:"生成部长简报",
+  downloadBrief:"下载简报(PDF)", genBrief2:"生成部长简报",
   y1impact:"基准情景 Y1 影响", dominant:"主导驱动",
 });
 Object.assign(I18N.ar, {
@@ -685,7 +685,7 @@ Object.assign(I18N.ar, {
   closure_title:"سيناريوهات سدّ الفجوة (الرياض، الشريحة A)",
   cl1:"الوضع الراهن", cl2:"+مطوّرو A", cl3:"+تحويل ١٠٠٪", cl4:"+مطوّرون + سياسة A",
   dev_top:"مطوّرو الفئة A", tiers_short:"المستوى ١ تفاوض الآن · ٢ دعم +١٥٪ · ٣ مراقبة",
-  downloadBrief:"تنزيل الموجز (HTML)", genBrief2:"توليد الموجز الوزاري",
+  downloadBrief:"تنزيل الموجز (PDF)", genBrief2:"توليد الموجز الوزاري",
   y1impact:"أثر السنة ١ (الأساس)", dominant:"المحرّك المهيمن",
 });
 
@@ -1044,18 +1044,20 @@ function Hub(){
       <span className="spill">{t("brief_urgent")}</span>
     </div>
     <Section title={t("kpis_title")}>
-      <div className="cols-4" style={{marginBottom:12}}>
-        <KPI label={t("k_resp")} value={t("k_resp_v")} sub={t("k_resp_s")} tone="good"/>
-        <KPI label={t("k_ready")} value="94%" tone="good"/>
-        <KPI label={t("k_cov")} value="13 / 13" sub={t("cov_"+cov)+" · "+COV_ACC[cov]+" "+t("cov_acc")}/>
-        <KPI label={t("k_market")} value={cov==="ministry"?"21%":cov==="private"?"27%":"24%"} tone="warn"/>
-      </div>
-      <div className="cols-4">
-        <KPI label={t("k_supply")} value="62,400" sub="units"/>
-        <KPI label={t("k_conv")} value="58%" tone="warn" sub="target 60%+"/>
-        <KPI label={t("k_dq")} value="94.2" sub="/ 100" tone="good"/>
-        <KPI label={t("biz_reports")} value="3" sub={t("periodic_title")}/>
-      </div>
+      {(()=>{ const KPIS=[
+        {l:t("k_resp"),   v:t("k_resp_v"), d:"▼ "+t("k_resp_s"), tone:"good"},
+        {l:t("k_ready"),  v:"94%",         d:"▲ 2pp", tone:"good"},
+        {l:t("k_cov"),    v:"13 / 13",     d:t("cov_"+cov)+" · "+COV_ACC[cov], tone:""},
+        {l:t("k_market"), v:cov==="ministry"?"21%":cov==="private"?"27%":"24%", d:"▲ 5pp", tone:"bad"},
+        {l:t("k_supply"), v:"62,400",      d:"▲ 3.1K · units", tone:""},
+        {l:t("k_conv"),   v:"58%",         d:"▼ 6pp · target 60%+", tone:"warn"},
+        {l:t("k_dq"),     v:"94.2",        d:"▲ 1.2 · / 100", tone:"good"},
+        {l:t("biz_reports"),v:"3",         d:"W · M · Q", tone:""},
+      ]; return (<div className="kpic-grid">
+        {KPIS.map((k,i)=>(<div key={i} className={"kpic"+(k.tone?" kpi-"+k.tone:"")}>
+          <div className="kl">{k.l}</div><div className="kv">{k.v}</div><div className="kt">{k.d}</div>
+        </div>))}
+      </div>); })()}
     </Section>
     <Section title={t("biz_reports")} right={<button className="btn secondary sm" onClick={()=>setRoute("reports")}>{t("view")} {ArrowIcon}</button>}>
       <div className="scrollx"><table className="tbl">
@@ -1319,9 +1321,11 @@ function EngineCard({idx,loading}){
 
 /* ---- downloadable ministerial briefing (mirrors the PDF) ---- */
 function downloadBriefing(){
-  // the briefing is the rendered MOMAH PDF (verbatim) embedded as base64 — see reports-data.js
-  try{ const html=decodeReport("briefing"); const blob=new Blob([html],{type:"text/html;charset=utf-8"}); const url=URL.createObjectURL(blob);
-    const a=document.createElement("a"); a.href=url; a.download="DSO_Ministerial_Briefing.html"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  // the briefing is the original MOMAH PDF embedded as base64 — download it verbatim as .pdf
+  try{ const bin=window.atob(REPORTS_B64.briefing||""); const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    const blob=new Blob([bytes],{type:"application/pdf"}); const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download="DSO_Ministerial_Briefing.pdf"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(()=>URL.revokeObjectURL(url),1500);
   }catch(e){ window.print(); }
 }
