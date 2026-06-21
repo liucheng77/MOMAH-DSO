@@ -2027,7 +2027,7 @@ function App(){
     <TopBar/>
     <div className="shell"><Sidebar/><div className="content">{page}</div></div>
     <AgentLog/>
-    <button className="buildstamp" title={t("release_notes")} onClick={()=>setShowNotes(true)}>📦 {t("build")}: {BUILD_TIME}</button>
+    <button className="buildstamp" title={t("release_notes")} onClick={()=>setShowNotes(true)}><span className="bs-dot"/><b>{RELEASE_NOTES.en[0].ver}</b> · {BUILD_TIME}</button>
     {showNotes&&<Modal title={"📦 "+t("release_notes")} onClose={()=>setShowNotes(false)}>
       <div className="timeline">
         {(RELEASE_NOTES[lang]||RELEASE_NOTES.en).map((r,i)=>(<div key={i} className="ev">
