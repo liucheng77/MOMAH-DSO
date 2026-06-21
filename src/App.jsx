@@ -1115,7 +1115,6 @@ function Hub(){
           <div className="ki-value" style={{color:k.color}}>{k.v}{k.unit&&<span className="ki-unit">{k.unit}</span>}</div>
           <div className={"ki-chg "+k.cTone}>{k.chg}</div>
           <div className="ki-meta">{Z(k,"meta")}</div>
-          <div className="ki-spark">{k.spark.map((h,j)=><span key={j} style={{height:h+"px",background:k.color,opacity:0.45+0.08*j}}/>)}</div>
         </div>))}
       </div>
     </Section>
