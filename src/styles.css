@@ -534,13 +534,15 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 .ki-src.real{background:var(--green-50);color:var(--green-dark)}
 .ki-src.mock{background:#eaf0fb;color:#2563eb}
 .ki-label{font-size:12px;color:var(--muted);font-weight:700}
-.ki-value{font-size:26px;font-weight:800;line-height:1.05;margin-top:3px;letter-spacing:-.5px}
+.ki-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:3px}
+.ki-value{font-size:26px;font-weight:800;line-height:1.05;letter-spacing:-.5px;white-space:nowrap}
 .ki-value .ki-unit{font-size:14px;font-weight:700;margin-inline-start:2px}
 .ki-chg{font-size:11.5px;font-weight:800;margin-top:5px}
-.ki-chg.good{color:var(--green-dark)}.ki-chg.bad{color:var(--danger)}.ki-chg.flat{color:var(--muted)}
 .ki-meta{font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.45;min-height:30px}
-.ki-spark{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:8px}
-.ki-spark span{flex:1;border-radius:2px 2px 0 0;min-height:3px}
+/* monthly sparkline pinned to the right of the value */
+.ki-spark2{display:flex;align-items:flex-end;gap:2px;height:34px;flex:0 0 auto}
+.ki-spark2 span{width:7px;border-radius:2px 2px 0 0;min-height:3px;opacity:.85;cursor:default;transition:opacity .12s,transform .12s}
+.ki-spark2 span:hover{opacity:1;transform:scaleY(1.06)}
 /* scenario distribution */
 .ki-scn{display:flex;gap:8px;margin-bottom:10px}
 .ki-scn-box{flex:1;text-align:center;padding:11px 8px;border-radius:10px;border:1px solid var(--line);background:#fafcfb}

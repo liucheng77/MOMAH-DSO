@@ -1055,24 +1055,35 @@ function SourceStrip(){
   </div>);
 }
 /* ---- Key Indicators dashboard data (June snapshot; values within BRD scope) ---- */
+// dir: up = orange, down = blue, flat = green (value + change + sparkline share the colour)
+// series: Dec 2025 → May 2026 monthly mock points {m, v(display), h(0–100 bar height)}
 const KI_KPI=[
-  {src:"SAMA · Official", src_zh:"SAMA · 官方", real:1, label:"SAMA Repo Rate", label_zh:"SAMA 回购利率", v:"4.25", unit:"%", chg:"→ 0 bps", cTone:"flat", color:"#10b981",
-    meta:"Held steady since Dec 2025 · next review Jul 2026", meta_zh:"自 2025 年 12 月持平 · 下次评审 2026 年 7 月", spark:[18,18,18,18,18,18,18]},
-  {src:"GASTAT · Official", src_zh:"GASTAT · 官方", real:1, label:"CPI Inflation (YoY)", label_zh:"CPI 通胀(同比)", v:"1.8", unit:"%", chg:"↑ 0.2pp", cTone:"bad", color:"#f59e0b",
-    meta:"Housing rents +8.1% YoY · food +0.9% YoY", meta_zh:"住房租金 +8.1% 同比 · 食品 +0.9% 同比", spark:[10,12,11,14,13,16,18]},
-  {src:"GASTAT · Official", src_zh:"GASTAT · 官方", real:1, label:"Real GDP Growth (YoY)", label_zh:"实际 GDP 增长(同比)", v:"3.0", unit:"%", chg:"↑ 0.2pp vs Q4'25", cTone:"good", color:"#10b981",
-    meta:"Non-oil +4.1% · oil +1.2% · Q1 2026", meta_zh:"非石油 +4.1% · 石油 +1.2% · 2026 Q1", spark:[8,12,14,16,20,22,26]},
-  {src:"Market · Real-time", src_zh:"市场 · 实时", real:1, label:"Brent Crude Oil", label_zh:"布伦特原油", v:"$80.59", unit:"", chg:"↓ $1.84 (−2.2%)", cTone:"bad", color:"#f59e0b",
-    meta:"May avg $82.43 · YTD $75–$89", meta_zh:"5 月均价 $82.43 · 年内 $75–$89", spark:[22,18,20,15,17,13,12]},
-  {src:"DSO · Demand Intelligence", src_zh:"DSO · 需求智能", real:0, label:"Riyadh Housing Demand", label_zh:"利雅得住房需求", v:"14,600", unit:"", chg:"↑ 2.1%", cTone:"good", color:"#2563eb",
-    meta:"May 14,300 units · Seg A +3.2% · Seg B −1.4%", meta_zh:"5 月 14,300 套 · A 段 +3.2% · B 段 −1.4%", spark:[14,16,18,15,20,17,22]},
-  {src:"DSO · Supply Planning", src_zh:"DSO · 供给规划", real:0, label:"National Supply Pipeline", label_zh:"全国供给管线", v:"51,400", unit:"", chg:"↑ 1.8%", cTone:"good", color:"#6d5ae6",
-    meta:"May 50,500 units · 487 active · 78 completed", meta_zh:"5 月 50,500 套 · 487 在建 · 78 完工", spark:[10,13,11,16,14,18,20]},
-  {src:"DSO · Conversion", src_zh:"DSO · 转化", real:0, label:"Avg. Project Conversion", label_zh:"平均项目转化率", v:"65.8", unit:"%", chg:"↓ 1.4pp", cTone:"bad", color:"#f59e0b",
-    meta:"Seg A 52% · Seg E 78% · rate hike pressures A–B", meta_zh:"A 段 52% · E 段 78% · 加息施压 A–B 段", spark:[20,22,18,16,14,12,10]},
-  {src:"DSO · Quality Monitor", src_zh:"DSO · 质量监控", real:0, label:"Data Quality Score", label_zh:"数据质量分", v:"94.6", unit:"/100", chg:"↑ 0.5", cTone:"good", color:"#10b981",
-    meta:"10/11 sources ≥95% · DS-10 Private 90.1% (recovered)", meta_zh:"10/11 源 ≥95% · DS-10 私有 90.1%(已恢复)", spark:[16,15,18,17,19,20,22]},
+  {src:"SAMA · Official", src_zh:"SAMA · 官方", real:1, label:"SAMA Repo Rate", label_zh:"SAMA 回购利率", v:"4.25", unit:"%", chg:"→ 0 bps", dir:"flat",
+    meta:"Held steady since Dec 2025 · next review Jul 2026", meta_zh:"自 2025 年 12 月持平 · 下次评审 2026 年 7 月",
+    series:[{m:"Dec",v:"4.25%",h:55},{m:"Jan",v:"4.25%",h:55},{m:"Feb",v:"4.25%",h:55},{m:"Mar",v:"4.25%",h:55},{m:"Apr",v:"4.25%",h:55},{m:"May",v:"4.25%",h:55}]},
+  {src:"GASTAT · Official", src_zh:"GASTAT · 官方", real:1, label:"CPI Inflation (YoY)", label_zh:"CPI 通胀(同比)", v:"1.8", unit:"%", chg:"↑ 0.2pp", dir:"up",
+    meta:"Housing rents +8.1% YoY · food +0.9% YoY", meta_zh:"住房租金 +8.1% 同比 · 食品 +0.9% 同比",
+    series:[{m:"Dec",v:"1.3%",h:34},{m:"Jan",v:"1.4%",h:40},{m:"Feb",v:"1.4%",h:40},{m:"Mar",v:"1.5%",h:48},{m:"Apr",v:"1.6%",h:56},{m:"May",v:"1.6%",h:56}]},
+  {src:"GASTAT · Official", src_zh:"GASTAT · 官方", real:1, label:"Real GDP Growth (YoY)", label_zh:"实际 GDP 增长(同比)", v:"3.0", unit:"%", chg:"↑ 0.2pp vs Q4'25", dir:"up",
+    meta:"Non-oil +4.1% · oil +1.2% · Q1 2026", meta_zh:"非石油 +4.1% · 石油 +1.2% · 2026 Q1",
+    series:[{m:"Dec",v:"2.4%",h:34},{m:"Jan",v:"2.5%",h:40},{m:"Feb",v:"2.6%",h:48},{m:"Mar",v:"2.7%",h:56},{m:"Apr",v:"2.8%",h:64},{m:"May",v:"3.0%",h:78}]},
+  {src:"Market · Real-time", src_zh:"市场 · 实时", real:1, label:"Brent Crude Oil", label_zh:"布伦特原油", v:"$80.59", unit:"", chg:"↓ $1.84 (−2.2%)", dir:"down",
+    meta:"May avg $82.43 · YTD $75–$89", meta_zh:"5 月均价 $82.43 · 年内 $75–$89",
+    series:[{m:"Dec",v:"$86.10",h:80},{m:"Jan",v:"$84.20",h:66},{m:"Feb",v:"$85.00",h:70},{m:"Mar",v:"$83.10",h:58},{m:"Apr",v:"$82.43",h:52},{m:"May",v:"$80.59",h:44}]},
+  {src:"DSO · Demand Intelligence", src_zh:"DSO · 需求智能", real:0, label:"Riyadh Housing Demand", label_zh:"利雅得住房需求", v:"14,600", unit:"", chg:"↑ 2.1%", dir:"up",
+    meta:"May 14,300 units · Seg A +3.2% · Seg B −1.4%", meta_zh:"5 月 14,300 套 · A 段 +3.2% · B 段 −1.4%",
+    series:[{m:"Dec",v:"13,900",h:40},{m:"Jan",v:"14,000",h:46},{m:"Feb",v:"14,100",h:52},{m:"Mar",v:"14,200",h:58},{m:"Apr",v:"14,300",h:62},{m:"May",v:"14,600",h:74}]},
+  {src:"DSO · Supply Planning", src_zh:"DSO · 供给规划", real:0, label:"National Supply Pipeline", label_zh:"全国供给管线", v:"51,400", unit:"", chg:"↑ 1.8%", dir:"up",
+    meta:"May 50,500 units · 487 active · 78 completed", meta_zh:"5 月 50,500 套 · 487 在建 · 78 完工",
+    series:[{m:"Dec",v:"49,800",h:42},{m:"Jan",v:"50,000",h:48},{m:"Feb",v:"50,200",h:52},{m:"Mar",v:"50,500",h:58},{m:"Apr",v:"50,800",h:64},{m:"May",v:"51,400",h:74}]},
+  {src:"DSO · Conversion", src_zh:"DSO · 转化", real:0, label:"Avg. Project Conversion", label_zh:"平均项目转化率", v:"65.8", unit:"%", chg:"↓ 1.4pp", dir:"down",
+    meta:"Seg A 52% · Seg E 78% · rate hike pressures A–B", meta_zh:"A 段 52% · E 段 78% · 加息施压 A–B 段",
+    series:[{m:"Dec",v:"69.0%",h:78},{m:"Jan",v:"68.5%",h:72},{m:"Feb",v:"68.0%",h:66},{m:"Mar",v:"67.5%",h:60},{m:"Apr",v:"67.2%",h:56},{m:"May",v:"65.8%",h:46}]},
+  {src:"DSO · Quality Monitor", src_zh:"DSO · 质量监控", real:0, label:"Data Quality Score", label_zh:"数据质量分", v:"94.6", unit:"/100", chg:"↑ 0.5", dir:"up",
+    meta:"10/11 sources ≥95% · DS-10 Private 90.1% (recovered)", meta_zh:"10/11 源 ≥95% · DS-10 私有 90.1%(已恢复)",
+    series:[{m:"Dec",v:"93.6",h:48},{m:"Jan",v:"93.8",h:54},{m:"Feb",v:"94.0",h:58},{m:"Mar",v:"94.1",h:62},{m:"Apr",v:"94.3",h:68},{m:"May",v:"94.6",h:74}]},
 ];
+function dcol(d){ return d==="up"?"#f59e0b":d==="down"?"#2563eb":"var(--green)"; }
 const MOM_MACRO=[
   {k:"SAMA Repo Rate", k_zh:"SAMA 回购利率", may:"4.25%", jun:"4.25%", d:"→ 0 bps", dt:"flat"},
   {k:"CPI Inflation (YoY)", k_zh:"CPI 通胀(同比)", may:"1.6%", jun:"1.8%", d:"↑ +0.2pp", dt:"bad"},
@@ -1109,13 +1120,17 @@ function Hub(){
       right={<span className="ki-legend"><span><span className="dot" style={{background:"var(--green)"}}/>{t("ki_real")}</span><span><span className="dot" style={{background:"#2563eb"}}/>{t("ki_mock")}</span></span>}/>
     <Section title={t("kpis_title")}>
       <div className="ki-grid">
-        {KI_KPI.map((k,i)=>(<div key={i} className={"ki-card"+(k.real?"":" mock")}>
+        {KI_KPI.map((k,i)=>{ const c=dcol(k.dir); return (<div key={i} className={"ki-card"+(k.real?"":" mock")}>
           <span className={"ki-src "+(k.real?"real":"mock")}>{Z(k,"src")}</span>
           <div className="ki-label">{Z(k,"label")}</div>
-          <div className="ki-value" style={{color:k.color}}>{k.v}{k.unit&&<span className="ki-unit">{k.unit}</span>}</div>
-          <div className={"ki-chg "+k.cTone}>{k.chg}</div>
+          <div className="ki-row">
+            <div className="ki-value" style={{color:c}}>{k.v}{k.unit&&<span className="ki-unit">{k.unit}</span>}</div>
+            <div className="ki-spark2" aria-hidden="false">{k.series.map((pt,j)=>
+              <span key={j} title={pt.m+(pt.m==="Dec"?" 2025":" 2026")+": "+pt.v} style={{height:pt.h+"%",background:c}}/>)}</div>
+          </div>
+          <div className="ki-chg" style={{color:c}}>{k.chg}</div>
           <div className="ki-meta">{Z(k,"meta")}</div>
-        </div>))}
+        </div>); })}
       </div>
     </Section>
     <div className="cols-2">
