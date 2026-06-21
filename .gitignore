@@ -5,3 +5,4 @@ backup/
 dist2/
 *.timestamp-*.mjs
 build_*/
+vb_*/

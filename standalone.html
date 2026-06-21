@@ -695,7 +695,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-21 22:57 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-21 23:09 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2761,9 +2761,14 @@ const SEED_ALERTS=[
 /* release notes timeline (hidden menu pages intentionally excluded) */
 const RELEASE_NOTES={
   en:[
-    { ver:"v1.5", date:BUILD_TIME, items:[
+    { ver:"v1.7", date:BUILD_TIME, items:[
+      "AI Diagnosis & Recommendation: every analysis now ends with diagnosis → macro-vs-policy attribution → quantified impact → ranked actions, in Conversational Analysis and the Dashboard.",
+      "Causal attribution shown as a macro/policy split bar with a one-line conclusion and confidence." ]},
+    { ver:"v1.6", date:"2026-06-21", items:[
+      "Dashboard rebuilt as Key Indicators: real (SAMA / GASTAT / Market) vs DSO-estimate KPI cards with monthly sparklines & hover tooltips, MoM comparison tables, macro scenario distribution, and key risks." ]},
+    { ver:"v1.5", date:"2026-06-21", items:[
       "Ministerial briefing now downloads as the original PDF (verbatim).",
-      "Dashboard “Key KPIs” redesigned as compact tiles with trend indicators." ]},
+      "KPI value, change and sparkline share a direction colour (up=orange, down=blue, flat=green)." ]},
     { ver:"v1.4", date:"2026-06-20", items:[
       "Agent activity log is now a real-time stream (2-minute refresh).",
       "Severity aligned to BRD SLA thresholds (red: gap >30% / absorption drop >40% / delay >50% SLA / outage >24h · yellow: delay ≤50% SLA / anomaly >3σ / conversion <60%).",
@@ -2779,9 +2784,14 @@ const RELEASE_NOTES={
       "Login, role switching, and EN / العربية (RTL) language toggle." ]},
   ],
   zh:[
-    { ver:"v1.5", date:BUILD_TIME, items:[
+    { ver:"v1.7", date:BUILD_TIME, items:[
+      "AI 诊断与建议:每次分析现在以 诊断 → 宏观/政策归因 → 量化影响 → 排序处方 收尾(对话分析与仪表盘)。",
+      "归因用 宏观/政策 百分比拆分条 + 一句结论 + 置信度 呈现。" ]},
+    { ver:"v1.6", date:"2026-06-21", items:[
+      "仪表盘重建为关键指标:真实(SAMA / GASTAT / 市场)与 DSO 估算 KPI 卡(含月度迷你图与悬停提示)、环比对照表、宏观情景分布、关键风险。" ]},
+    { ver:"v1.5", date:"2026-06-21", items:[
       "部长简报下载改为原始 PDF 格式(逐字节一致)。",
-      "仪表盘「关键 KPI」改为带趋势的紧凑磁贴。" ]},
+      "KPI 数值、涨跌与迷你图同色(上升=橘、下降=蓝、不变=绿)。" ]},
     { ver:"v1.4", date:"2026-06-20", items:[
       "Agent 操作日志改为实时流(2 分钟刷新)。",
       "严重 / 警告分级对齐 BRD 的 SLA 阈值(红:缺口 >30% / 吸纳率下降 >40% / 延迟 >50% SLA / 中断 >24h;黄:延迟 ≤50% SLA / 异常 >3σ / 转化 <60%)。",
@@ -2797,9 +2807,14 @@ const RELEASE_NOTES={
       "登录、角色切换,以及 EN / العربية(RTL)语言切换。" ]},
   ],
   ar:[
-    { ver:"v1.5", date:BUILD_TIME, items:[
+    { ver:"v1.7", date:BUILD_TIME, items:[
+      "تشخيص وتوصية AI: كل تحليل ينتهي الآن بتشخيص ← إسناد كلي/سياسة ← أثر مكمّى ← إجراءات مرتّبة (التحليل الحواري ولوحة المعلومات).",
+      "يُعرض الإسناد كشريط نسبة كلي/سياسة مع خلاصة سطر واحد ودرجة ثقة." ]},
+    { ver:"v1.6", date:"2026-06-21", items:[
+      "إعادة بناء لوحة المعلومات كمؤشرات رئيسية: بطاقات حقيقية (ساما/الإحصاء/السوق) مقابل تقديرات DSO مع رسوم شهرية مصغّرة وتلميحات، جداول مقارنة شهرية، توزيع سيناريوهات كلية، وأهم المخاطر." ]},
+    { ver:"v1.5", date:"2026-06-21", items:[
       "تنزيل الموجز الوزاري الآن بصيغة PDF الأصلية (حرفياً).",
-      "إعادة تصميم «المؤشرات الرئيسية» في لوحة المعلومات إلى بطاقات مدمجة مع مؤشرات اتجاه." ]},
+      "قيمة المؤشر وتغيّره ورسمه المصغّر بلون موحّد حسب الاتجاه (صعود=برتقالي، هبوط=أزرق، ثابت=أخضر)." ]},
     { ver:"v1.4", date:"2026-06-20", items:[
       "سجل نشاط الوكلاء أصبح تدفقاً لحظياً (تحديث كل دقيقتين).",
       "مواءمة الخطورة مع عتبات SLA في BRD (أحمر: فجوة >٣٠٪ / هبوط استيعاب >٤٠٪ / تأخّر >٥٠٪ SLA / انقطاع >٢٤س · أصفر: تأخّر ≤٥٠٪ / شذوذ >٣σ / تحويل <٦٠٪).",
