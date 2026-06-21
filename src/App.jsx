@@ -726,6 +726,7 @@ Object.assign(I18N.en, {
   rp_weekly:"Weekly Housing Market Snapshot", rp_monthly:"Monthly Housing Market Performance", rp_quarterly:"Quarterly Strategic Report",
   periodic_title:"Periodic reports", generated_title:"Generated reports", preview:"Preview", close:"Close", viewDetail:"View detail",
   kpis_title:"Key KPIs", biz_reports:"Business reports", k_dq:"Data quality score",
+  release_notes:"Release notes", rn_latest:"Latest",
   sla_label:"SLA / threshold",
   he_gap:"Supply-demand gap 34% · Riyadh Seg A (RED)",
   he_gap_s:"Gap rule — green <10% · yellow 10–30% · RED >30%",
@@ -750,6 +751,7 @@ Object.assign(I18N.zh, {
   rp_weekly:"每周住房市场快照", rp_monthly:"月度住房市场绩效报告", rp_quarterly:"季度住房市场战略报告",
   periodic_title:"周期报告", generated_title:"已生成报告", preview:"预览", close:"关闭", viewDetail:"查看详情",
   kpis_title:"关键 KPI", biz_reports:"业务报告", k_dq:"数据质量分",
+  release_notes:"更新日志", rn_latest:"最新",
   sla_label:"SLA / 阈值",
   he_gap:"供需缺口 34% · 利雅得 A 段(红)",
   he_gap_s:"缺口规则 — 绿 <10% · 黄 10–30% · 红 >30%",
@@ -774,6 +776,7 @@ Object.assign(I18N.ar, {
   rp_weekly:"لقطة سوق السكن الأسبوعية", rp_monthly:"أداء سوق السكن الشهري", rp_quarterly:"التقرير الاستراتيجي الفصلي",
   periodic_title:"التقارير الدورية", generated_title:"التقارير المولّدة", preview:"معاينة", close:"إغلاق", viewDetail:"عرض التفاصيل",
   kpis_title:"المؤشرات الرئيسية", biz_reports:"التقارير التشغيلية", k_dq:"درجة جودة البيانات",
+  release_notes:"سجل التحديثات", rn_latest:"الأحدث",
   sla_label:"SLA / العتبة",
   he_gap:"فجوة العرض والطلب ٣٤٪ · الرياض الشريحة A (أحمر)",
   he_gap_s:"قاعدة الفجوة — أخضر <١٠٪ · أصفر ١٠–٣٠٪ · أحمر >٣٠٪",
@@ -1914,6 +1917,64 @@ const SEED_ALERTS=[
   { id:"AL-1", sev:"amber", tk:"al_moj_t", bk:"al_moj_b", ts:"06:10", ack:false, scn:null },
   { id:"AL-2", sev:"amber", tk:"al_conv_t", bk:"al_conv_b", ts:"05:40", ack:false, scn:null },
 ];
+/* release notes timeline (hidden menu pages intentionally excluded) */
+const RELEASE_NOTES={
+  en:[
+    { ver:"v1.5", date:BUILD_TIME, items:[
+      "Ministerial briefing now downloads as the original PDF (verbatim).",
+      "Dashboard “Key KPIs” redesigned as compact tiles with trend indicators." ]},
+    { ver:"v1.4", date:"2026-06-20", items:[
+      "Agent activity log is now a real-time stream (2-minute refresh).",
+      "Severity aligned to BRD SLA thresholds (red: gap >30% / absorption drop >40% / delay >50% SLA / outage >24h · yellow: delay ≤50% SLA / anomaly >3σ / conversion <60%).",
+      "Click an unhealthy log entry for root-cause detail." ]},
+    { ver:"v1.3", date:"2026-06-20", items:[
+      "Reports Center: weekly / monthly / quarterly reports with in-app preview and download.",
+      "“Hub” renamed to “Dashboard” with Key KPIs and Business Reports." ]},
+    { ver:"v1.2", date:"2026-06-19", items:[
+      "Conversational Analysis: interest-rate-shock storyline — agents stream in one-by-one, the Orchestrator consolidates, then a downloadable ministerial briefing.",
+      "Orchestrator status: fixed-width badge that morphs into live progress (indigo, distinct from content)." ]},
+    { ver:"v1.1", date:"2026-06-19", items:[
+      "Monitoring & early-warning and data-quality checks.",
+      "Login, role switching, and EN / العربية (RTL) language toggle." ]},
+  ],
+  zh:[
+    { ver:"v1.5", date:BUILD_TIME, items:[
+      "部长简报下载改为原始 PDF 格式(逐字节一致)。",
+      "仪表盘「关键 KPI」改为带趋势的紧凑磁贴。" ]},
+    { ver:"v1.4", date:"2026-06-20", items:[
+      "Agent 操作日志改为实时流(2 分钟刷新)。",
+      "严重 / 警告分级对齐 BRD 的 SLA 阈值(红:缺口 >30% / 吸纳率下降 >40% / 延迟 >50% SLA / 中断 >24h;黄:延迟 ≤50% SLA / 异常 >3σ / 转化 <60%)。",
+      "点击不健康日志可查看根因详情。" ]},
+    { ver:"v1.3", date:"2026-06-20", items:[
+      "报告中心:每周 / 月度 / 季度三份报告,支持页内预览与下载。",
+      "「Hub」更名为「Dashboard」,新增关键 KPI 与业务报告。" ]},
+    { ver:"v1.2", date:"2026-06-19", items:[
+      "对话分析:加息冲击故事线 —— 多个智能体逐步展开,编排器汇总,最后生成可下载的部长简报。",
+      "编排状态:固定宽度徽章,运行时就地变为实时进度(靛紫,与生成内容区分)。" ]},
+    { ver:"v1.1", date:"2026-06-19", items:[
+      "监控预警与数据质量校验。",
+      "登录、角色切换,以及 EN / العربية(RTL)语言切换。" ]},
+  ],
+  ar:[
+    { ver:"v1.5", date:BUILD_TIME, items:[
+      "تنزيل الموجز الوزاري الآن بصيغة PDF الأصلية (حرفياً).",
+      "إعادة تصميم «المؤشرات الرئيسية» في لوحة المعلومات إلى بطاقات مدمجة مع مؤشرات اتجاه." ]},
+    { ver:"v1.4", date:"2026-06-20", items:[
+      "سجل نشاط الوكلاء أصبح تدفقاً لحظياً (تحديث كل دقيقتين).",
+      "مواءمة الخطورة مع عتبات SLA في BRD (أحمر: فجوة >٣٠٪ / هبوط استيعاب >٤٠٪ / تأخّر >٥٠٪ SLA / انقطاع >٢٤س · أصفر: تأخّر ≤٥٠٪ / شذوذ >٣σ / تحويل <٦٠٪).",
+      "اضغط على أي سجل غير صحي لعرض السبب الجذري." ]},
+    { ver:"v1.3", date:"2026-06-20", items:[
+      "مركز التقارير: تقارير أسبوعية / شهرية / فصلية مع معاينة وتنزيل داخل التطبيق.",
+      "إعادة تسمية «Hub» إلى «Dashboard» مع المؤشرات الرئيسية والتقارير التشغيلية." ]},
+    { ver:"v1.2", date:"2026-06-19", items:[
+      "التحليل الحواري: سيناريو صدمة الفائدة — تظهر الوكلاء تباعاً، يجمّع المنسّق، ثم موجز وزاري قابل للتنزيل.",
+      "حالة المنسّق: شارة بعرض ثابت تتحوّل إلى تقدّم لحظي (نيلي، مميّز عن المحتوى)." ]},
+    { ver:"v1.1", date:"2026-06-19", items:[
+      "المراقبة والإنذار المبكر وفحوص جودة البيانات.",
+      "تسجيل الدخول، تبديل الأدوار، وتبديل اللغة EN / العربية (RTL)." ]},
+  ],
+};
+
 function App(){
   const [user,setUserState]=useState(null);
   const [lang,setLang]=useState(()=>{ try{ const q=new URLSearchParams(window.location.search).get("ln"); if(q==="zh"||q==="ar"||q==="en") return q; }catch(e){} return "en"; });
@@ -1923,6 +1984,7 @@ function App(){
   const [reports,setReports]=useState([]);
   const [log,setLog]=useState([]);
   const [seed,setSeed]=useState(null);
+  const [showNotes,setShowNotes]=useState(false);
   const t=(k)=>{ const d=I18N[lang]; if(d&&d[k]!==undefined) return d[k]; const e=I18N.en; return (e&&e[k]!==undefined)?e[k]:k; };
 
   useEffect(()=>{ const html=document.documentElement; html.lang=lang; html.dir=lang==="ar"?"rtl":"ltr"; },[lang]);
@@ -1965,7 +2027,21 @@ function App(){
     <TopBar/>
     <div className="shell"><Sidebar/><div className="content">{page}</div></div>
     <AgentLog/>
-    <div className="buildstamp" title={t("build")}>📦 {t("build")}: {BUILD_TIME}</div>
+    <button className="buildstamp" title={t("release_notes")} onClick={()=>setShowNotes(true)}>📦 {t("build")}: {BUILD_TIME}</button>
+    {showNotes&&<Modal title={"📦 "+t("release_notes")} onClose={()=>setShowNotes(false)}>
+      <div className="timeline">
+        {(RELEASE_NOTES[lang]||RELEASE_NOTES.en).map((r,i)=>(<div key={i} className="ev">
+          <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+            <b style={{fontSize:13.5}}>{r.ver}</b><span className="muted" style={{fontSize:12}}>{r.date}</span>
+            {i===0&&<span className="chip">{t("rn_latest")}</span>}
+          </div>
+          <ul style={{margin:"6px 0 2px",paddingInlineStart:18,fontSize:12.5,lineHeight:1.65}}>
+            {r.items.map((it,j)=><li key={j}>{it}</li>)}
+          </ul>
+        </div>))}
+      </div>
+      <div style={{display:"flex",justifyContent:"flex-end",marginTop:14}}><button className="btn secondary" onClick={()=>setShowNotes(false)}>{t("close")}</button></div>
+    </Modal>}
   </Ctx.Provider>);
 }
 
