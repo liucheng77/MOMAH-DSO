@@ -85,7 +85,7 @@ const I18N = {
     planner_desc:"Builds supply plans, runs policy simulations, reviews recommendations.",
     leader_desc:"Reads executive dashboards; receives strategic briefs across Ministry / Private / Total.",
     // nav
-    nav_hub:"Hub", nav_chat:"Conversational Analysis", nav_monitor:"Monitoring & Alerts",
+    nav_hub:"Dashboard", nav_chat:"Conversational Analysis", nav_monitor:"Monitoring & Alerts",
     nav_policy:"Policy Simulation", nav_reports:"Reports", nav_cockpit:"Strategic Cockpit", nav_eco:"Ecosystem",
     // engines
     eng_orch:"Orchestrator Agent", eng_demand:"Demand Intelligence", eng_balance:"Supply-Demand Balancing",
@@ -194,7 +194,7 @@ I18N.ar = {
   analyst_desc:"يسأل المنسّق، يشغّل التحليلات، يعالج تنبيهات المراقبة، ويولّد التقارير.",
   planner_desc:"يبني خطط العرض، ويشغّل محاكاة السياسات، ويراجع التوصيات.",
   leader_desc:"يطّلع على لوحات تنفيذية؛ يستقبل موجزات استراتيجية (وزارة / خاص / كلي).",
-  nav_hub:"الرئيسية", nav_chat:"التحليل الحواري", nav_monitor:"المراقبة والتنبيهات",
+  nav_hub:"لوحة المعلومات", nav_chat:"التحليل الحواري", nav_monitor:"المراقبة والتنبيهات",
   nav_policy:"محاكاة السياسات", nav_reports:"التقارير", nav_cockpit:"لوحة القيادة", nav_eco:"المنظومة",
   eng_orch:"الوكيل المنسّق", eng_demand:"ذكاء الطلب", eng_balance:"موازنة العرض والطلب",
   eng_plan:"التخطيط الاستراتيجي للعرض", eng_conv:"التحويل والاستيعاب",
@@ -725,44 +725,74 @@ Object.assign(I18N.ar, {
 Object.assign(I18N.en, {
   rp_weekly:"Weekly Housing Market Snapshot", rp_monthly:"Monthly Housing Market Performance", rp_quarterly:"Quarterly Strategic Report",
   periodic_title:"Periodic reports", generated_title:"Generated reports", preview:"Preview", close:"Close", viewDetail:"View detail",
-  he_moj:"DS-07 price feed degraded · 3-day delay",
-  he_moj_d:"The MOJ real-estate price feed (DS-07) is delayed beyond 50% of its SLA (3 days). Analysis proceeded on the last valid snapshot; price-trend confidence dropped 95% → 88%. The Data Manager was auto-notified (ticket #DQ-2407). Resolve the source pipeline before the next quarterly refresh.",
-  he_anom:"Anomaly · Eastern demand +3.2σ",
-  he_anom_d:"Eastern-Region demand deviated +3.2 standard deviations from the 12-week moving average — beyond the 3σ threshold. The engine flagged the value and requested expert review instead of feeding it downstream. Likely cause: an oil-sector employment cycle; verify before using in forecasts.",
-  he_conv:"Conversion dip · Makkah 52%",
+  kpis_title:"Key KPIs", biz_reports:"Business reports", k_dq:"Data quality score",
+  sla_label:"SLA / threshold",
+  he_gap:"Supply-demand gap 34% · Riyadh Seg A (RED)",
+  he_gap_s:"Gap rule — green <10% · yellow 10–30% · RED >30%",
+  he_gap_d:"The Riyadh Segment-A supply-demand gap reached 34%, breaching the 30% red threshold. A red gap triggers a strategic-level escalation. Root cause: demand +31% (forced B→A migration) against a flat supply pipeline. Routed to the Strategic Planning Manager.",
+  he_absorp:"Absorption drop 43% · Riyadh Seg A (RED)",
+  he_absorp_s:"Rule — absorption drop >40% → immediate escalation",
+  he_absorp_d:"Projected absorption for Riyadh Segment-A fell 43% versus plan, exceeding the 40% threshold that mandates immediate escalation to the Planning Manager. Drivers: 52% conversion plus pipeline mismatch. Recommended: accelerate Tier-1 developers and apply Policy A.",
+  he_moj:"DS-07 price feed delayed · 43% of SLA (yellow)",
+  he_moj_s:"Freshness — weekly SLA · 3-day delay ≈ 43% (≤50% = yellow)",
+  he_moj_d:"The MOJ price feed (DS-07) is 3 days late against its weekly SLA (~43%) — yellow (delay ≤50% of SLA). Price-trend confidence was reduced 95% → 88% and analysis proceeded on the last valid snapshot. Data Manager auto-notified (ticket #DQ-2407); resolve before it crosses 50% (red).",
+  he_anom:"Demand anomaly +3.2σ · Eastern",
+  he_anom_s:"Rule — deviation >3σ vs 12-week average → flag for review",
+  he_anom_d:"Eastern-Region demand deviated +3.2σ from the 12-week moving average, beyond the 3σ threshold. The engine flagged the value and requested expert review instead of feeding it downstream. Likely cause: an oil-sector employment cycle; verify before use.",
+  he_conv:"Conversion 52% · Makkah (<60% threshold)",
+  he_conv_s:"Rule — conversion <60% requires intervention",
   he_conv_d:"Qualification → signing conversion in Makkah fell to 52%, below the 60% intervention threshold. Driver: developer-margin disincentives on affordable units. Recommended: weekly monitoring + targeted incentive; escalate to the Planning Manager if it persists two more weeks.",
-  he_timeout:"Macro engine retry · SAMA feed timeout",
-  he_timeout_d:"The macro-economic engine hit a timeout fetching the SAMA rate feed and retried automatically (succeeded on attempt 2). No data loss; the cached prior value was used for under 2 minutes. If timeouts recur, check the SAMA API gateway.",
-  he_stale:"Private-market feed stale · 3 days",
-  he_stale_d:"The private-market data source (DS-10) has not refreshed within its weekly SLA (3 days late). Private-coverage outputs carry a reduced-confidence caveat (80% maintained). The monitor uses the last valid snapshot and notified the Data Manager; total-market figures are unaffected.",
+  he_stale:"DS-10 private-market feed delayed · 43% of SLA (yellow)",
+  he_stale_s:"Freshness — weekly SLA · 3-day delay ≈ 43% (≤50% = yellow)",
+  he_stale_d:"The private-market source (DS-10) is 3 days late against its weekly SLA (~43%) — yellow. Private-coverage outputs carry a reduced-confidence caveat (80% maintained); the monitor uses the last valid snapshot and notified the Data Manager. Total-market figures are unaffected.",
 });
 Object.assign(I18N.zh, {
   rp_weekly:"每周住房市场快照", rp_monthly:"月度住房市场绩效报告", rp_quarterly:"季度住房市场战略报告",
   periodic_title:"周期报告", generated_title:"已生成报告", preview:"预览", close:"关闭", viewDetail:"查看详情",
-  he_moj:"DS-07 房价源降级 · 延迟 3 天",
-  he_moj_d:"司法部房价源(DS-07)延迟超过 SLA 的 50%(3 天)。分析沿用最近有效快照;价格趋势置信度由 95% 降至 88%。已自动通知数据经理(工单 #DQ-2407)。请在下次季度刷新前修复该数据管线。",
-  he_anom:"异常 · 东部省需求 +3.2σ",
-  he_anom_d:"东部省需求较 12 周移动平均偏离 +3.2 个标准差,超过 3σ 阈值。引擎已标记该值并请求专家复核,未直接向下游传递。可能原因:石油行业就业周期;在用于预测前请先核实。",
-  he_conv:"转化率下滑 · 麦加 52%",
+  kpis_title:"关键 KPI", biz_reports:"业务报告", k_dq:"数据质量分",
+  sla_label:"SLA / 阈值",
+  he_gap:"供需缺口 34% · 利雅得 A 段(红)",
+  he_gap_s:"缺口规则 — 绿 <10% · 黄 10–30% · 红 >30%",
+  he_gap_d:"利雅得 A 段供需缺口达到 34%,突破 30% 红线。红色缺口触发战略级升级。根因:需求 +31%(B→A 被迫迁移)而供给管线持平。已路由至战略规划经理。",
+  he_absorp:"吸纳率骤降 43% · 利雅得 A 段(红)",
+  he_absorp_s:"规则 — 吸纳率下降 >40% → 立即升级",
+  he_absorp_d:"利雅得 A 段预期吸纳率较计划下降 43%,超过 40% 阈值,须立即上报规划经理。驱动:转化率 52% 叠加管线错配。建议:加速一级开发商并实施政策 A。",
+  he_moj:"DS-07 房价源延迟 · 占 SLA 43%(黄)",
+  he_moj_s:"新鲜度 — 周度 SLA · 延迟 3 天 ≈ 43%(≤50% 为黄)",
+  he_moj_d:"司法部房价源(DS-07)较周度 SLA 延迟 3 天(约 43%)——黄色(延迟 ≤50% SLA)。价格趋势置信度由 95% 降至 88%,分析沿用最近有效快照。已自动通知数据经理(工单 #DQ-2407);需在越过 50%(红)前修复。",
+  he_anom:"需求异常 +3.2σ · 东部省",
+  he_anom_s:"规则 — 较 12 周均值偏离 >3σ → 标记复核",
+  he_anom_d:"东部省需求较 12 周移动平均偏离 +3.2σ,超过 3σ 阈值。引擎已标记该值并请求专家复核,未直接向下游传递。可能原因:石油行业就业周期;使用前请先核实。",
+  he_conv:"转化率 52% · 麦加(<60% 阈值)",
+  he_conv_s:"规则 — 转化率 <60% 需干预",
   he_conv_d:"麦加的资格→签约转化率降至 52%,低于 60% 干预阈值。驱动因素:可负担房型上开发商利润偏低的负向激励。建议:每周监控 + 定向激励;若再持续两周则上报规划经理。",
-  he_timeout:"宏观引擎重试 · SAMA 源超时",
-  he_timeout_d:"宏观经济引擎在拉取 SAMA 利率源时超时并自动重试(第 2 次成功)。无数据丢失;在不到 2 分钟内沿用了缓存的上一值。若超时反复出现,请检查 SAMA API 网关。",
-  he_stale:"私有市场源陈旧 · 3 天",
-  he_stale_d:"私有市场数据源(DS-10)未在每周 SLA 内刷新(已迟 3 天)。私有覆盖的输出附带降置信度提示(维持 80%)。监控沿用最近有效快照并已通知数据经理;全市场数据不受影响。",
+  he_stale:"DS-10 私有市场源延迟 · 占 SLA 43%(黄)",
+  he_stale_s:"新鲜度 — 周度 SLA · 延迟 3 天 ≈ 43%(≤50% 为黄)",
+  he_stale_d:"私有市场源(DS-10)较周度 SLA 延迟 3 天(约 43%)——黄色。私有覆盖输出附带降置信度提示(维持 80%);监控沿用最近有效快照并已通知数据经理。全市场数据不受影响。",
 });
 Object.assign(I18N.ar, {
   rp_weekly:"لقطة سوق السكن الأسبوعية", rp_monthly:"أداء سوق السكن الشهري", rp_quarterly:"التقرير الاستراتيجي الفصلي",
   periodic_title:"التقارير الدورية", generated_title:"التقارير المولّدة", preview:"معاينة", close:"إغلاق", viewDetail:"عرض التفاصيل",
-  he_moj:"تدهور مصدر أسعار DS-07 · تأخّر ٣ أيام",
-  he_moj_d:"تأخّر مصدر أسعار العقار (DS-07) بأكثر من ٥٠٪ من SLA (٣ أيام). تابع التحليل على آخر لقطة صالحة؛ انخفضت ثقة اتجاه السعر من ٩٥٪ إلى ٨٨٪. أُبلغ مدير البيانات آلياً (تذكرة #DQ-2407). يُرجى معالجة المصدر قبل التحديث الفصلي القادم.",
-  he_anom:"شذوذ · طلب الشرقية +٣٫٢σ",
-  he_anom_d:"انحرف طلب المنطقة الشرقية +٣٫٢ انحراف معياري عن متوسط ١٢ أسبوعاً — تجاوز عتبة ٣σ. وسم المحرك القيمة وطلب مراجعة خبير بدل تمريرها. السبب المرجّح: دورة توظيف قطاع النفط؛ تحقّق قبل الاستخدام في التنبؤ.",
-  he_conv:"انخفاض التحويل · مكة ٥٢٪",
+  kpis_title:"المؤشرات الرئيسية", biz_reports:"التقارير التشغيلية", k_dq:"درجة جودة البيانات",
+  sla_label:"SLA / العتبة",
+  he_gap:"فجوة العرض والطلب ٣٤٪ · الرياض الشريحة A (أحمر)",
+  he_gap_s:"قاعدة الفجوة — أخضر <١٠٪ · أصفر ١٠–٣٠٪ · أحمر >٣٠٪",
+  he_gap_d:"بلغت فجوة الشريحة A في الرياض ٣٤٪، متجاوزةً عتبة ٣٠٪ الحمراء. الفجوة الحمراء تستوجب تصعيداً استراتيجياً. السبب: الطلب +٣١٪ (هجرة B→A قسرية) مقابل خط عرض ثابت. وُجّه إلى مدير التخطيط الاستراتيجي.",
+  he_absorp:"هبوط الاستيعاب ٤٣٪ · الرياض الشريحة A (أحمر)",
+  he_absorp_s:"قاعدة — هبوط الاستيعاب >٤٠٪ ← تصعيد فوري",
+  he_absorp_d:"انخفض الاستيعاب المتوقع للشريحة A في الرياض ٤٣٪ مقابل الخطة، متجاوزاً عتبة ٤٠٪ التي توجب التصعيد الفوري لمدير التخطيط. الدوافع: تحويل ٥٢٪ وعدم تطابق الخط. يُوصى بتسريع مطوّري المستوى ١ وتطبيق السياسة A.",
+  he_moj:"تأخّر مصدر أسعار DS-07 · ٤٣٪ من SLA (أصفر)",
+  he_moj_s:"الحداثة — SLA أسبوعي · تأخّر ٣ أيام ≈ ٤٣٪ (≤٥٠٪ = أصفر)",
+  he_moj_d:"تأخّر مصدر أسعار العدل (DS-07) ٣ أيام مقابل SLA الأسبوعي (~٤٣٪) — أصفر (تأخّر ≤٥٠٪). خُفّضت ثقة اتجاه السعر ٩٥٪ ← ٨٨٪ وتابع التحليل على آخر لقطة صالحة. أُبلغ مدير البيانات آلياً (تذكرة #DQ-2407)؛ يُعالَج قبل تجاوز ٥٠٪ (أحمر).",
+  he_anom:"شذوذ طلب +٣٫٢σ · الشرقية",
+  he_anom_s:"قاعدة — انحراف >٣σ عن متوسط ١٢ أسبوعاً ← وسم للمراجعة",
+  he_anom_d:"انحرف طلب الشرقية +٣٫٢σ عن متوسط ١٢ أسبوعاً، متجاوزاً عتبة ٣σ. وسم المحرك القيمة وطلب مراجعة خبير بدل تمريرها. السبب المرجّح: دورة توظيف قطاع النفط؛ تحقّق قبل الاستخدام.",
+  he_conv:"التحويل ٥٢٪ · مكة (<٦٠٪)",
+  he_conv_s:"قاعدة — التحويل <٦٠٪ يتطلب تدخلاً",
   he_conv_d:"انخفض التحويل من التأهيل إلى التوقيع في مكة إلى ٥٢٪، دون عتبة التدخل ٦٠٪. السبب: ضعف هامش المطوّر على الوحدات الميسورة. يُوصى بمراقبة أسبوعية وحافز موجّه؛ ويُرفع لمدير التخطيط إذا استمر أسبوعين آخرين.",
-  he_timeout:"إعادة محاولة المحرك الكلي · مهلة مصدر ساما",
-  he_timeout_d:"واجه المحرك الاقتصادي الكلي مهلة عند جلب مصدر فائدة ساما وأعاد المحاولة آلياً (نجح في المحاولة ٢). لا فقد للبيانات؛ استُخدمت القيمة المخزّنة لأقل من دقيقتين. إذا تكررت المهلات فافحص بوابة واجهة ساما.",
-  he_stale:"قِدَم مصدر السوق الخاص · ٣ أيام",
-  he_stale_d:"لم يُحدّث مصدر السوق الخاص (DS-10) ضمن SLA الأسبوعي (متأخر ٣ أيام). تحمل مخرجات التغطية الخاصة تنويه ثقة مخفّضة (٨٠٪ محفوظة). يستخدم المراقب آخر لقطة صالحة وأبلغ مدير البيانات؛ أرقام السوق الكلي غير متأثرة.",
+  he_stale:"تأخّر مصدر السوق الخاص DS-10 · ٤٣٪ من SLA (أصفر)",
+  he_stale_s:"الحداثة — SLA أسبوعي · تأخّر ٣ أيام ≈ ٤٣٪ (≤٥٠٪ = أصفر)",
+  he_stale_d:"تأخّر مصدر السوق الخاص (DS-10) ٣ أيام مقابل SLA الأسبوعي (~٤٣٪) — أصفر. تحمل مخرجات التغطية الخاصة تنويه ثقة مخفّضة (٨٠٪ محفوظة)؛ يستخدم المراقب آخر لقطة صالحة وأبلغ مدير البيانات. أرقام السوق الكلي غير متأثرة.",
 });
 
 /* historical series (storyline step 2) */
@@ -940,9 +970,9 @@ function TopBar(){
   </div>);
 }
 const NAV = {
-  analyst:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_monitor","◉","monitor"],["nav_macro","🌐","macro"],["nav_dev","🏗","dev"],["nav_policy","⚖","policy"],["nav_reports","📄","reports"]],
-  planner:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_macro","🌐","macro"],["nav_dev","🏗","dev"],["nav_policy","⚖","policy"],["nav_reports","📄","reports"]],
-  leader:[["nav_cockpit","◧","cockpit"],["nav_macro","🌐","macro"],["nav_policy","⚖","policy"],["nav_eco","🤝","eco"],["nav_reports","📄","reports"]],
+  analyst:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_monitor","◉","monitor"],["nav_reports","📄","reports"]],
+  planner:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_reports","📄","reports"]],
+  leader:[["nav_cockpit","◧","cockpit"],["nav_eco","🤝","eco"],["nav_reports","📄","reports"]],
 };
 function Sidebar(){
   const {t,user,route,setRoute,alerts}=useStore();
@@ -1004,46 +1034,43 @@ function SourceStrip(){
   </div>);
 }
 function Hub(){
-  const {t,user,setRoute,cov,alerts,askOrchestrator}=useStore();
-  const journeys=[
-    {ic:"✦",col:"#2563eb",name:"j1_name",body:"j1_body",route:"chat"},
-    {ic:"◉",col:"#e29700",name:"j2_name",body:"j2_body",route:"monitor"},
-    {ic:"⚖",col:"#6d5ae6",name:"j3_name",body:"j3_body",route:"policy"},
-  ];
-  const open=alerts.filter(a=>!a.ack);
+  const {t,user,setRoute,cov,askOrchestrator}=useStore();
   return (<div className="fade">
-    <PageHeader title={t("hub_hello")+" · "+t(user+"_full")} sub={t("hub_sub")}/>
+    <PageHeader title={t("nav_hub")+" · "+t(user+"_full")} sub={t("hub_sub")}/>
     <div className="shock">
       <span className="si">⚡</span>
       <span className="stxt">{t("shock_banner")}</span>
       <button className="btn" onClick={()=>askOrchestrator("q_shock")}>✦ {t("runAssessment")}</button>
       <span className="spill">{t("brief_urgent")}</span>
     </div>
-    <div className="cols-4" style={{marginBottom:16}}>
-      <KPI label={t("k_resp")} value={t("k_resp_v")} sub={t("k_resp_s")} tone="good"/>
-      <KPI label={t("k_alerts")} value={open.length} tone={open.length?"bad":"good"}/>
-      <KPI label={t("k_cov")} value="13 / 13" sub={t("cov_"+cov)+" · "+COV_ACC[cov]+" "+t("cov_acc")}/>
-      <KPI label={t("k_ready")} value="94%" tone="good"/>
-    </div>
-    <Section title={t("engines_title")}><EngineGrid/></Section>
-    <Section title={t("sources_title")} right={<span className="chip">● 11 {t("live")}</span>}><SourceStrip/></Section>
-    <Section title={t("journeys_title")}>
-      <div className="cols-3">
-        {journeys.map(j=>(<div key={j.route} className="card pad jcard" onClick={()=>setRoute(j.route)}>
-          <div className="jh"><span className="jn" style={{background:j.col}}>{j.ic}</span><strong>{t(j.name)}</strong></div>
-          <div className="jbody">{t(j.body)}</div>
-          <div className="jgo">{t("open")} {ArrowIcon}</div>
-        </div>))}
+    <Section title={t("kpis_title")}>
+      <div className="cols-4" style={{marginBottom:12}}>
+        <KPI label={t("k_resp")} value={t("k_resp_v")} sub={t("k_resp_s")} tone="good"/>
+        <KPI label={t("k_ready")} value="94%" tone="good"/>
+        <KPI label={t("k_cov")} value="13 / 13" sub={t("cov_"+cov)+" · "+COV_ACC[cov]+" "+t("cov_acc")}/>
+        <KPI label={t("k_market")} value={cov==="ministry"?"21%":cov==="private"?"27%":"24%"} tone="warn"/>
+      </div>
+      <div className="cols-4">
+        <KPI label={t("k_supply")} value="62,400" sub="units"/>
+        <KPI label={t("k_conv")} value="58%" tone="warn" sub="target 60%+"/>
+        <KPI label={t("k_dq")} value="94.2" sub="/ 100" tone="good"/>
+        <KPI label={t("biz_reports")} value="3" sub={t("periodic_title")}/>
       </div>
     </Section>
-    <Section title={t("latest_alerts")} right={<button className="btn secondary sm" onClick={()=>setRoute("monitor")}>{t("view")} {ArrowIcon}</button>}>
-      {open.length===0? <div className="muted">{t("noAlerts")}</div> :
-        open.slice(0,3).map(a=>(<div key={a.id} className="todo-row">
-          <span className={"chip "+(a.sev==="red"?"danger":a.sev==="amber"?"amber":"info")}>{t("sev_"+a.sev)}</span>
-          <div style={{flex:1,fontWeight:600,fontSize:13}}>{t(a.tk)}</div>
-          {a.scn&&<button className="btn sm" onClick={()=>askOrchestrator(a.scn)}>✦ {t("askOrch")}</button>}
-        </div>))}
+    <Section title={t("biz_reports")} right={<button className="btn secondary sm" onClick={()=>setRoute("reports")}>{t("view")} {ArrowIcon}</button>}>
+      <div className="scrollx"><table className="tbl">
+        <thead><tr><th>{t("rep_title")}</th><th>{t("rep_ref")}</th><th>{t("rep_cov")}</th><th>{t("rep_time")}</th><th></th></tr></thead>
+        <tbody>{REPORTS_META.map(r=>(<tr key={r.id} style={{cursor:"pointer"}} onClick={()=>setRoute("reports")}>
+          <td><span style={{color:r.color,fontWeight:700}}>{r.icon} {t(r.nameKey)}</span></td>
+          <td className="mono"><span className="wo">{r.ref}</span></td>
+          <td><span className="chip gray">{t("cov_"+r.cov)}</span></td>
+          <td className="muted" style={{whiteSpace:"nowrap"}}>{r.date}</td>
+          <td className="right-num"><button className="btn sm" onClick={e=>{e.stopPropagation();setRoute("reports");}}>{t("view")} {ArrowIcon}</button></td>
+        </tr>))}</tbody>
+      </table></div>
     </Section>
+    <Section title={t("engines_title")}><EngineGrid/></Section>
+    <Section title={t("sources_title")} right={<span className="chip">● 11 {t("live")}</span>}><SourceStrip/></Section>
   </div>);
 }
 
@@ -1291,70 +1318,10 @@ function EngineCard({idx,loading}){
 }
 
 /* ---- downloadable ministerial briefing (mirrors the PDF) ---- */
-function downloadBriefing(t, cov){
-  const ref="DSO-2026-0619-URG-001";
-  const row=(cells,h)=>"<tr>"+cells.map(c=>"<"+(h?"th":"td")+">"+c+"</"+(h?"th":"td")+">").join("")+"</tr>";
-  const macroRows=MACRO_CORR.map(m=>row([t("ind_"+m.key),m.demand,m.supply,m.price])).join("");
-  const segRows=SEG_FORECAST.map(r=>row([r.y,n0(r.A),n0(r.B),n0(r.C),n0(r.D),n0(r.E)])).join("");
-  const heatRows=GAP_HEAT.rows.map(r=>row([t("rg_"+r),...GAP_HEAT.data[r].map(v=>(v>0?"+":"")+n0(v))])).join("");
-  const pipeRows=PIPELINE.map(p=>row(["Seg "+p.seg,p.proj,n0(p.planned),p.conv+"%",n0(p.deliver),p.cover])).join("");
-  const devRows=DEVS.map(d=>row([d.name,d.grade,d.score,d.quality,d.completion,d.timeliness,d.signing])).join("");
-  const recRows=RECS.map((r,i)=>row([(i+1),t("pri_"+r.pri),t(r.k),t(r.owner+"_full"),r.deadline])).join("");
-  const coreRows=CORE.map(c=>row([t("cf_"+c.sev),t(c.k)])).join("");
-  const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${ref} — DSO Ministerial Briefing</title>
-<style>
-body{font-family:Arial,Helvetica,sans-serif;color:#16211c;max-width:900px;margin:0 auto;padding:32px;line-height:1.5}
-.cover{background:linear-gradient(160deg,#0b3b34,#13796a);color:#fff;padding:48px 36px;border-radius:14px;text-align:center;margin-bottom:28px}
-.cover h1{font-size:26px;margin:14px 0}.cover .meta{opacity:.85;font-size:13px;margin-top:18px}
-.tag{display:inline-block;background:#e32700;color:#fff;font-size:11px;font-weight:800;border-radius:6px;padding:3px 10px;letter-spacing:.05em}
-h2{color:#1B8354;border-bottom:2px solid #1B8354;padding-bottom:6px;margin-top:32px;font-size:18px}
-table{border-collapse:collapse;width:100%;font-size:12.5px;margin:12px 0}
-th,td{border:1px solid #d7e2dc;padding:7px 9px;text-align:left}th{background:#eaf3ee;color:#0b3b34}
-.warn{background:#fdf2f0;border:1px solid #f0b4ad;border-left:5px solid #e32700;color:#7a241d;padding:12px 14px;border-radius:8px;margin:14px 0}
-.k{background:#f3f7f4;border-left:5px solid #1B8354;padding:12px 14px;border-radius:8px;margin:12px 0}
-.muted{color:#5c6b63;font-size:12px}@media print{.noprint{display:none}}
-.btn{background:#1B8354;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer}
-</style></head><body>
-<div class="cover"><div class="muted" style="color:#bfe3cf">Ministry of Municipalities &amp; Housing · Housing Support Agency</div>
-<h1>Macro-Economic Impact Assessment<br>Interest Rate Hike (+50bps) · Riyadh &amp; Eastern Region</h1>
-<span class="tag">URGENT · MINISTERIAL BRIEFING</span>
-<div class="meta">Report ID: ${ref} · 19 June 2026 · Coverage: ${t("cov_"+cov)} · Confidence 88–95%<br>Analyst: Ahmed Al-Qahtani · Autonomous · human-reviewed</div></div>
-<button class="btn noprint" onclick="window.print()">🖨 Print / Save as PDF</button>
-<h2>1 · Executive Summary &amp; Key Findings</h2>
-<p>An unexpected +50bps SAMA rate hike triggered this autonomous multi-engine assessment across Riyadh &amp; the Eastern Region over a 3-year horizon — generated in minutes versus 3–4 days historically.</p>
-<table>${row([t("cf_crit").replace(t("cf_crit"),"Severity"),"Finding"],true)}${coreRows}</table>
-<h2>2 · Macro-Economic Impact</h2>
-<table>${row(["Indicator","R² Demand","R² Supply","R² Price"],true)}${macroRows}</table>
-<p class="muted">Base-case Y1: Riyadh demand −7.2%, price/m² −4.1%, conversion 61% (−8pp).</p>
-<h2>3 · Demand Forecast by Segment (Riyadh, 5-year)</h2>
-<table>${row(["Year","Seg A","Seg B","Seg C","Seg D","Seg E"],true)}${segRows}</table>
-<div class="k">18% Segment B→A migration (2,100 households) — a one-way structural shift; subsidy burden +22% (SAR 1.8B).</div>
-<h2>4 · Supply-Demand Gap (region × segment, Y3 units)</h2>
-<table>${row(["Region","Seg A","Seg B","Seg C","Seg D","Seg E"],true)}${heatRows}</table>
-<h2>5 · Supply Pipeline &amp; Conversion (Riyadh)</h2>
-<table>${row(["Segment","Projects","Planned","Conversion","Expected 3Y","Coverage"],true)}${pipeRows}</table>
-<h2>6 · Developer Scorecard</h2>
-<table>${row(["Developer","Grade","Score","Quality","Completion","Timeliness","Signing"],true)}${devRows}</table>
-<p class="muted">Engagement: Tier-1 (Al-Majd, Riyadh Housing, Watan) negotiate now → 4,200 units/yr · Tier-2 +15% subsidy → +3,100 units/yr.</p>
-<h2>7 · Policy Simulation — A vs B</h2>
-<table>${row(["Metric","Policy A · Developer subsidy +15%","Policy B · Reduce down payment"],true)}
-${row(["Supply impact","+3,100 units/yr","0"])}${row(["Demand impact","0","+18% (2,600 households)"])}
-${row(["Gap closure (Y3)","49% → 85%","49% → 38%"])}${row(["Fiscal cost","SAR 2.4B/yr","SAR 1.6B/yr"])}
-${row(["Risk","Low","High"])}${row(["Recommendation","✅ Execute","❌ Do not execute"])}</table>
-<div class="warn"><b>Counter-indication — Policy B:</b> cutting the down payment adds +18% demand with zero new supply, widening the gap from 49% to 38%. Use rental assistance instead if relief is needed.</div>
-<h2>8 · Strategic Recommendations (ranked)</h2>
-<table>${row(["#","Priority","Action","Owner","Deadline"],true)}${recRows}</table>
-<h2>9 · Efficiency</h2>
-<table>${row(["Step","Old process","DSO platform"],true)}
-${row(["Data check","4–6 hours","12 seconds"])}${row(["Full analysis","3–4 working days","1h 50m"])}
-${row(["Report generation","Half day","38 seconds"])}${row(["Headcount","5 cross-dept","1 + AI"])}</table>
-<p class="muted" style="margin-top:24px">Generated by the DSO Agentic AI Platform · synthetic demo data · ${new Date().toLocaleString("en-GB")}</p>
-</body></html>`;
-  try{
-    const blob=new Blob([html],{type:"text/html;charset=utf-8"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a"); a.href=url; a.download="DSO_Ministerial_Briefing.html";
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+function downloadBriefing(){
+  // the briefing is the rendered MOMAH PDF (verbatim) embedded as base64 — see reports-data.js
+  try{ const html=decodeReport("briefing"); const blob=new Blob([html],{type:"text/html;charset=utf-8"}); const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download="DSO_Ministerial_Briefing.html"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(()=>URL.revokeObjectURL(url),1500);
   }catch(e){ window.print(); }
 }
@@ -1536,7 +1503,7 @@ function Msg({m,onGenReport,onRoute,onRun}){
           <div className="report-row"><span className="muted">{t("coverageMode")}</span><span>{t("cov_"+cov)} · {COV_ACC[cov]}</span></div>
           <div className="report-row"><span className="muted">{t("confidence")}</span><span style={{color:"var(--green-dark)",fontWeight:700}}>{scn.conf}%</span></div>
           <div className="report-row"><span className="muted">{t("generated")}</span><span>{nowStr("en")} · {t("autonomous_note")}</span></div>
-          <button className="btn sm" style={{marginTop:10,width:"100%",justifyContent:"center"}} onClick={()=>scn.brief?downloadBriefing(t,cov):window.print()}>⬇ {scn.brief?t("downloadBrief"):t("download")}</button>
+          <button className="btn sm" style={{marginTop:10,width:"100%",justifyContent:"center"}} onClick={()=>scn.brief?downloadBriefing():window.print()}>⬇ {scn.brief?t("downloadBrief"):t("download")}</button>
         </div>
       </div>
     </div></div>);
@@ -1700,12 +1667,15 @@ const REPORTS_META=[
   {id:"monthly",  icon:"📊", color:"#059669", nameKey:"rp_monthly",  ref:"DSO-MR-2026-06",  date:"01 Jul 2026 · 06:00", cov:"total"},
   {id:"quarterly",icon:"🏛", color:"#7c3aed", nameKey:"rp_quarterly",ref:"DSO-QR-2026-Q2",  date:"30 Jun 2026 · 09:35", cov:"total"},
 ];
+// severity mapped to BRD thresholds: red(error) = gap>30% / absorption drop>40% / source outage>24h / delay>50% SLA;
+//                                     yellow(warn) = delay≤50% SLA / anomaly>3σ / conversion<60%
 const HEALTH_EVENTS=[
-  {sev:"error", k:"he_moj",     dk:"he_moj_d"},
-  {sev:"warn",  k:"he_anom",    dk:"he_anom_d"},
-  {sev:"warn",  k:"he_conv",    dk:"he_conv_d"},
-  {sev:"error", k:"he_timeout", dk:"he_timeout_d"},
-  {sev:"warn",  k:"he_stale",   dk:"he_stale_d"},
+  {sev:"error", k:"he_gap",    dk:"he_gap_d",    sla:"he_gap_s"},
+  {sev:"error", k:"he_absorp", dk:"he_absorp_d", sla:"he_absorp_s"},
+  {sev:"warn",  k:"he_moj",    dk:"he_moj_d",    sla:"he_moj_s"},
+  {sev:"warn",  k:"he_anom",   dk:"he_anom_d",   sla:"he_anom_s"},
+  {sev:"warn",  k:"he_conv",   dk:"he_conv_d",   sla:"he_conv_s"},
+  {sev:"warn",  k:"he_stale",  dk:"he_stale_d",  sla:"he_stale_s"},
 ];
 // seed a rich real-time log: mostly healthy info ticks, with the occasional clickable unhealthy event
 const LOG_NORMAL=["log_scan","log_route","log_cross","log_idle","log_idle","log_feed","log_policy",
@@ -1758,7 +1728,7 @@ function Reports(){
           <td><span className="chip gray">{t("cov_"+r.cov)}</span></td>
           <td className="right-num mono" style={{color:"var(--green-dark)",fontWeight:700}}>{r.conf}%</td>
           <td className="muted" style={{whiteSpace:"nowrap"}}>{r.time}</td>
-          <td className="right-num"><button className="btn sm" onClick={()=>window.print()}>⬇</button></td>
+          <td className="right-num"><button className="btn sm" onClick={()=>r.nameKey==="repName_brief"?downloadBriefing():window.print()}>⬇</button></td>
         </tr>))}</tbody>
       </table></div>
     </Section>}
@@ -1788,7 +1758,8 @@ function Reports(){
         <button className="btn" onClick={()=>downloadReport(preview)}>⬇ {t("download")}</button>
       </div>
     </Modal>}
-    {health&&<Modal title={<span className="sect-right"><span className={"chip "+(health.sev==="error"?"danger":"amber")}>{health.sev==="error"?"✕":"⚠"}</span> {t(health.k)}</span>} onClose={()=>setHealth(null)}>
+    {health&&<Modal title={<span className="sect-right"><span className={"chip "+(health.sev==="error"?"danger":"amber")}>{health.sev==="error"?("✕ "+t("sev_red")):("⚠ "+t("sev_amber"))}</span> {t(health.k)}</span>} onClose={()=>setHealth(null)}>
+      {health.sla&&<div className="banner" style={{marginBottom:12}}>📐 {t("sla_label")}: {t(health.sla)}</div>}
       <div style={{fontSize:13.5,lineHeight:1.75}}>{t(health.dk)}</div>
       <div style={{display:"flex",justifyContent:"flex-end",marginTop:16}}><button className="btn secondary" onClick={()=>setHealth(null)}>{t("close")}</button></div>
     </Modal>}
@@ -1960,7 +1931,7 @@ function App(){
       if(n%3===0){ const ev=HEALTH_EVENTS[Math.floor(Math.random()*HEALTH_EVENTS.length)];
         setLog(prev=>[{ts:timeStr(lang),text:t(ev.k),health:ev},...prev].slice(0,40)); }
       else { const keys=["log_idle","log_scan","log_route","log_feed"]; pushLog(keys[Math.floor(Math.random()*keys.length)]); }
-    },6500); return ()=>clearInterval(id); /* eslint-disable-next-line */ },[user,lang]);
+    },120000); return ()=>clearInterval(id); /* eslint-disable-next-line */ },[user,lang]);
 
   function setUser(r){ setUserState(r); setRoute(r==="leader"?"cockpit":"hub"); if(r) setLog(seedLog(t)); }
   function ackAlert(id){ setAlerts(prev=>prev.map(a=>a.id===id?{...a,ack:true}:a)); }
