@@ -733,6 +733,7 @@ Object.assign(I18N.en, {
   ki_indicator:"Indicator", ki_may:"May 1", ki_jun:"Jun 1", ki_mom:"MoM Δ", ki_active:"Active",
   ki_scn_note:"Refreshed quarterly · top-4 macro R² ≥ 0.6 · ad-hoc refresh on rate change ≥ 25bps",
   ki_footer:"Real data from SAMA / GASTAT / Market · DSO estimates from the platform · next refresh Jul 1, 2026",
+  ai_reco_title:"AI Diagnosis & Recommendation", ai_diag:"Diagnosis", ai_macro:"macro", ai_policy:"policy", ai_impact:"Impact if unaddressed", ai_actions:"Recommended actions", ai_analysis:"AI Analysis & Recommendations",
   sla_label:"SLA / threshold",
   he_gap:"Supply-demand gap 34% · Riyadh Seg A (RED)",
   he_gap_s:"Gap rule — green <10% · yellow 10–30% · RED >30%",
@@ -764,6 +765,7 @@ Object.assign(I18N.zh, {
   ki_indicator:"指标", ki_may:"5 月 1 日", ki_jun:"6 月 1 日", ki_mom:"环比", ki_active:"当前",
   ki_scn_note:"季度刷新 · 前 4 项宏观 R² ≥ 0.6 · 利率变动 ≥ 25bps 触发临时刷新",
   ki_footer:"真实数据来自 SAMA / GASTAT / 市场 · DSO 估算来自平台 · 下次刷新 2026 年 7 月 1 日",
+  ai_reco_title:"AI 诊断与建议", ai_diag:"诊断", ai_macro:"宏观", ai_policy:"政策", ai_impact:"若不处理的影响", ai_actions:"建议措施", ai_analysis:"AI 分析与建议",
   sla_label:"SLA / 阈值",
   he_gap:"供需缺口 34% · 利雅得 A 段(红)",
   he_gap_s:"缺口规则 — 绿 <10% · 黄 10–30% · 红 >30%",
@@ -795,6 +797,7 @@ Object.assign(I18N.ar, {
   ki_indicator:"المؤشر", ki_may:"١ مايو", ki_jun:"١ يونيو", ki_mom:"التغير الشهري", ki_active:"الحالي",
   ki_scn_note:"تحديث فصلي · أعلى ٤ مؤشرات R² ≥ ٠٫٦ · تحديث فوري عند تغيّر الفائدة ≥ ٢٥ نقطة",
   ki_footer:"بيانات حقيقية من ساما / الإحصاء / السوق · تقديرات DSO من المنصّة · التحديث القادم ١ يوليو ٢٠٢٦",
+  ai_reco_title:"تشخيص وتوصية AI", ai_diag:"التشخيص", ai_macro:"كلي", ai_policy:"سياسة", ai_impact:"الأثر إن لم يُعالَج", ai_actions:"الإجراءات الموصى بها", ai_analysis:"تحليل وتوصيات AI",
   sla_label:"SLA / العتبة",
   he_gap:"فجوة العرض والطلب ٣٤٪ · الرياض الشريحة A (أحمر)",
   he_gap_s:"قاعدة الفجوة — أخضر <١٠٪ · أصفر ١٠–٣٠٪ · أحمر >٣٠٪",
@@ -1084,6 +1087,70 @@ const KI_KPI=[
     series:[{m:"Dec",v:"93.6",h:48},{m:"Jan",v:"93.8",h:54},{m:"Feb",v:"94.0",h:58},{m:"Mar",v:"94.1",h:62},{m:"Apr",v:"94.3",h:68},{m:"May",v:"94.6",h:74}]},
 ];
 function dcol(d){ return d==="up"?"#f59e0b":d==="down"?"#2563eb":"var(--green)"; }
+
+/* ---- AI Recommendation deliverable: diagnosis → attribution (macro vs policy) → impact → ranked actions ---- */
+const AIREC={
+  shock:{ conf:85, macro:62, policy:38,
+    diag:"Riyadh Segment-A supply-demand gap at 34% (RED) after the +50bps shock.",
+    diag_zh:"受 +50bps 冲击,利雅得 A 段供需缺口达 34%(红)。",
+    attr:"≈62% macro-driven (affordability shock → forced B→A migration); ≈38% policy-addressable (developer-margin incentives).",
+    attr_zh:"≈62% 宏观驱动(负担能力下降 → B→A 被迫迁移);≈38% 政策可干预(开发商利润激励)。",
+    impact:"If unaddressed by Y3: gap −12,400 units · subsidy burden +SAR 1.8B · conversion stuck at 52%.",
+    impact_zh:"若到第 3 年仍不处理:缺口 −12,400 套 · 补贴负担 +SAR 18 亿 · 转化率停在 52%。",
+    actions:[
+      {t:"Engage Tier-1 developers (Al-Majd · Riyadh Housing · Watan)", t_zh:"对接一级开发商(Al-Majd · 利雅得住房 · Watan)", owner:"planner", eff:"+4,200 units/yr", eff_zh:"+4,200 套/年"},
+      {t:"Implement Policy A: +15% developer subsidy", t_zh:"实施政策 A:开发商补贴 +15%", owner:"leader", eff:"+3,100 units/yr → gap closure 35% → 85% · SAR 2.4B/yr", eff_zh:"+3,100 套/年 → 缺口闭合 35% → 85% · SAR 24 亿/年"},
+      {t:"Do NOT cut beneficiary down payment", t_zh:"不要降低受益人首付", owner:"leader", eff:"simulation shows it would widen the gap to 38%", eff_zh:"模拟显示会把缺口推到 38%"},
+    ]},
+  conv:{ conf:84, macro:70, policy:30,
+    diag:"Average project conversion fell 1.4pp to 65.8% (Seg A at 52%).",
+    diag_zh:"平均项目转化率下降 1.4pp 至 65.8%(A 段仅 52%)。",
+    attr:"≈70% macro (higher rates → affordability & financing approvals); ≈30% policy (thin developer margins on affordable units).",
+    attr_zh:"≈70% 宏观(利率上升 → 负担能力与放贷审批);≈30% 政策(可负担房型开发商利润薄)。",
+    impact:"At this pace ~2,400 'planned' Seg A units will not convert within 3 years.",
+    impact_zh:"按此速度,约 2,400 套 A 段「计划」单元将在 3 年内无法转化。",
+    actions:[
+      {t:"+15% developer subsidy on Seg A", t_zh:"对 A 段开发商补贴 +15%", owner:"planner", eff:"≈ +9pp conversion recovery", eff_zh:"≈ +9pp 转化回升"},
+      {t:"Financing facilitation / installment buy-down", t_zh:"融资便利 / 分期利息补贴", eff:"addresses the macro-driven share", eff_zh:"对冲宏观驱动的部分"},
+    ]},
+  gap:{ conf:86, macro:55, policy:45,
+    diag:"National supply-demand gap widened +3.7% MoM to −39,200 (Y3).",
+    diag_zh:"全国供需缺口环比扩大 +3.7% 至 −39,200(第 3 年)。",
+    attr:"≈55% macro (demand resilience + rate-driven segment downshift); ≈45% policy/supply (pipeline skewed to mid–high segments).",
+    attr_zh:"≈55% 宏观(需求韧性 + 利率驱动的客群下迁);≈45% 政策/供给(管线偏向中高端)。",
+    impact:"Product-market mismatch — shortages in Seg A–B, surplus in Seg D–E.",
+    impact_zh:"产品-市场错配 —— A–B 段短缺,D–E 段过剩。",
+    actions:[
+      {t:"Re-prioritize the pipeline toward Seg A–B", t_zh:"将供给管线向 A–B 段重排", owner:"planner", eff:"rebalances the product mix", eff_zh:"重新平衡产品组合"},
+      {t:"Activate Policy A + Tier-1 developers", t_zh:"启动政策 A + 一级开发商", owner:"leader", eff:"gap closure to 85% in priority regions", eff_zh:"优先区域缺口闭合至 85%"},
+    ]},
+  macroPage:{ conf:88,
+    diag:"Interest rate is the dominant driver (price R²=0.81, demand R²=0.73). A +50bps shock propagates demand → gap → subsidy.",
+    diag_zh:"利率是主导驱动(价格 R²=0.81、需求 R²=0.73)。+50bps 冲击沿 需求 → 缺口 → 补贴 传导。",
+    impact:"Base case Y1: Riyadh demand −7.2% · price −4.1% · conversion −8pp → Seg A gap +1,400 units · subsidy +SAR 1.8B.",
+    impact_zh:"基准 Y1:利雅得需求 −7.2% · 价格 −4.1% · 转化 −8pp → A 段缺口 +1,400 套 · 补贴 +SAR 18 亿。",
+    actions:[
+      {t:"Accelerate Seg A supply + targeted subsidy", t_zh:"加速 A 段供给 + 定向补贴", owner:"planner", eff:"offsets ≈ ⅓ of the demand shock", eff_zh:"对冲约 ⅓ 的需求冲击"},
+      {t:"If Q3 adds +25bps → switch to pessimistic & pre-activate the plan", t_zh:"若 Q3 再 +25bps → 切换悲观情景并提前启动方案", owner:"leader", eff:"contingency trigger", eff_zh:"应急触发条件"},
+    ]},
+};
+function AiRec({d}){
+  const {t,lang}=useStore(); const Z=(b)=>(lang==="zh"&&d[b+"_zh"])?d[b+"_zh"]:d[b];
+  const A=(a,b)=>(lang==="zh"&&a[b+"_zh"])?a[b+"_zh"]:a[b];
+  return (<div className="airec">
+    <div className="airec-h"><span className="airec-ic">✦</span><span className="airec-t">{t("ai_reco_title")}</span>
+      {d.conf!=null&&<span className="chip" style={{marginInlineStart:"auto"}}>{t("confidence")}: {d.conf}%</span>}</div>
+    <div className="airec-diag"><b>{t("ai_diag")}:</b> {Z("diag")}</div>
+    {d.macro!=null&&<div>
+      <div className="attrbar"><span className="am" style={{width:d.macro+"%"}}>{d.macro}% {t("ai_macro")}</span><span className="ap" style={{width:d.policy+"%"}}>{d.policy}% {t("ai_policy")}</span></div>
+      <div className="airec-note">{Z("attr")}</div>
+    </div>}
+    <div className="airec-row"><b>{t("ai_impact")}:</b> {Z("impact")}</div>
+    <div className="airec-sub">{t("ai_actions")}</div>
+    {d.actions.map((a,i)=>(<div key={i} className="airec-act"><span className="rk">{i+1}</span>
+      <div>{A(a,"t")}<div className="airec-meta">{a.owner?(t("owner")+": "+t(a.owner+"_full")+" · "):""}{A(a,"eff")}</div></div></div>))}
+  </div>);
+}
 const MOM_MACRO=[
   {k:"SAMA Repo Rate", k_zh:"SAMA 回购利率", may:"4.25%", jun:"4.25%", d:"→ 0 bps", dt:"flat"},
   {k:"CPI Inflation (YoY)", k_zh:"CPI 通胀(同比)", may:"1.6%", jun:"1.8%", d:"↑ +0.2pp", dt:"bad"},
@@ -1147,6 +1214,9 @@ function Hub(){
         </table></div>
       </Section>
     </div>
+    <Section title={t("ai_analysis")}>
+      <div className="cols-2"><AiRec d={AIREC.conv}/><AiRec d={AIREC.gap}/></div>
+    </Section>
     <div className="cols-2">
       <Section title={t("ki_scn_title")}>
         <div className="ki-scn">{KI_SCN.map(s=>(<div key={s.k} className={"ki-scn-box "+s.tone+(s.active?" active":"")}>
@@ -1569,6 +1639,7 @@ function Msg({m,onGenReport,onRoute,onRun}){
       {CORE.map((c,i)=>(<div key={i} className="todo-row" style={{padding:"8px 6px"}}>
         <span className={"chip "+(c.sev==="crit"?"danger":c.sev==="high"?"amber":"")}>{t("cf_"+c.sev)}</span>
         <div style={{flex:1,fontSize:12.5}}>{t(c.k)}</div></div>))}
+      <AiRec d={AIREC.shock}/>
       <button className="btn" style={{marginTop:12}} onClick={()=>onGenReport("q_shock")}>📄 {t("genBrief2")}</button>
     </div></div>);
   }
@@ -1931,6 +2002,7 @@ function MacroImpact(){
   return (<div className="fade">
     <PageHeader title={t("nav_macro")} sub={t("macro_sub")} right={<AgentBadge name={t("eng_macro")}/>}/>
     <div className="shock" style={{marginBottom:16}}><span className="si">⚡</span><span className="stxt">{t("shock_banner")}</span><span className="spill">{t("brief_urgent")}</span></div>
+    <Section title={t("ai_analysis")}><AiRec d={AIREC.macroPage}/></Section>
     <Section title={t("corr_title")} right={<span className="chip gray">{t("confidence")}: 88%</span>}>
       <div style={{width:"100%",height:280}}>{ok&&
         <C.ResponsiveContainer><C.BarChart data={corr} margin={{top:6,right:10,left:-6,bottom:4}}>
