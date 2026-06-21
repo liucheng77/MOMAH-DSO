@@ -45,7 +45,7 @@ const doc = { documentElement: {}, getElementById: () => ({ textContent: "", get
 const harness = `
   function makeStore(lang, user){
     const t=(k)=>{ const d=I18N[lang]; if(d&&d[k]!==undefined) return d[k]; const e=I18N.en; return (e&&e[k]!==undefined)?e[k]:k; };
-    return { t, lang, setLang:()=>{}, cov:"total", setCov:()=>{}, user, setUser:()=>{}, route:"hub", setRoute:()=>{},
+    return { t, lang, setLang:()=>{}, cov:"total", setCov:()=>{}, scn:"base", setScn:()=>{}, user, setUser:()=>{}, route:"hub", setRoute:()=>{},
       alerts:[{id:"AL-GAP",sev:"red",tk:"al_gap_t",bk:"al_gap_b",ts:"06:00",ack:false,scn:"q_gap"},{id:"AL-1",sev:"amber",tk:"al_moj_t",bk:"al_moj_b",ts:"06:10",ack:false,scn:null}],
       ackAlert:()=>{}, raiseGapAlert:()=>{}, askOrchestrator:()=>{},
       reports:[{ref:"DSO-2026-1234",nameKey:"repName_demand",cov:"total",conf:91,time:"17 Jun 10:00"}], addReport:()=>{},

@@ -548,6 +548,13 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 .airec-act .rk{width:22px;height:22px;border-radius:6px;background:#ede9fe;color:#5a4ad1;display:grid;place-items:center;font-weight:800;font-size:12px;flex:0 0 auto}
 .airec-act>div{font-size:12.5px;line-height:1.5}
 .airec-meta{font-size:11.5px;color:var(--green-dark);font-weight:700;margin-top:2px}
+.airec-ctx{font-size:10.5px;font-weight:700;color:#5a4ad1;background:#ede9fe;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.airec-imp{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:9px}
+.airec-imp .airec-sub{margin:0}
+.imp-chip{font-size:11.5px;color:var(--ink);background:#fff;border:1px solid #e4dcfb;border-radius:999px;padding:3px 10px}
+.imp-chip b{color:#5a4ad1}
+.recalc{animation:recpulse .6s ease}
+@keyframes recpulse{0%{opacity:.35;filter:saturate(1.4)}100%{opacity:1}}
 
 /* ---- Key Indicators dashboard ---- */
 .ki-legend{display:inline-flex;gap:14px;font-size:11.5px;color:var(--muted);font-weight:700}
@@ -695,7 +702,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-21 23:09 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-21 23:35 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -1417,6 +1424,7 @@ Object.assign(I18N.en, {
   ki_scn_note:"Refreshed quarterly · top-4 macro R² ≥ 0.6 · ad-hoc refresh on rate change ≥ 25bps",
   ki_footer:"Real data from SAMA / GASTAT / Market · DSO estimates from the platform · next refresh Jul 1, 2026",
   ai_reco_title:"AI Diagnosis & Recommendation", ai_diag:"Diagnosis", ai_macro:"macro", ai_policy:"policy", ai_impact:"Impact if unaddressed", ai_actions:"Recommended actions", ai_analysis:"AI Analysis & Recommendations",
+  ai_recalc:"recomputing…", ai_scn_hint:"click a scenario to recompute", ai_diagnose:"AI diagnosis & recommendation",
   sla_label:"SLA / threshold",
   he_gap:"Supply-demand gap 34% · Riyadh Seg A (RED)",
   he_gap_s:"Gap rule — green <10% · yellow 10–30% · RED >30%",
@@ -1449,6 +1457,7 @@ Object.assign(I18N.zh, {
   ki_scn_note:"季度刷新 · 前 4 项宏观 R² ≥ 0.6 · 利率变动 ≥ 25bps 触发临时刷新",
   ki_footer:"真实数据来自 SAMA / GASTAT / 市场 · DSO 估算来自平台 · 下次刷新 2026 年 7 月 1 日",
   ai_reco_title:"AI 诊断与建议", ai_diag:"诊断", ai_macro:"宏观", ai_policy:"政策", ai_impact:"若不处理的影响", ai_actions:"建议措施", ai_analysis:"AI 分析与建议",
+  ai_recalc:"重算中…", ai_scn_hint:"点击情景可重算", ai_diagnose:"AI 诊断与建议",
   sla_label:"SLA / 阈值",
   he_gap:"供需缺口 34% · 利雅得 A 段(红)",
   he_gap_s:"缺口规则 — 绿 <10% · 黄 10–30% · 红 >30%",
@@ -1481,6 +1490,7 @@ Object.assign(I18N.ar, {
   ki_scn_note:"تحديث فصلي · أعلى ٤ مؤشرات R² ≥ ٠٫٦ · تحديث فوري عند تغيّر الفائدة ≥ ٢٥ نقطة",
   ki_footer:"بيانات حقيقية من ساما / الإحصاء / السوق · تقديرات DSO من المنصّة · التحديث القادم ١ يوليو ٢٠٢٦",
   ai_reco_title:"تشخيص وتوصية AI", ai_diag:"التشخيص", ai_macro:"كلي", ai_policy:"سياسة", ai_impact:"الأثر إن لم يُعالَج", ai_actions:"الإجراءات الموصى بها", ai_analysis:"تحليل وتوصيات AI",
+  ai_recalc:"إعادة الحساب…", ai_scn_hint:"اضغط سيناريو لإعادة الحساب", ai_diagnose:"تشخيص وتوصية AI",
   sla_label:"SLA / العتبة",
   he_gap:"فجوة العرض والطلب ٣٤٪ · الرياض الشريحة A (أحمر)",
   he_gap_s:"قاعدة الفجوة — أخضر <١٠٪ · أصفر ١٠–٣٠٪ · أحمر >٣٠٪",
@@ -1771,38 +1781,35 @@ const KI_KPI=[
 ];
 function dcol(d){ return d==="up"?"#f59e0b":d==="down"?"#2563eb":"var(--green)"; }
 
-/* ---- AI Recommendation deliverable: diagnosis → attribution (macro vs policy) → impact → ranked actions ---- */
+/* ---- AI Recommendation deliverable (recomputes with coverage & scenario) ---- */
 const AIREC={
-  shock:{ conf:85, macro:62, policy:38,
+  shock:{ conf:85, macroBase:62,
     diag:"Riyadh Segment-A supply-demand gap at 34% (RED) after the +50bps shock.",
     diag_zh:"受 +50bps 冲击,利雅得 A 段供需缺口达 34%(红)。",
-    attr:"≈62% macro-driven (affordability shock → forced B→A migration); ≈38% policy-addressable (developer-margin incentives).",
-    attr_zh:"≈62% 宏观驱动(负担能力下降 → B→A 被迫迁移);≈38% 政策可干预(开发商利润激励)。",
-    impact:"If unaddressed by Y3: gap −12,400 units · subsidy burden +SAR 1.8B · conversion stuck at 52%.",
-    impact_zh:"若到第 3 年仍不处理:缺口 −12,400 套 · 补贴负担 +SAR 18 亿 · 转化率停在 52%。",
+    attr:"Macro: affordability shock → forced B→A migration. Policy: developer-margin incentives are addressable.",
+    attr_zh:"宏观:负担能力下降 → B→A 被迫迁移。政策:开发商利润激励可干预。",
+    impacts:[{label:"Seg A gap (Y3)",label_zh:"A 段缺口(Y3)",base:12400,unit:"units",sign:"-"},{label:"Subsidy burden",label_zh:"补贴负担",base:1.8,unit:"SAR B",sign:"+"}],
     actions:[
       {t:"Engage Tier-1 developers (Al-Majd · Riyadh Housing · Watan)", t_zh:"对接一级开发商(Al-Majd · 利雅得住房 · Watan)", owner:"planner", eff:"+4,200 units/yr", eff_zh:"+4,200 套/年"},
-      {t:"Implement Policy A: +15% developer subsidy", t_zh:"实施政策 A:开发商补贴 +15%", owner:"leader", eff:"+3,100 units/yr → gap closure 35% → 85% · SAR 2.4B/yr", eff_zh:"+3,100 套/年 → 缺口闭合 35% → 85% · SAR 24 亿/年"},
+      {t:"Implement Policy A: +15% developer subsidy", t_zh:"实施政策 A:开发商补贴 +15%", owner:"leader", eff:"+3,100 units/yr → gap closure 35% → 85%", eff_zh:"+3,100 套/年 → 缺口闭合 35% → 85%"},
       {t:"Do NOT cut beneficiary down payment", t_zh:"不要降低受益人首付", owner:"leader", eff:"simulation shows it would widen the gap to 38%", eff_zh:"模拟显示会把缺口推到 38%"},
     ]},
-  conv:{ conf:84, macro:70, policy:30,
+  conv:{ conf:84, macroBase:70,
     diag:"Average project conversion fell 1.4pp to 65.8% (Seg A at 52%).",
     diag_zh:"平均项目转化率下降 1.4pp 至 65.8%(A 段仅 52%)。",
-    attr:"≈70% macro (higher rates → affordability & financing approvals); ≈30% policy (thin developer margins on affordable units).",
-    attr_zh:"≈70% 宏观(利率上升 → 负担能力与放贷审批);≈30% 政策(可负担房型开发商利润薄)。",
-    impact:"At this pace ~2,400 'planned' Seg A units will not convert within 3 years.",
-    impact_zh:"按此速度,约 2,400 套 A 段「计划」单元将在 3 年内无法转化。",
+    attr:"Macro: higher rates → affordability & financing approvals. Policy: thin developer margins on affordable units.",
+    attr_zh:"宏观:利率上升 → 负担能力与放贷审批。政策:可负担房型开发商利润薄。",
+    impacts:[{label:"At-risk Seg A units (3y)",label_zh:"A 段风险单元(3年)",base:2400,unit:"units",sign:"-"}],
     actions:[
       {t:"+15% developer subsidy on Seg A", t_zh:"对 A 段开发商补贴 +15%", owner:"planner", eff:"≈ +9pp conversion recovery", eff_zh:"≈ +9pp 转化回升"},
       {t:"Financing facilitation / installment buy-down", t_zh:"融资便利 / 分期利息补贴", eff:"addresses the macro-driven share", eff_zh:"对冲宏观驱动的部分"},
     ]},
-  gap:{ conf:86, macro:55, policy:45,
+  gap:{ conf:86, macroBase:55,
     diag:"National supply-demand gap widened +3.7% MoM to −39,200 (Y3).",
     diag_zh:"全国供需缺口环比扩大 +3.7% 至 −39,200(第 3 年)。",
-    attr:"≈55% macro (demand resilience + rate-driven segment downshift); ≈45% policy/supply (pipeline skewed to mid–high segments).",
-    attr_zh:"≈55% 宏观(需求韧性 + 利率驱动的客群下迁);≈45% 政策/供给(管线偏向中高端)。",
-    impact:"Product-market mismatch — shortages in Seg A–B, surplus in Seg D–E.",
-    impact_zh:"产品-市场错配 —— A–B 段短缺,D–E 段过剩。",
+    attr:"Macro: demand resilience + rate-driven segment downshift. Policy/supply: pipeline skewed to mid–high segments.",
+    attr_zh:"宏观:需求韧性 + 利率驱动的客群下迁。政策/供给:管线偏向中高端。",
+    impacts:[{label:"National gap (Y3)",label_zh:"全国缺口(Y3)",base:39200,unit:"units",sign:"-"}],
     actions:[
       {t:"Re-prioritize the pipeline toward Seg A–B", t_zh:"将供给管线向 A–B 段重排", owner:"planner", eff:"rebalances the product mix", eff_zh:"重新平衡产品组合"},
       {t:"Activate Policy A + Tier-1 developers", t_zh:"启动政策 A + 一级开发商", owner:"leader", eff:"gap closure to 85% in priority regions", eff_zh:"优先区域缺口闭合至 85%"},
@@ -1810,30 +1817,54 @@ const AIREC={
   macroPage:{ conf:88,
     diag:"Interest rate is the dominant driver (price R²=0.81, demand R²=0.73). A +50bps shock propagates demand → gap → subsidy.",
     diag_zh:"利率是主导驱动(价格 R²=0.81、需求 R²=0.73)。+50bps 冲击沿 需求 → 缺口 → 补贴 传导。",
-    impact:"Base case Y1: Riyadh demand −7.2% · price −4.1% · conversion −8pp → Seg A gap +1,400 units · subsidy +SAR 1.8B.",
-    impact_zh:"基准 Y1:利雅得需求 −7.2% · 价格 −4.1% · 转化 −8pp → A 段缺口 +1,400 套 · 补贴 +SAR 18 亿。",
+    impacts:[{label:"Riyadh demand (Y1)",label_zh:"利雅得需求(Y1)",base:7.2,unit:"%",sign:"-"},{label:"Seg A gap",label_zh:"A 段缺口",base:1400,unit:"units",sign:"+"},{label:"Subsidy",label_zh:"补贴",base:1.8,unit:"SAR B",sign:"+"}],
     actions:[
       {t:"Accelerate Seg A supply + targeted subsidy", t_zh:"加速 A 段供给 + 定向补贴", owner:"planner", eff:"offsets ≈ ⅓ of the demand shock", eff_zh:"对冲约 ⅓ 的需求冲击"},
       {t:"If Q3 adds +25bps → switch to pessimistic & pre-activate the plan", t_zh:"若 Q3 再 +25bps → 切换悲观情景并提前启动方案", owner:"leader", eff:"contingency trigger", eff_zh:"应急触发条件"},
     ]},
+  dq:{ conf:88,
+    diag:"DS-07 (MOJ price) feed delayed within the yellow SLA band; price-trend confidence reduced 95% → 88%.",
+    diag_zh:"DS-07(司法部房价)在黄色 SLA 区间内延迟;价格趋势置信度由 95% 降至 88%。",
+    note:"Operational data-quality issue — neither policy nor market driven. Analysis continues on the last valid snapshot.",
+    note_zh:"运营层数据质量问题 —— 既非政策也非市场驱动。分析沿用最近有效快照继续。",
+    actions:[
+      {t:"Resolve DS-07 pipeline · escalate ticket #DQ-2407", t_zh:"修复 DS-07 管线 · 升级工单 #DQ-2407", owner:"datamgr", eff:"restore price confidence 88% → 95%", eff_zh:"价格置信度 88% → 95%"},
+      {t:"Set up automated SLA monitoring with MOJ", t_zh:"与司法部建立自动 SLA 监控", eff:"prevent recurrence", eff_zh:"防止复发"},
+    ]},
 };
+function recCompute(d,cov,scn){
+  let macro=null,policy=null;
+  if(d.macroBase!=null){ macro=d.macroBase+(scn==="pess"?8:scn==="opt"?-6:0)+(cov==="private"?10:cov==="ministry"?-8:0); macro=Math.max(12,Math.min(90,macro)); policy=100-macro; }
+  let conf=cov==="ministry"?95:cov==="private"?80:(d.conf||88); conf+=(scn==="pess"?-3:0); conf=Math.max(60,Math.min(99,Math.round(conf)));
+  const f=(scn==="opt"?0.55:scn==="pess"?1.45:1.0)*(cov==="ministry"?0.92:cov==="private"?1.12:1.0);
+  return {macro,policy,conf,impacts:(d.impacts||[]).map(im=>({...im,val:im.base*f}))};
+}
+function fmtImp(val,unit){ if(unit==="%") return Math.abs(val).toFixed(1)+"%"; if(unit==="SAR B") return Math.abs(val).toFixed(1)+" SAR B"; return n0(Math.abs(val))+(unit==="units"?" units":(unit?(" "+unit):"")); }
 function AiRec({d}){
-  const {t,lang}=useStore(); const Z=(b)=>(lang==="zh"&&d[b+"_zh"])?d[b+"_zh"]:d[b];
-  const A=(a,b)=>(lang==="zh"&&a[b+"_zh"])?a[b+"_zh"]:a[b];
+  const {t,lang,cov,scn}=useStore();
+  const Z=(o,b)=>(lang==="zh"&&o[b+"_zh"])?o[b+"_zh"]:o[b];
+  const r=recCompute(d,cov,scn||"base");
+  const [calc,setCalc]=useState(false);
+  useEffect(()=>{ setCalc(true); const id=setTimeout(()=>setCalc(false),650); return ()=>clearTimeout(id); },[cov,scn]);
   return (<div className="airec">
     <div className="airec-h"><span className="airec-ic">✦</span><span className="airec-t">{t("ai_reco_title")}</span>
-      {d.conf!=null&&<span className="chip" style={{marginInlineStart:"auto"}}>{t("confidence")}: {d.conf}%</span>}</div>
-    <div className="airec-diag"><b>{t("ai_diag")}:</b> {Z("diag")}</div>
-    {d.macro!=null&&<div>
-      <div className="attrbar"><span className="am" style={{width:d.macro+"%"}}>{d.macro}% {t("ai_macro")}</span><span className="ap" style={{width:d.policy+"%"}}>{d.policy}% {t("ai_policy")}</span></div>
-      <div className="airec-note">{Z("attr")}</div>
+      <span className="airec-ctx">{t("cov_"+cov)} · {t("sc_"+(scn||"base"))}</span>
+      {calc? <span className="chip info" style={{marginInlineStart:"auto"}}>⟳ {t("ai_recalc")}</span>
+           : <span className="chip" style={{marginInlineStart:"auto"}}>{t("confidence")}: {r.conf}%</span>}</div>
+    <div className="airec-diag"><b>{t("ai_diag")}:</b> {Z(d,"diag")}</div>
+    {r.macro!=null&&<div>
+      <div className={"attrbar"+(calc?" recalc":"")}><span className="am" style={{width:r.macro+"%"}}>{r.macro}% {t("ai_macro")}</span><span className="ap" style={{width:r.policy+"%"}}>{r.policy}% {t("ai_policy")}</span></div>
+      <div className="airec-note">{Z(d,"attr")}</div>
     </div>}
-    <div className="airec-row"><b>{t("ai_impact")}:</b> {Z("impact")}</div>
+    {r.impacts.length>0&&<div className="airec-imp"><span className="airec-sub">{t("ai_impact")}:</span>
+      {r.impacts.map((im,i)=><span key={i} className={"imp-chip"+(calc?" recalc":"")}>{Z(im,"label")}: <b>{(im.sign||"")+fmtImp(im.val,im.unit)}</b></span>)}</div>}
+    {d.note&&<div className="airec-row">{Z(d,"note")}</div>}
     <div className="airec-sub">{t("ai_actions")}</div>
     {d.actions.map((a,i)=>(<div key={i} className="airec-act"><span className="rk">{i+1}</span>
-      <div>{A(a,"t")}<div className="airec-meta">{a.owner?(t("owner")+": "+t(a.owner+"_full")+" · "):""}{A(a,"eff")}</div></div></div>))}
+      <div>{(lang==="zh"&&a.t_zh)?a.t_zh:a.t}<div className="airec-meta">{a.owner?(t("owner")+": "+t(a.owner+"_full")+" · "):""}{(lang==="zh"&&a.eff_zh)?a.eff_zh:a.eff}</div></div></div>))}
   </div>);
 }
+
 const MOM_MACRO=[
   {k:"SAMA Repo Rate", k_zh:"SAMA 回购利率", may:"4.25%", jun:"4.25%", d:"→ 0 bps", dt:"flat"},
   {k:"CPI Inflation (YoY)", k_zh:"CPI 通胀(同比)", may:"1.6%", jun:"1.8%", d:"↑ +0.2pp", dt:"bad"},
@@ -1852,7 +1883,7 @@ const MOM_HOUSING=[
 ];
 const KI_SCN=[
   {k:"opt", prob:20, tone:"green", rate:"Rate cut to 3.75%", rate_zh:"降息至 3.75%", gdp:"GDP ↑3.5%"},
-  {k:"base",prob:55, tone:"blue", active:1, rate:"Hold at 4.25%", rate_zh:"维持 4.25%", gdp:"GDP 2.8%"},
+  {k:"base",prob:55, tone:"blue", rate:"Hold at 4.25%", rate_zh:"维持 4.25%", gdp:"GDP 2.8%"},
   {k:"pess",prob:25, tone:"red", rate:"Hike to 4.75%", rate_zh:"加息至 4.75%", gdp:"GDP ↓2.0%"},
 ];
 const KI_RISKS=[
@@ -1863,7 +1894,7 @@ const KI_RISKS=[
 ];
 function tcol(dt){ return dt==="good"?"var(--green-dark)":dt==="bad"?"var(--danger)":"var(--muted)"; }
 function Hub(){
-  const {t,lang,user,setRoute,cov}=useStore();
+  const {t,lang,user,setRoute,cov,scn,setScn}=useStore();
   const Z=(o,b)=>(lang==="zh"&&o[b+"_zh"])?o[b+"_zh"]:o[b];
   return (<div className="fade">
     <PageHeader title={t("nav_hub")+" · "+t("ki_snapshot")} sub={t("ki_sub")}
@@ -1902,13 +1933,13 @@ function Hub(){
     </Section>
     <div className="cols-2">
       <Section title={t("ki_scn_title")}>
-        <div className="ki-scn">{KI_SCN.map(s=>(<div key={s.k} className={"ki-scn-box "+s.tone+(s.active?" active":"")}>
+        <div className="ki-scn">{KI_SCN.map(s=>(<div key={s.k} className={"ki-scn-box "+s.tone+(scn===s.k?" active":"")} style={{cursor:"pointer"}} onClick={()=>setScn(s.k)}>
           <div className="p">{s.prob}%</div>
-          <div className="n">{t("sc_"+s.k)}{s.active?(" ← "+t("ki_active")):""}</div>
+          <div className="n">{t("sc_"+s.k)}{scn===s.k?(" ← "+t("ki_active")):""}</div>
           <div className="m">{Z(s,"rate")}</div><div className="m">{s.gdp}</div>
         </div>))}</div>
         <div className="scn-bar2">{KI_SCN.map(s=><span key={s.k} className={"seg "+s.tone} style={{width:s.prob+"%"}}/>)}</div>
-        <div className="muted" style={{fontSize:11,marginTop:8}}>{t("ki_scn_note")}</div>
+        <div className="muted" style={{fontSize:11,marginTop:8}}>{t("ki_scn_note")} · {t("ai_scn_hint")}</div>
       </Section>
       <Section title={t("ki_risk_title")}>
         {KI_RISKS.map((r,i)=>(<div key={i} className={"ki-risk "+r.sev}><b>{Z(r,"t")}</b> — {Z(r,"d")}</div>))}
@@ -2380,6 +2411,27 @@ function Msg({m,onGenReport,onRoute,onRun}){
 /* =========================================================================
    J2 — Monitoring & early warning
    ========================================================================= */
+function AlertCard({a}){
+  const {t,askOrchestrator,ackAlert}=useStore();
+  const [open,setOpen]=useState(false);
+  const rec=a.rec&&AIREC[a.rec];
+  return (<div className={"mon "+(a.sev==="red"?"red":a.sev==="amber"?"amber":"")} style={{marginBottom:10}}>
+    <div className="mh">
+      <span style={{display:"flex",alignItems:"center",gap:8}}>
+        <span className={"chip "+(a.sev==="red"?"danger":a.sev==="amber"?"amber":"info")}>{t("sev_"+a.sev)}</span>
+        <strong style={{fontSize:13}}>{t(a.tk)}</strong>
+      </span>
+      <span className="muted" style={{fontSize:11}}>{a.ts}</span>
+    </div>
+    <div style={{fontSize:12.5,marginBottom:8}}><b>{t("rootCause")}:</b> {t(a.bk)}</div>
+    <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+      {rec&&<button className="btn btn-ai sm" onClick={()=>setOpen(o=>!o)}>✦ {t("ai_diagnose")} {open?"▴":"▾"}</button>}
+      {a.scn&&<button className="btn sm" onClick={()=>askOrchestrator(a.scn)}>✦ {t("askOrch")}</button>}
+      {!a.ack? <button className="btn secondary sm" onClick={()=>ackAlert(a.id)}>✓ {t("ack")}</button> : <span className="chip">✓ {t("acked")}</span>}
+    </div>
+    {open&&rec&&<AiRec d={rec}/>}
+  </div>);
+}
 function Monitoring(){
   const {t,alerts,ackAlert,raiseGapAlert,askOrchestrator,pushLog,lang}=useStore();
   const [scanning,setScanning]=useState(false);
@@ -2409,20 +2461,7 @@ function Monitoring(){
     </Section>
     <Section title={t("alerts")} right={<span className={"chip "+(open.length?"danger":"")}>{open.length} {t("live")}</span>}>
       {alerts.length===0? <div className="muted">{t("noAlerts")}</div> :
-        alerts.map(a=>(<div key={a.id} className={"mon "+(a.sev==="red"?"red":a.sev==="amber"?"amber":"")} style={{marginBottom:10}}>
-          <div className="mh">
-            <span style={{display:"flex",alignItems:"center",gap:8}}>
-              <span className={"chip "+(a.sev==="red"?"danger":a.sev==="amber"?"amber":"info")}>{t("sev_"+a.sev)}</span>
-              <strong style={{fontSize:13}}>{t(a.tk)}</strong>
-            </span>
-            <span className="muted" style={{fontSize:11}}>{a.ts}</span>
-          </div>
-          <div style={{fontSize:12.5,marginBottom:8}}><b>{t("rootCause")}:</b> {t(a.bk)}</div>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            {a.scn&&<button className="btn sm" onClick={()=>askOrchestrator(a.scn)}>✦ {t("askOrch")}</button>}
-            {!a.ack? <button className="btn secondary sm" onClick={()=>ackAlert(a.id)}>✓ {t("ack")}</button> : <span className="chip">✓ {t("acked")}</span>}
-          </div>
-        </div>))}
+        alerts.map(a=><AlertCard key={a.id} a={a}/>)}
     </Section>
   </div>);
 }
@@ -2755,8 +2794,8 @@ function Developers(){
    App
    ========================================================================= */
 const SEED_ALERTS=[
-  { id:"AL-1", sev:"amber", tk:"al_moj_t", bk:"al_moj_b", ts:"06:10", ack:false, scn:null },
-  { id:"AL-2", sev:"amber", tk:"al_conv_t", bk:"al_conv_b", ts:"05:40", ack:false, scn:null },
+  { id:"AL-1", sev:"amber", tk:"al_moj_t", bk:"al_moj_b", ts:"06:10", ack:false, scn:null, rec:"dq" },
+  { id:"AL-2", sev:"amber", tk:"al_conv_t", bk:"al_conv_b", ts:"05:40", ack:false, scn:null, rec:"conv" },
 ];
 /* release notes timeline (hidden menu pages intentionally excluded) */
 const RELEASE_NOTES={
@@ -2841,6 +2880,7 @@ function App(){
   const [log,setLog]=useState([]);
   const [seed,setSeed]=useState(null);
   const [showNotes,setShowNotes]=useState(false);
+  const [scn,setScn]=useState("base");
   const t=(k)=>{ const d=I18N[lang]; if(d&&d[k]!==undefined) return d[k]; const e=I18N.en; return (e&&e[k]!==undefined)?e[k]:k; };
 
   useEffect(()=>{ const html=document.documentElement; html.lang=lang; html.dir=lang==="ar"?"rtl":"ltr"; },[lang]);
@@ -2857,13 +2897,13 @@ function App(){
 
   function setUser(r){ setUserState(r); setRoute(r==="leader"?"cockpit":"hub"); if(r) setLog(seedLog(t)); }
   function ackAlert(id){ setAlerts(prev=>prev.map(a=>a.id===id?{...a,ack:true}:a)); }
-  function raiseGapAlert(){ setAlerts(prev=> prev.some(a=>a.id==="AL-GAP")? prev : [{id:"AL-GAP",sev:"red",tk:"al_gap_t",bk:"al_gap_b",ts:nowStr(lang).split(" ").slice(-1)[0],ack:false,scn:"q_gap"},...prev]); }
+  function raiseGapAlert(){ setAlerts(prev=> prev.some(a=>a.id==="AL-GAP")? prev : [{id:"AL-GAP",sev:"red",tk:"al_gap_t",bk:"al_gap_b",ts:nowStr(lang).split(" ").slice(-1)[0],ack:false,scn:"q_gap",rec:"shock"},...prev]); }
   function askOrchestrator(scn){ setSeed(scn); setRoute("chat"); }
   function clearSeed(){ setSeed(null); }
   function addReport(r){ setReports(prev=>[{...r,time:nowStr(lang)},...prev]); }
   function reset(){ setAlerts(SEED_ALERTS); setReports([]); setLog(seedLog(t)); setSeed(null); setRoute(user==="leader"?"cockpit":"hub"); }
 
-  const store={ t,lang,setLang,cov,setCov,user,setUser,route,setRoute,alerts,ackAlert,raiseGapAlert,
+  const store={ t,lang,setLang,cov,setCov,scn,setScn,user,setUser,route,setRoute,alerts,ackAlert,raiseGapAlert,
     reports,addReport,log,pushLog,seed,askOrchestrator,clearSeed,reset };
 
   if(!user) return (<Ctx.Provider value={store}><Login/></Ctx.Provider>);

@@ -537,6 +537,13 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 .airec-act .rk{width:22px;height:22px;border-radius:6px;background:#ede9fe;color:#5a4ad1;display:grid;place-items:center;font-weight:800;font-size:12px;flex:0 0 auto}
 .airec-act>div{font-size:12.5px;line-height:1.5}
 .airec-meta{font-size:11.5px;color:var(--green-dark);font-weight:700;margin-top:2px}
+.airec-ctx{font-size:10.5px;font-weight:700;color:#5a4ad1;background:#ede9fe;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.airec-imp{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:9px}
+.airec-imp .airec-sub{margin:0}
+.imp-chip{font-size:11.5px;color:var(--ink);background:#fff;border:1px solid #e4dcfb;border-radius:999px;padding:3px 10px}
+.imp-chip b{color:#5a4ad1}
+.recalc{animation:recpulse .6s ease}
+@keyframes recpulse{0%{opacity:.35;filter:saturate(1.4)}100%{opacity:1}}
 
 /* ---- Key Indicators dashboard ---- */
 .ki-legend{display:inline-flex;gap:14px;font-size:11.5px;color:var(--muted);font-weight:700}
