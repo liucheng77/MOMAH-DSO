@@ -2110,7 +2110,10 @@ const SEED_ALERTS=[
 /* release notes timeline (hidden menu pages intentionally excluded) */
 const RELEASE_NOTES={
   en:[
-    { ver:"v1.7", date:BUILD_TIME, items:[
+    { ver:"v1.8", date:BUILD_TIME, items:[
+      "Monitoring alerts now expand into an AI diagnosis & recommendation (why + what to do).",
+      "AI recommendations recompute with Coverage and a clickable scenario (optimistic / base / pessimistic) — attribution %, impact figures and confidence update live." ]},
+    { ver:"v1.7", date:"2026-06-21", items:[
       "AI Diagnosis & Recommendation: every analysis now ends with diagnosis → macro-vs-policy attribution → quantified impact → ranked actions, in Conversational Analysis and the Dashboard.",
       "Causal attribution shown as a macro/policy split bar with a one-line conclusion and confidence." ]},
     { ver:"v1.6", date:"2026-06-21", items:[
@@ -2133,7 +2136,10 @@ const RELEASE_NOTES={
       "Login, role switching, and EN / العربية (RTL) language toggle." ]},
   ],
   zh:[
-    { ver:"v1.7", date:BUILD_TIME, items:[
+    { ver:"v1.8", date:BUILD_TIME, items:[
+      "监控预警可展开为 AI 诊断与建议(为什么 + 怎么办)。",
+      "AI 建议随 Coverage 与可点击情景(乐观/基准/悲观)重算 —— 归因比例、影响数值与置信度实时联动。" ]},
+    { ver:"v1.7", date:"2026-06-21", items:[
       "AI 诊断与建议:每次分析现在以 诊断 → 宏观/政策归因 → 量化影响 → 排序处方 收尾(对话分析与仪表盘)。",
       "归因用 宏观/政策 百分比拆分条 + 一句结论 + 置信度 呈现。" ]},
     { ver:"v1.6", date:"2026-06-21", items:[
@@ -2156,7 +2162,10 @@ const RELEASE_NOTES={
       "登录、角色切换,以及 EN / العربية(RTL)语言切换。" ]},
   ],
   ar:[
-    { ver:"v1.7", date:BUILD_TIME, items:[
+    { ver:"v1.8", date:BUILD_TIME, items:[
+      "تنبيهات المراقبة تتوسّع الآن إلى تشخيص وتوصية AI (لماذا + ماذا تفعل).",
+      "توصيات AI تُعاد حسابها مع التغطية وسيناريو قابل للنقر (متفائل/أساسي/متشائم) — تتحدّث نسبة الإسناد وأرقام الأثر والثقة لحظياً." ]},
+    { ver:"v1.7", date:"2026-06-21", items:[
       "تشخيص وتوصية AI: كل تحليل ينتهي الآن بتشخيص ← إسناد كلي/سياسة ← أثر مكمّى ← إجراءات مرتّبة (التحليل الحواري ولوحة المعلومات).",
       "يُعرض الإسناد كشريط نسبة كلي/سياسة مع خلاصة سطر واحد ودرجة ثقة." ]},
     { ver:"v1.6", date:"2026-06-21", items:[
