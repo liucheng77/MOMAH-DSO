@@ -702,7 +702,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-22 11:45 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-22 15:33 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -1295,7 +1295,8 @@ Object.assign(I18N.en, {
   q_history:"Show the last 5 years of quarterly history: SAMA rate + Riyadh & Eastern demand and supply.",
   hist_title:"5-year quarterly history (2022 Q1 – 2026 Q2)",
   hist_insight:"Demand is rate-sensitive but rebounded from 2025 Q1; supply lags (Riyadh +2.3% vs demand +10.6%). The +50bps jump may break the rebound.",
-  hist_rate:"SAMA rate", hist_rd:"Riyadh demand", hist_rs:"Riyadh supply",
+  hist_rate:"SAMA rate", hist_rd:"Riyadh demand", hist_rs:"Riyadh supply", hist_ed:"Eastern demand", hist_es:"Eastern supply",
+  hist_rateT:"SAMA policy rate (%)", hist_unitsT:"Riyadh & Eastern Region: demand vs supply (quarterly)", hist_diverge:"Divergence risk zone", hist_shock:"+50bps shock",
   plan_title:"Orchestration plan", story_intro:"Routing across six engines — each agent streams its result as it completes.",
   eng_dev:"Developer Value-Chain", eng_policy:"Policy Simulation",
   engd_dev:"Developer scorecard & engagement tiers.", engd_policy:"Causal-chain policy comparison.",
@@ -1328,7 +1329,8 @@ Object.assign(I18N.zh, {
   q_history:"调出过去 5 年季度历史:SAMA 利率 + 利雅得与东部省的需求和供给。",
   hist_title:"5 年季度历史(2022 Q1 – 2026 Q2)",
   hist_insight:"需求对利率敏感,但自 2025 Q1 起反弹;供给滞后(利雅得 +2.3% vs 需求 +10.6%)。本次 +50bps 跳升可能打破反弹。",
-  hist_rate:"SAMA 利率", hist_rd:"利雅得需求", hist_rs:"利雅得供给",
+  hist_rate:"SAMA 利率", hist_rd:"利雅得需求", hist_rs:"利雅得供给", hist_ed:"东部需求", hist_es:"东部供给",
+  hist_rateT:"SAMA 政策利率(%)", hist_unitsT:"利雅得与东部地区:需求 vs 供给(季度)", hist_diverge:"背离风险区", hist_shock:"+50bps 冲击",
   plan_title:"编排计划", story_intro:"跨六个引擎路由 —— 每个智能体完成后即刻流式给出结果。",
   eng_dev:"开发商价值链", eng_policy:"政策模拟",
   engd_dev:"开发商评分卡与对接分层。", engd_policy:"因果链政策对比。",
@@ -1361,7 +1363,8 @@ Object.assign(I18N.ar, {
   q_history:"اعرض تاريخ ٥ سنوات ربعي: فائدة ساما + طلب وعرض الرياض والشرقية.",
   hist_title:"تاريخ ربعي لخمس سنوات (٢٠٢٢ر١ – ٢٠٢٦ر٢)",
   hist_insight:"الطلب حسّاس للفائدة لكنه ارتدّ منذ ٢٠٢٥ر١؛ العرض متأخّر. قفزة +٥٠ نقطة قد تكسر الارتداد.",
-  hist_rate:"فائدة ساما", hist_rd:"طلب الرياض", hist_rs:"عرض الرياض",
+  hist_rate:"فائدة ساما", hist_rd:"طلب الرياض", hist_rs:"عرض الرياض", hist_ed:"طلب الشرقية", hist_es:"عرض الشرقية",
+  hist_rateT:"معدل سياسة ساما (٪)", hist_unitsT:"الرياض والمنطقة الشرقية: الطلب مقابل العرض (ربعي)", hist_diverge:"منطقة خطر التباعد", hist_shock:"صدمة +٥٠ نقطة",
   plan_title:"خطة التنسيق", story_intro:"توجيه عبر ستة محركات — كل وكيل يعرض نتيجته فور اكتماله.",
   eng_dev:"سلسلة قيمة المطوّرين", eng_policy:"محاكاة السياسات",
   engd_dev:"بطاقة المطوّرين ومستويات التعامل.", engd_policy:"مقارنة سياسات بسلسلة سببية.",
@@ -1516,12 +1519,12 @@ Object.assign(I18N.ar, {
 });
 
 /* historical series (storyline step 2) */
-const HIST = [
-  {q:"22Q1",r:1.00,rd:15800,rs:14200},{q:"22Q2",r:1.25,rd:16100,rs:14300},{q:"22Q3",r:1.50,rd:16300,rs:14500},{q:"22Q4",r:1.75,rd:16200,rs:14700},
-  {q:"23Q1",r:2.50,rd:15900,rs:15000},{q:"23Q2",r:3.00,rd:15500,rs:15200},{q:"23Q3",r:3.75,rd:14800,rs:14800},{q:"23Q4",r:4.50,rd:14200,rs:14300},
-  {q:"24Q1",r:5.25,rd:13800,rs:13900},{q:"24Q2",r:5.50,rd:13500,rs:13600},{q:"24Q3",r:5.50,rd:13300,rs:13400},{q:"24Q4",r:5.50,rd:13200,rs:13300},
-  {q:"25Q1",r:5.75,rd:13400,rs:13200},{q:"25Q2",r:6.00,rd:13700,rs:13300},{q:"25Q3",r:6.25,rd:14000,rs:13400},{q:"25Q4",r:6.75,rd:14300,rs:13500},
-  {q:"26Q1",r:7.00,rd:14600,rs:13600},{q:"26Q2",r:7.25,rd:14400,rs:13700},
+const HIST = [   // quarterly: SAMA rate + Riyadh/Eastern demand & supply (uploaded chart)
+  {q:"22Q1",r:1.00,rd:15800,rs:14200,ed:9800, es:9100},{q:"22Q2",r:1.75,rd:16100,rs:14300,ed:9900, es:9150},{q:"22Q3",r:3.00,rd:16300,rs:14500,ed:10000,es:9300},{q:"22Q4",r:5.00,rd:15500,rs:14700,ed:9600, es:9400},
+  {q:"23Q1",r:5.25,rd:14900,rs:15000,ed:9400, es:9600},{q:"23Q2",r:5.50,rd:14500,rs:15200,ed:9200, es:9700},{q:"23Q3",r:5.75,rd:14000,rs:14800,ed:8900, es:9500},{q:"23Q4",r:6.00,rd:13500,rs:14300,ed:8600, es:9200},
+  {q:"24Q1",r:6.00,rd:13200,rs:13900,ed:8400, es:9000},{q:"24Q2",r:5.75,rd:13400,rs:13600,ed:8500, es:8800},{q:"24Q3",r:5.50,rd:13600,rs:13400,ed:8700, es:8600},{q:"24Q4",r:5.50,rd:13800,rs:13300,ed:8800, es:8500},
+  {q:"25Q1",r:5.00,rd:14100,rs:13200,ed:9000, es:8600},{q:"25Q2",r:4.75,rd:14400,rs:13300,ed:9100, es:8600},{q:"25Q3",r:4.50,rd:14500,rs:13400,ed:9200, es:8700},{q:"25Q4",r:4.25,rd:14600,rs:13500,ed:9300, es:8800},
+  {q:"26Q1",r:4.25,rd:14700,rs:13600,ed:9400, es:8900},{q:"26Q2",r:4.75,rd:14400,rs:13700,ed:9300, es:9000},
 ];
 const PIPELINE = [
   {seg:"A",proj:23,planned:12900,conv:52,deliver:6700,cover:"35%"},
@@ -2040,16 +2043,31 @@ function Viz({kind}){
 /* ---- storyline compact visuals ---- */
 function HistChart(){
   const {t}=useStore(); const C=RC; if(!C.ResponsiveContainer) return null;
-  return (<div style={{width:"100%",height:200,marginTop:6}}><C.ResponsiveContainer>
-    <C.LineChart data={HIST} margin={{top:6,right:8,left:-8,bottom:0}}>
-      <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="q" tick={{fontSize:9}} interval={2}/>
-      <C.YAxis yAxisId="u" tick={{fontSize:9}} tickFormatter={v=>(v/1000)+"K"} domain={[12000,17000]}/>
-      <C.YAxis yAxisId="r" orientation="right" tick={{fontSize:9}} domain={[0,8]} tickFormatter={v=>v+"%"}/>
-      <C.Tooltip/><C.Legend wrapperStyle={{fontSize:10}}/>
-      <C.Line yAxisId="u" type="monotone" dataKey="rd" name={t("hist_rd")} stroke="#1B8354" strokeWidth={2.2} dot={false}/>
-      <C.Line yAxisId="u" type="monotone" dataKey="rs" name={t("hist_rs")} stroke="#2563eb" strokeWidth={1.8} dot={false}/>
-      <C.Line yAxisId="r" type="monotone" dataKey="r" name={t("hist_rate")} stroke="#e32700" strokeWidth={1.6} strokeDasharray="4 3" dot={false}/>
-    </C.LineChart></C.ResponsiveContainer></div>);
+  const DZ1="25Q3", DZ2="26Q2";   // divergence risk zone
+  return (<div style={{marginTop:6}}>
+    <div className="mini-t">{t("hist_rateT")}</div>
+    <div style={{width:"100%",height:150}}><C.ResponsiveContainer>
+      <C.LineChart data={HIST} margin={{top:6,right:14,left:-10,bottom:0}}>
+        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="q" tick={{fontSize:8.5}} interval={1}/>
+        <C.YAxis tick={{fontSize:9}} domain={[0,7]} tickFormatter={v=>v+"%"}/>
+        <C.Tooltip formatter={v=>v+"%"}/>
+        <C.ReferenceArea x1={DZ1} x2={DZ2} fill="#e32700" fillOpacity={0.07}/>
+        <C.ReferenceLine x={DZ2} stroke="#e32700" strokeDasharray="4 3" label={{value:t("hist_shock"),fontSize:9,fill:"#e32700",position:"insideTopRight"}}/>
+        <C.Line type="monotone" dataKey="r" name={t("hist_rate")} stroke="#e32700" strokeWidth={2.4} dot={{r:2.2}}/>
+      </C.LineChart></C.ResponsiveContainer></div>
+    <div className="mini-t">{t("hist_unitsT")}</div>
+    <div style={{width:"100%",height:210}}><C.ResponsiveContainer>
+      <C.LineChart data={HIST} margin={{top:6,right:14,left:-2,bottom:0}}>
+        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="q" tick={{fontSize:8.5}} interval={1}/>
+        <C.YAxis tick={{fontSize:9}} domain={[8000,17000]} tickFormatter={v=>(v/1000)+"K"}/>
+        <C.Tooltip formatter={v=>n0(v)}/><C.Legend wrapperStyle={{fontSize:9.5}}/>
+        <C.ReferenceArea x1={DZ1} x2={DZ2} fill="#e32700" fillOpacity={0.07}/>
+        <C.Line type="monotone" dataKey="rd" name={t("hist_rd")} stroke="#2563eb" strokeWidth={2.4} dot={false}/>
+        <C.Line type="monotone" dataKey="rs" name={t("hist_rs")} stroke="#93b8f0" strokeWidth={1.8} strokeDasharray="5 3" dot={false}/>
+        <C.Line type="monotone" dataKey="ed" name={t("hist_ed")} stroke="#1B8354" strokeWidth={2.4} dot={false}/>
+        <C.Line type="monotone" dataKey="es" name={t("hist_es")} stroke="#8fd0b0" strokeWidth={1.8} strokeDasharray="5 3" dot={false}/>
+      </C.LineChart></C.ResponsiveContainer></div>
+  </div>);
 }
 function DataQualityMini(){
   const {t}=useStore();
