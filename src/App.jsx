@@ -122,7 +122,7 @@ const I18N = {
     q_policy:"If we raise the financing ratio by 10%, would it ease this gap?",
     q_vague:"Show me all beneficiaries' sensitive personal records.",
     a_demand:"Riyadh · Aspirers (Al-Mutatallibeen) demand is forecast to rise ~31% over 6 months (MAPE ≤ 20%), driven by income-band migration and product-preference shifts toward ready-built units.",
-    a_gap:"Carrying over Riyadh · Aspirers from the previous turn: the supply-demand gap is 34% (RED). Closing it needs ≈ 18,400 units over 12 months — the Strategic Planning engine proposes a 3-scenario supply plan ranked by absorption.",
+    a_gap:"Carrying over Riyadh · Aspirers from the previous turn: the Segment-A gap is 12,400 units (Y3) and the pipeline covers only 35% (RED). The Strategic Planning engine proposes a 3-scenario supply plan ranked by absorption.",
     a_vague:"I can't answer that. The request falls outside your permission scope and the platform is read-only for personal data. I can instead provide aggregated, anonymised segment analytics.",
     escalated:"Escalation", esc_perm:"Permission / data-scope guard triggered",
     cross_note:"Cross-engine orchestration: two engines were chained automatically.",
@@ -134,7 +134,7 @@ const I18N = {
     freshness:"Freshness", within:"within SLA", delayed:"delayed", srcHealth:"Source health (11)",
     kpiThresh:"KPI thresholds", alerts:"Alerts", noAlerts:"No open alerts — all KPIs within thresholds.",
     sev_red:"Critical", sev_amber:"Warning", sev_info:"Info",
-    al_gap_t:"Riyadh · Aspirers supply-demand gap 34% (RED)", al_gap_b:"Gap breached the 30% red threshold. Root cause: demand up 31% vs supply pipeline flat.",
+    al_gap_t:"Riyadh · Aspirers Seg-A gap 12,400 units · 35% covered (RED)", al_gap_b:"Pipeline covers only 35% of need — a red-level shortfall. Root cause: demand up 31% vs a flat supply pipeline.",
     al_moj_t:"MOJ price feed delayed", al_moj_b:"Source delayed > 50% of SLA. Using last valid data with a coverage caveat.",
     al_conv_t:"Conversion rate dip · Makkah", al_conv_b:"Qualification→signing conversion fell to 52% (< 60% intervention threshold).",
     rootCause:"Root cause", askOrch:"Ask Orchestrator to analyze", action:"Action", ack:"Acknowledge", acked:"Acknowledged",
@@ -227,7 +227,7 @@ I18N.ar = {
   q_policy:"إذا رفعنا نسبة التمويل ١٠٪، هل تخفّف هذه الفجوة؟",
   q_vague:"أظهر لي كل السجلات الشخصية الحساسة للمستفيدين.",
   a_demand:"الرياض · المتطلّبون: يُتوقع ارتفاع الطلب ~٣١٪ خلال ٦ أشهر (MAPE ≤ ٢٠٪)، مدفوعاً بهجرة شرائح الدخل وتحوّل التفضيل نحو الوحدات الجاهزة.",
-  a_gap:"بترحيل الرياض · المتطلّبون من الدور السابق: فجوة العرض والطلب ٣٤٪ (أحمر). سدّها يتطلب ≈ ١٨٬٤٠٠ وحدة خلال ١٢ شهراً — يقترح محرك التخطيط خطة عرض من ٣ سيناريوهات مرتّبة بالاستيعاب.",
+  a_gap:"بترحيل الرياض · المتطلّبون من الدور السابق: فجوة الشريحة A تبلغ ١٢٬٤٠٠ وحدة (السنة ٣) ويغطي الخط ٣٥٪ فقط (أحمر). يقترح محرك التخطيط خطة عرض من ٣ سيناريوهات مرتّبة بالاستيعاب.",
   a_vague:"لا أستطيع تنفيذ ذلك. الطلب خارج نطاق صلاحيتك والمنصّة للقراءة فقط للبيانات الشخصية. يمكنني تقديم تحليلات شرائح مجمّعة ومجهّلة بدلاً من ذلك.",
   escalated:"تصعيد", esc_perm:"تفعيل حارس الصلاحية / نطاق البيانات",
   cross_note:"تنسيق متعدد المحركات: تم تسلسل محركين تلقائياً.",
@@ -238,7 +238,7 @@ I18N.ar = {
   freshness:"الحداثة", within:"ضمن SLA", delayed:"متأخر", srcHealth:"حالة المصادر (١١)",
   kpiThresh:"عتبات المؤشرات", alerts:"التنبيهات", noAlerts:"لا تنبيهات مفتوحة — كل المؤشرات ضمن الحدود.",
   sev_red:"حرج", sev_amber:"تحذير", sev_info:"معلومة",
-  al_gap_t:"الرياض · المتطلّبون: فجوة عرض/طلب ٣٤٪ (أحمر)", al_gap_b:"تجاوزت الفجوة عتبة ٣٠٪ الحمراء. السبب: الطلب +٣١٪ مقابل خط عرض ثابت.",
+  al_gap_t:"الرياض · المتطلّبون: فجوة الشريحة A ١٢٬٤٠٠ وحدة · تغطية ٣٥٪ (أحمر)", al_gap_b:"يغطي الخط ٣٥٪ فقط من الحاجة — نقص بمستوى أحمر. السبب: الطلب +٣١٪ مقابل خط عرض ثابت.",
   al_moj_t:"تأخّر تغذية أسعار العدل", al_moj_b:"تأخّر المصدر > ٥٠٪ من SLA. يُستخدم آخر بيانات صالحة مع تنويه تغطية.",
   al_conv_t:"انخفاض معدّل التحويل · مكة", al_conv_b:"انخفض التحويل من التأهيل إلى التوقيع إلى ٥٢٪ (< عتبة التدخل ٦٠٪).",
   rootCause:"السبب الجذري", askOrch:"اطلب من المنسّق التحليل", action:"إجراء", ack:"إقرار", acked:"تم الإقرار",
@@ -326,7 +326,7 @@ I18N.zh = {
   q_policy:"如果把融资比例上调 10%，能否缓解这个缺口？",
   q_vague:"把所有受益人的敏感个人信息明细给我看看。",
   a_demand:"利雅得 · 改善型客群需求预计 6 个月内上升约 31%（MAPE ≤ 20%），由收入档迁移与向现房产品的偏好转移驱动。",
-  a_gap:"沿用上一轮的「利雅得 · 改善型客群」：供需缺口为 34%（红色）。补足需在 12 个月内约 18,400 套——战略规划引擎给出按吸纳排序的 3 情景供给方案。",
+  a_gap:"沿用上一轮的「利雅得 · 改善型客群」：A 段缺口 12,400 套（第3年），管线仅覆盖 35%（红色）。战略规划引擎给出按吸纳排序的 3 情景供给方案。",
   a_vague:"无法执行。该请求超出你的权限范围，且平台对个人数据为只读。我可以改为提供聚合、脱敏的客群分析。",
   escalated:"升级", esc_perm:"触发权限 / 数据范围保护",
   cross_note:"跨引擎编排：自动串联了两个引擎。",
@@ -337,7 +337,7 @@ I18N.zh = {
   freshness:"新鲜度", within:"SLA 内", delayed:"延迟", srcHealth:"数据源健康（11）",
   kpiThresh:"KPI 阈值", alerts:"预警", noAlerts:"无未处理预警 — 所有 KPI 在阈值内。",
   sev_red:"严重", sev_amber:"警告", sev_info:"提示",
-  al_gap_t:"利雅得 · 改善型客群 供需缺口 34%（红）", al_gap_b:"缺口突破 30% 红色阈值。根因：需求 +31% 而供给管线持平。",
+  al_gap_t:"利雅得 · 改善型客群 A 段缺口 12,400 套 · 覆盖 35%（红）", al_gap_b:"管线仅覆盖需求的 35% —— 红色级短缺。根因：需求 +31% 而供给管线持平。",
   al_moj_t:"司法部房价数据延迟", al_moj_b:"数据源延迟超过 SLA 的 50%。沿用最近有效数据并附覆盖提示。",
   al_conv_t:"转化率下滑 · 麦加", al_conv_b:"资格→签约转化降至 52%（低于 60% 干预阈值）。",
   rootCause:"根因", askOrch:"让编排器分析", action:"操作", ack:"确认", acked:"已确认",
@@ -388,9 +388,9 @@ const MACRO_CORR = [   // 6 indicators × R² vs demand/supply/price (Figure 1)
   { key:"oil",   demand:0.39, supply:0.35, price:0.41 },
 ];
 const ECON_SCN = [
-  { k:"opt",  prob:20, rate:"6.50%", inf:"2.5%", unemp:"4.0%", gdp:"3.5%" },
-  { k:"base", prob:55, rate:"7.25%", inf:"3.2%", unemp:"4.8%", gdp:"2.1%" },
-  { k:"pess", prob:25, rate:"7.50%", inf:"4.5%", unemp:"6.2%", gdp:"0.8%" },
+  { k:"opt",  prob:20, rate:"4.25%", inf:"2.5%", unemp:"4.0%", gdp:"3.5%" },
+  { k:"base", prob:55, rate:"4.75%", inf:"3.2%", unemp:"4.8%", gdp:"2.1%" },
+  { k:"pess", prob:25, rate:"5.00%", inf:"4.5%", unemp:"6.2%", gdp:"0.8%" },
 ];
 const VULN = [
   { key:"riyadh",v:92 },{ key:"eastern",v:78 },{ key:"makkah",v:65 },{ key:"madinah",v:48 },
@@ -735,10 +735,11 @@ Object.assign(I18N.en, {
   ki_footer:"Real data from SAMA / GASTAT / Market · DSO estimates from the platform · next refresh Jul 1, 2026",
   ai_reco_title:"AI Diagnosis & Recommendation", ai_diag:"Diagnosis", ai_macro:"macro", ai_policy:"policy", ai_impact:"Impact if unaddressed", ai_actions:"Recommended actions", ai_analysis:"AI Analysis & Recommendations",
   ai_recalc:"recomputing…", ai_scn_hint:"click a scenario to recompute", ai_diagnose:"AI diagnosis & recommendation",
+  ai_toolkit:"Policy toolkit — six measures at a glance", ai_measure:"Measure", ai_gapclose:"Gap closure", ai_verdict:"Verdict",
   sla_label:"SLA / threshold",
-  he_gap:"Supply-demand gap 34% · Riyadh Seg A (RED)",
+  he_gap:"Riyadh Seg-A gap 12,400 units · 35% covered (RED)",
   he_gap_s:"Gap rule — green <10% · yellow 10–30% · RED >30%",
-  he_gap_d:"The Riyadh Segment-A supply-demand gap reached 34%, breaching the 30% red threshold. A red gap triggers a strategic-level escalation. Root cause: demand +31% (forced B→A migration) against a flat supply pipeline. Routed to the Strategic Planning Manager.",
+  he_gap_d:"The Riyadh Segment-A gap is 12,400 units (Y3) and the pipeline covers only 35% — a red-level shortfall that triggers strategic escalation. Root cause: demand +31% (forced B→A migration) against a flat supply pipeline. Routed to the Strategic Planning Manager.",
   he_absorp:"Absorption drop 43% · Riyadh Seg A (RED)",
   he_absorp_s:"Rule — absorption drop >40% → immediate escalation",
   he_absorp_d:"Projected absorption for Riyadh Segment-A fell 43% versus plan, exceeding the 40% threshold that mandates immediate escalation to the Planning Manager. Drivers: 52% conversion plus pipeline mismatch. Recommended: accelerate Tier-1 developers and apply Policy A.",
@@ -768,10 +769,11 @@ Object.assign(I18N.zh, {
   ki_footer:"真实数据来自 SAMA / GASTAT / 市场 · DSO 估算来自平台 · 下次刷新 2026 年 7 月 1 日",
   ai_reco_title:"AI 诊断与建议", ai_diag:"诊断", ai_macro:"宏观", ai_policy:"政策", ai_impact:"若不处理的影响", ai_actions:"建议措施", ai_analysis:"AI 分析与建议",
   ai_recalc:"重算中…", ai_scn_hint:"点击情景可重算", ai_diagnose:"AI 诊断与建议",
+  ai_toolkit:"政策工具箱 — 六项措施一览", ai_measure:"措施", ai_gapclose:"缺口闭合", ai_verdict:"结论",
   sla_label:"SLA / 阈值",
-  he_gap:"供需缺口 34% · 利雅得 A 段(红)",
+  he_gap:"利雅得 A 段缺口 12,400 套 · 覆盖 35%(红)",
   he_gap_s:"缺口规则 — 绿 <10% · 黄 10–30% · 红 >30%",
-  he_gap_d:"利雅得 A 段供需缺口达到 34%,突破 30% 红线。红色缺口触发战略级升级。根因:需求 +31%(B→A 被迫迁移)而供给管线持平。已路由至战略规划经理。",
+  he_gap_d:"利雅得 A 段缺口 12,400 套(第3年),管线仅覆盖 35% —— 红色级短缺,触发战略级升级。根因:需求 +31%(B→A 被迫迁移)而供给管线持平。已路由至战略规划经理。",
   he_absorp:"吸纳率骤降 43% · 利雅得 A 段(红)",
   he_absorp_s:"规则 — 吸纳率下降 >40% → 立即升级",
   he_absorp_d:"利雅得 A 段预期吸纳率较计划下降 43%,超过 40% 阈值,须立即上报规划经理。驱动:转化率 52% 叠加管线错配。建议:加速一级开发商并实施政策 A。",
@@ -801,8 +803,9 @@ Object.assign(I18N.ar, {
   ki_footer:"بيانات حقيقية من ساما / الإحصاء / السوق · تقديرات DSO من المنصّة · التحديث القادم ١ يوليو ٢٠٢٦",
   ai_reco_title:"تشخيص وتوصية AI", ai_diag:"التشخيص", ai_macro:"كلي", ai_policy:"سياسة", ai_impact:"الأثر إن لم يُعالَج", ai_actions:"الإجراءات الموصى بها", ai_analysis:"تحليل وتوصيات AI",
   ai_recalc:"إعادة الحساب…", ai_scn_hint:"اضغط سيناريو لإعادة الحساب", ai_diagnose:"تشخيص وتوصية AI",
+  ai_toolkit:"حقيبة السياسات — ست إجراءات بلمحة", ai_measure:"الإجراء", ai_gapclose:"سدّ الفجوة", ai_verdict:"الحكم",
   sla_label:"SLA / العتبة",
-  he_gap:"فجوة العرض والطلب ٣٤٪ · الرياض الشريحة A (أحمر)",
+  he_gap:"فجوة الشريحة A بالرياض ١٢٬٤٠٠ وحدة · تغطية ٣٥٪ (أحمر)",
   he_gap_s:"قاعدة الفجوة — أخضر <١٠٪ · أصفر ١٠–٣٠٪ · أحمر >٣٠٪",
   he_gap_d:"بلغت فجوة الشريحة A في الرياض ٣٤٪، متجاوزةً عتبة ٣٠٪ الحمراء. الفجوة الحمراء تستوجب تصعيداً استراتيجياً. السبب: الطلب +٣١٪ (هجرة B→A قسرية) مقابل خط عرض ثابت. وُجّه إلى مدير التخطيط الاستراتيجي.",
   he_absorp:"هبوط الاستيعاب ٤٣٪ · الرياض الشريحة A (أحمر)",
@@ -1094,15 +1097,18 @@ function dcol(d){ return d==="up"?"#f59e0b":d==="down"?"#2563eb":"var(--green)";
 /* ---- AI Recommendation deliverable (recomputes with coverage & scenario) ---- */
 const AIREC={
   shock:{ conf:85, macroBase:62,
-    diag:"Riyadh Segment-A supply-demand gap at 34% (RED) after the +50bps shock.",
-    diag_zh:"受 +50bps 冲击,利雅得 A 段供需缺口达 34%(红)。",
+    diag:"Riyadh Segment-A gap of 12,400 units (Y3); the pipeline covers only 35%, after the SAMA rate hike (4.25% → 4.75%, +50bps).",
+    diag_zh:"利雅得 A 段缺口 12,400 套(第3年);管线仅覆盖 35%。起因:SAMA 加息(4.25% → 4.75%,+50bps)。",
     attr:"Macro: affordability shock → forced B→A migration. Policy: developer-margin incentives are addressable.",
     attr_zh:"宏观:负担能力下降 → B→A 被迫迁移。政策:开发商利润激励可干预。",
     impacts:[{label:"Seg A gap (Y3)",label_zh:"A 段缺口(Y3)",base:12400,unit:"units",sign:"-"},{label:"Subsidy burden",label_zh:"补贴负担",base:1.8,unit:"SAR B",sign:"+"}],
-    actions:[
-      {t:"Engage Tier-1 developers (Al-Majd · Riyadh Housing · Watan)", t_zh:"对接一级开发商(Al-Majd · 利雅得住房 · Watan)", owner:"planner", eff:"+4,200 units/yr", eff_zh:"+4,200 套/年"},
-      {t:"Implement Policy A: +15% developer subsidy", t_zh:"实施政策 A:开发商补贴 +15%", owner:"leader", eff:"+3,100 units/yr → gap closure 35% → 85%", eff_zh:"+3,100 套/年 → 缺口闭合 35% → 85%"},
-      {t:"Do NOT cut beneficiary down payment", t_zh:"不要降低受益人首付", owner:"leader", eff:"simulation shows it would widen the gap to 38%", eff_zh:"模拟显示会把缺口推到 38%"},
+    measures:[
+      {c:"M1", n:"Developer Subsidy +15%", n_zh:"开发商补贴 +15%", supply:"+3,100/yr", gap:"35%→85%", cost:"SAR 2.4B", v:"PROCEED", vt:"good"},
+      {c:"M2", n:"Land Release −40%", n_zh:"土地释放 −40%", supply:"+2,000/yr", gap:"+12pp", cost:"SAR 0.8B", v:"PROCEED", vt:"good"},
+      {c:"M3", n:"Expedited Permitting", n_zh:"加快审批", supply:"+1,500/yr", gap:"+9pp", cost:"~0", v:"PROCEED NOW", vt:"good"},
+      {c:"M4", n:"PPP 5,000-Unit Contract", n_zh:"PPP 5,000 套合同", supply:"+5,000 (Y2+)", gap:"+30pp", cost:"SAR 5.2B", v:"PHASE Q4", vt:"warn"},
+      {c:"M5", n:"Mortgage Subsidy +2pp", n_zh:"按揭补贴 +2pp", supply:"none", gap:"neutral", cost:"SAR 3.1B", v:"CONDITIONAL", vt:"warn"},
+      {c:"M6", n:"Lower Down Payment 10%→5%", n_zh:"降首付 10%→5%", supply:"none", gap:"35%→38% ✕", cost:"~SAR 4B hidden", v:"AVOID", vt:"bad"},
     ]},
   conv:{ conf:84, macroBase:70,
     diag:"Average project conversion fell 1.4pp to 65.8% (Seg A at 52%).",
@@ -1169,9 +1175,21 @@ function AiRec({d}){
     {r.impacts.length>0&&<div className="airec-imp"><span className="airec-sub">{t("ai_impact")}:</span>
       {r.impacts.map((im,i)=><span key={i} className={"imp-chip"+(calc?" recalc":"")}>{Z(im,"label")}: <b>{(im.sign||"")+fmtImp(im.val,im.unit)}</b></span>)}</div>}
     {d.note&&<div className="airec-row">{Z(d,"note")}</div>}
-    <div className="airec-sub">{t("ai_actions")}</div>
-    {d.actions.map((a,i)=>(<div key={i} className="airec-act"><span className="rk">{i+1}</span>
-      <div>{(lang==="zh"&&a.t_zh)?a.t_zh:a.t}<div className="airec-meta">{a.owner?(t("owner")+": "+t(a.owner+"_full")+" · "):""}{(lang==="zh"&&a.eff_zh)?a.eff_zh:a.eff}</div></div></div>))}
+    {d.measures? <div>
+      <div className="airec-sub">{t("ai_toolkit")}</div>
+      <div className="scrollx"><table className="tbl">
+        <thead><tr><th>{t("ai_measure")}</th><th>{t("m_supplyImp")}</th><th>{t("ai_gapclose")}</th><th>{t("m_cost")}</th><th>{t("ai_verdict")}</th></tr></thead>
+        <tbody>{d.measures.map((mm,i)=>(<tr key={i}>
+          <td><b>{mm.c}</b> · {(lang==="zh"&&mm.n_zh)?mm.n_zh:mm.n}</td>
+          <td className="mono">{mm.supply}</td><td className="mono">{mm.gap}</td><td className="mono">{mm.cost}</td>
+          <td><span className={"chip "+(mm.vt==="good"?"":mm.vt==="warn"?"amber":"danger")}>{mm.v}</span></td>
+        </tr>))}</tbody>
+      </table></div>
+    </div> : <>
+      <div className="airec-sub">{t("ai_actions")}</div>
+      {(d.actions||[]).map((a,i)=>(<div key={i} className="airec-act"><span className="rk">{i+1}</span>
+        <div>{(lang==="zh"&&a.t_zh)?a.t_zh:a.t}<div className="airec-meta">{a.owner?(t("owner")+": "+t(a.owner+"_full")+" · "):""}{(lang==="zh"&&a.eff_zh)?a.eff_zh:a.eff}</div></div></div>))}
+    </>}
   </div>);
 }
 
@@ -2110,7 +2128,11 @@ const SEED_ALERTS=[
 /* release notes timeline (hidden menu pages intentionally excluded) */
 const RELEASE_NOTES={
   en:[
-    { ver:"v1.8", date:BUILD_TIME, items:[
+    { ver:"v1.9", date:BUILD_TIME, items:[
+      "Periodic reports (weekly / monthly / quarterly) and the downloadable ministerial briefing updated to the latest source documents.",
+      "Conversational Analysis aligned to the v7 briefing: rate path 4.25% → 4.75% (+50bps) and the Riyadh Segment-A gap framed as 12,400 units (Y3) with 35% pipeline coverage.",
+      "AI Diagnosis & Recommendation now presents the full policy toolkit — six measures at a glance (M1–M6: mechanism, supply impact, gap closure, cost, verdict)." ]},
+    { ver:"v1.8", date:"2026-06-21", items:[
       "Monitoring alerts now expand into an AI diagnosis & recommendation (why + what to do).",
       "AI recommendations recompute with Coverage and a clickable scenario (optimistic / base / pessimistic) — attribution %, impact figures and confidence update live." ]},
     { ver:"v1.7", date:"2026-06-21", items:[
@@ -2136,7 +2158,11 @@ const RELEASE_NOTES={
       "Login, role switching, and EN / العربية (RTL) language toggle." ]},
   ],
   zh:[
-    { ver:"v1.8", date:BUILD_TIME, items:[
+    { ver:"v1.9", date:BUILD_TIME, items:[
+      "周期报告(每周/月度/季度)与可下载的部长简报已更新为最新源文档。",
+      "对话分析对齐 v7 简报:利率路径 4.25% → 4.75%(+50bps),利雅得 A 段缺口表述为 12,400 套(第3年),管线仅覆盖 35%。",
+      "AI 诊断与建议现展示完整政策工具箱 —— 六项措施一览(M1–M6:机制、供给影响、缺口闭合、成本、结论)。" ]},
+    { ver:"v1.8", date:"2026-06-21", items:[
       "监控预警可展开为 AI 诊断与建议(为什么 + 怎么办)。",
       "AI 建议随 Coverage 与可点击情景(乐观/基准/悲观)重算 —— 归因比例、影响数值与置信度实时联动。" ]},
     { ver:"v1.7", date:"2026-06-21", items:[
@@ -2162,7 +2188,11 @@ const RELEASE_NOTES={
       "登录、角色切换,以及 EN / العربية(RTL)语言切换。" ]},
   ],
   ar:[
-    { ver:"v1.8", date:BUILD_TIME, items:[
+    { ver:"v1.9", date:BUILD_TIME, items:[
+      "تم تحديث التقارير الدورية (أسبوعي/شهري/ربع سنوي) والموجز الوزاري القابل للتنزيل إلى أحدث المستندات المصدرية.",
+      "مواءمة التحليل الحواري مع موجز v7: مسار الفائدة 4.25% ← 4.75% (+50 نقطة أساس)، وفجوة الشريحة A بالرياض 12,400 وحدة (السنة 3) بتغطية خط أنابيب 35%.",
+      "يعرض تشخيص وتوصية AI الآن حقيبة السياسات الكاملة — ست إجراءات بلمحة (M1–M6: الآلية، أثر العرض، سدّ الفجوة، الكلفة، الحكم)." ]},
+    { ver:"v1.8", date:"2026-06-21", items:[
       "تنبيهات المراقبة تتوسّع الآن إلى تشخيص وتوصية AI (لماذا + ماذا تفعل).",
       "توصيات AI تُعاد حسابها مع التغطية وسيناريو قابل للنقر (متفائل/أساسي/متشائم) — تتحدّث نسبة الإسناد وأرقام الأثر والثقة لحظياً." ]},
     { ver:"v1.7", date:"2026-06-21", items:[
