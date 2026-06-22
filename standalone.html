@@ -702,7 +702,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-22 11:31 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-22 11:45 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -1069,13 +1069,13 @@ I18N.zh = {
 /* =========================================================================
    Ministerial-briefing storyline data (interest-rate +50bps shock)
    ========================================================================= */
-const MACRO_CORR = [   // 6 indicators × R² vs demand/supply/price (Figure 1)
-  { key:"int",   demand:0.73, supply:0.58, price:0.81 },
-  { key:"pop",   demand:0.85, supply:0.22, price:0.69 },
-  { key:"gdp",   demand:0.66, supply:0.51, price:0.71 },
-  { key:"inf",   demand:0.61, supply:0.42, price:0.66 },
-  { key:"unemp", demand:0.49, supply:0.31, price:0.44 },
-  { key:"oil",   demand:0.39, supply:0.35, price:0.41 },
+const MACRO_CORR = [   // 6 indicators × signed Pearson r vs demand/supply/price (Figure 1)
+  { key:"int",   demand:-0.85, supply:-0.58, price:-0.90 },
+  { key:"pop",   demand:0.92,  supply:0.30,  price:0.69 },
+  { key:"gdp",   demand:0.66,  supply:0.51,  price:0.71 },
+  { key:"inf",   demand:-0.61, supply:-0.42, price:0.55 },
+  { key:"unemp", demand:-0.49, supply:-0.31, price:-0.44 },
+  { key:"oil",   demand:0.39,  supply:0.35,  price:0.41 },
 ];
 const ECON_SCN = [
   { k:"opt",  prob:20, rate:"4.25%", inf:"2.5%", unemp:"4.0%", gdp:"3.5%" },
@@ -1138,9 +1138,9 @@ Object.assign(I18N.en, {
   brief_urgent:"URGENT · Ministerial Briefing", autonomous_note:"Autonomous · human-reviewed",
   // macro page
   macro_sub:"Macro-Economic engine — indicator correlation, economic scenarios, regional vulnerability",
-  corr_title:"Macro indicators → housing-market correlation (R²)", corr_thresh:"R² = 0.6 threshold",
+  corr_title:"Macro indicators → housing-market Pearson correlation (r)", corr_thresh:"|r| = 0.6 threshold",
   ind_int:"Interest rate", ind_pop:"Population", ind_gdp:"GDP growth", ind_inf:"Inflation (CPI)", ind_unemp:"Unemployment", ind_oil:"Oil price",
-  m_demandR:"Demand R²", m_supplyR:"Supply R²", m_priceR:"Price R²",
+  m_demandR:"Demand r", m_supplyR:"Supply r", m_priceR:"Price r",
   econ_title:"Three economic scenarios (2026–2029)", prob:"probability",
   p_rate:"Interest rate", p_inf:"Inflation", p_unemp:"Unemployment", p_gdp:"GDP growth",
   vuln_title:"Regional economic vulnerability to the rate shock", vuln_axis:"Vulnerability index (0–100)",
@@ -1191,9 +1191,9 @@ Object.assign(I18N.ar, {
   repName_brief:"الأثر الاقتصادي الكلي — رفع الفائدة (+٥٠ نقطة)",
   brief_urgent:"عاجل · موجز وزاري", autonomous_note:"ذاتي · مُراجَع بشرياً",
   macro_sub:"محرك الاقتصاد الكلي — ارتباط المؤشرات، السيناريوهات الاقتصادية، الهشاشة الإقليمية",
-  corr_title:"ارتباط المؤشرات الكلية بسوق السكن (R²)", corr_thresh:"عتبة R² = ٠٫٦",
+  corr_title:"ارتباط بيرسون (r) للمؤشرات الكلية بسوق السكن", corr_thresh:"عتبة |r| = ٠٫٦",
   ind_int:"سعر الفائدة", ind_pop:"السكان", ind_gdp:"نمو الناتج", ind_inf:"التضخم", ind_unemp:"البطالة", ind_oil:"سعر النفط",
-  m_demandR:"R² الطلب", m_supplyR:"R² العرض", m_priceR:"R² السعر",
+  m_demandR:"r الطلب", m_supplyR:"r العرض", m_priceR:"r السعر",
   econ_title:"ثلاثة سيناريوهات اقتصادية (٢٠٢٦–٢٠٢٩)", prob:"الاحتمال",
   p_rate:"سعر الفائدة", p_inf:"التضخم", p_unemp:"البطالة", p_gdp:"نمو الناتج",
   vuln_title:"الهشاشة الاقتصادية الإقليمية تجاه صدمة الفائدة", vuln_axis:"مؤشر الهشاشة (٠–١٠٠)",
@@ -1239,9 +1239,9 @@ Object.assign(I18N.zh, {
   repName_brief:"宏观经济影响 —— 利率上调(+50bps)",
   brief_urgent:"紧急 · 部长简报", autonomous_note:"自主 · 人工复核",
   macro_sub:"宏观经济引擎 —— 指标相关性、经济情景、区域脆弱性",
-  corr_title:"宏观指标 → 住房市场相关性(R²)", corr_thresh:"R² = 0.6 阈值",
+  corr_title:"宏观指标 → 住房市场 Pearson 相关系数(r)", corr_thresh:"|r| = 0.6 阈值",
   ind_int:"利率", ind_pop:"人口", ind_gdp:"GDP 增长", ind_inf:"通胀(CPI)", ind_unemp:"失业率", ind_oil:"油价",
-  m_demandR:"需求 R²", m_supplyR:"供给 R²", m_priceR:"价格 R²",
+  m_demandR:"需求 r", m_supplyR:"供给 r", m_priceR:"价格 r",
   econ_title:"三套经济情景(2026–2029)", prob:"概率",
   p_rate:"利率", p_inf:"通胀", p_unemp:"失业率", p_gdp:"GDP 增长",
   vuln_title:"各区域对加息冲击的经济脆弱性", vuln_axis:"脆弱性指数(0–100)",
@@ -2069,8 +2069,8 @@ function MacroMini(){
     <div className="mini-t">{t("corr_title")}</div>
     {C.ResponsiveContainer&&<div style={{width:"100%",height:175}}><C.ResponsiveContainer>
       <C.BarChart data={corr} margin={{top:4,right:8,left:-14,bottom:0}}>
-        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:8.5}} interval={0} angle={-18} textAnchor="end" height={44}/><C.YAxis domain={[0,1]} tick={{fontSize:9}}/>
-        <C.Tooltip/><C.Legend wrapperStyle={{fontSize:9}}/><C.ReferenceLine y={0.6} stroke="#e32700" strokeDasharray="4 4"/>
+        <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:8.5}} interval={0} angle={-18} textAnchor="end" height={44}/><C.YAxis domain={[-1,1]} ticks={[-1,-0.6,0,0.6,1]} tick={{fontSize:9}}/>
+        <C.Tooltip/><C.Legend wrapperStyle={{fontSize:9}}/><C.ReferenceLine y={0} stroke="#9aa3ab"/><C.ReferenceLine y={0.6} stroke="#e32700" strokeDasharray="4 4"/><C.ReferenceLine y={-0.6} stroke="#e32700" strokeDasharray="4 4"/>
         <C.Bar dataKey="demand" name={t("m_demandR")} fill="#2563eb" radius={[2,2,0,0]}/>
         <C.Bar dataKey="supply" name={t("m_supplyR")} fill="#e29700" radius={[2,2,0,0]}/>
         <C.Bar dataKey="price" name={t("m_priceR")} fill="#1B8354" radius={[2,2,0,0]}/>
@@ -2721,9 +2721,10 @@ function VulnChart({h}){
     </C.BarChart></C.ResponsiveContainer></div>);
 }
 const DEV_RADC=["#1B8354","#2563eb","#6d5ae6","#e29700","#9aa3ab"];
+const DEV_DIM_W={quality:25,completion:25,timeliness:20,concentration:15,signing:15};  // PDF weighting
 function DevRadar({h}){
   const {t}=useStore(); const C=RC; if(!C.ResponsiveContainer) return null;
-  const radar=DEV_DIMS.map(d=>{ const row={dim:t("d_"+d)}; DEVS.slice(0,5).forEach(dv=>row[dv.name]=dv[d]); return row; });
+  const radar=DEV_DIMS.map(d=>{ const row={dim:t("d_"+d)+" "+DEV_DIM_W[d]+"%"}; DEVS.slice(0,5).forEach(dv=>row[dv.name]=dv[d]); return row; });
   return (<div style={{width:"100%",height:h||300}}><C.ResponsiveContainer>
     <C.RadarChart data={radar} margin={{top:8,right:18,left:18,bottom:8}}>
       <C.PolarGrid/><C.PolarAngleAxis dataKey="dim" tick={{fontSize:10}}/><C.PolarRadiusAxis domain={[0,100]} tick={{fontSize:9}}/>
@@ -2746,8 +2747,10 @@ function MacroImpact(){
       <div style={{width:"100%",height:280}}>{ok&&
         <C.ResponsiveContainer><C.BarChart data={corr} margin={{top:6,right:10,left:-6,bottom:4}}>
           <C.CartesianGrid strokeDasharray="3 3" stroke="#eef2ef"/><C.XAxis dataKey="name" tick={{fontSize:10}} interval={0} angle={-20} textAnchor="end" height={56}/>
-          <C.YAxis domain={[0,1]} tick={{fontSize:10}}/><C.Tooltip/><C.Legend wrapperStyle={{fontSize:11}}/>
+          <C.YAxis domain={[-1,1]} ticks={[-1,-0.6,0,0.6,1]} tick={{fontSize:10}}/><C.Tooltip/><C.Legend wrapperStyle={{fontSize:11}}/>
+          <C.ReferenceLine y={0} stroke="#9aa3ab"/>
           <C.ReferenceLine y={0.6} stroke="#e32700" strokeDasharray="4 4" label={{value:t("corr_thresh"),fontSize:10,fill:"#e32700",position:"insideTopRight"}}/>
+          <C.ReferenceLine y={-0.6} stroke="#e32700" strokeDasharray="4 4"/>
           <C.Bar dataKey="demand" name={t("m_demandR")} fill="#2563eb" radius={[3,3,0,0]}/>
           <C.Bar dataKey="supply" name={t("m_supplyR")} fill="#e29700" radius={[3,3,0,0]}/>
           <C.Bar dataKey="price" name={t("m_priceR")} fill="#1B8354" radius={[3,3,0,0]}/>
@@ -2817,7 +2820,11 @@ const SEED_ALERTS=[
 /* release notes timeline (hidden menu pages intentionally excluded) */
 const RELEASE_NOTES={
   en:[
-    { ver:"v1.9", date:BUILD_TIME, items:[
+    { ver:"v1.10", date:BUILD_TIME, items:[
+      "Storyline charts corrected against the v7 briefing: Macro-Economic now plots signed Pearson r (interest −0.85/−0.90, population +0.92) with ±0.6 thresholds instead of unsigned R².",
+      "Developer radar now labels the five PDF-weighted dimensions (quality 25% · completion 25% · delay 20% · concentration 15% · signing 15%).",
+      "Removed the Policy Simulation step from the analysis storyline (six engines)." ]},
+    { ver:"v1.9", date:"2026-06-22", items:[
       "Periodic reports (weekly / monthly / quarterly) and the downloadable ministerial briefing updated to the latest source documents.",
       "Conversational Analysis aligned to the v7 briefing: rate path 4.25% → 4.75% (+50bps) and the Riyadh Segment-A gap framed as 12,400 units (Y3) with 35% pipeline coverage.",
       "AI Diagnosis & Recommendation now presents the full policy toolkit — six measures at a glance (M1–M6: mechanism, supply impact, gap closure, cost, verdict)." ]},
@@ -2847,7 +2854,11 @@ const RELEASE_NOTES={
       "Login, role switching, and EN / العربية (RTL) language toggle." ]},
   ],
   zh:[
-    { ver:"v1.9", date:BUILD_TIME, items:[
+    { ver:"v1.10", date:BUILD_TIME, items:[
+      "故事线图表对照 v7 简报修正:宏观经济图改为带符号的 Pearson 相关系数 r(利率 −0.85/−0.90、人口 +0.92),并标注 ±0.6 阈值(原为无符号 R²)。",
+      "开发商雷达图标注 PDF 的五项加权维度(质量 25% · 完工 25% · 延误 20% · 集中度 15% · 签约 15%)。",
+      "分析故事线移除政策模拟步骤(六个引擎)。" ]},
+    { ver:"v1.9", date:"2026-06-22", items:[
       "周期报告(每周/月度/季度)与可下载的部长简报已更新为最新源文档。",
       "对话分析对齐 v7 简报:利率路径 4.25% → 4.75%(+50bps),利雅得 A 段缺口表述为 12,400 套(第3年),管线仅覆盖 35%。",
       "AI 诊断与建议现展示完整政策工具箱 —— 六项措施一览(M1–M6:机制、供给影响、缺口闭合、成本、结论)。" ]},
@@ -2877,7 +2888,11 @@ const RELEASE_NOTES={
       "登录、角色切换,以及 EN / العربية(RTL)语言切换。" ]},
   ],
   ar:[
-    { ver:"v1.9", date:BUILD_TIME, items:[
+    { ver:"v1.10", date:BUILD_TIME, items:[
+      "تصحيح رسوم القصة مقابل موجز v7: المخطط الاقتصادي الكلي يعرض الآن ارتباط بيرسون r بالإشارة (الفائدة −0.85/−0.90، السكان +0.92) مع عتبات ±0.6 بدلاً من R² غير المُوقّع.",
+      "رادار المطوّرين يوسم الأبعاد الخمسة المرجّحة من PDF (الجودة 25% · الإنجاز 25% · التأخير 20% · التركّز 15% · التوقيع 15%).",
+      "إزالة خطوة محاكاة السياسات من قصة التحليل (ستة محرّكات)." ]},
+    { ver:"v1.9", date:"2026-06-22", items:[
       "تم تحديث التقارير الدورية (أسبوعي/شهري/ربع سنوي) والموجز الوزاري القابل للتنزيل إلى أحدث المستندات المصدرية.",
       "مواءمة التحليل الحواري مع موجز v7: مسار الفائدة 4.25% ← 4.75% (+50 نقطة أساس)، وفجوة الشريحة A بالرياض 12,400 وحدة (السنة 3) بتغطية خط أنابيب 35%.",
       "يعرض تشخيص وتوصية AI الآن حقيبة السياسات الكاملة — ست إجراءات بلمحة (M1–M6: الآلية، أثر العرض، سدّ الفجوة، الكلفة، الحكم)." ]},
