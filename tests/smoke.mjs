@@ -74,7 +74,6 @@ const harness = `
     ["Msg.engine3gap",{role:"bot",type:"engine",idx:3,loading:false}],
     ["Msg.engine4supply",{role:"bot",type:"engine",idx:4,loading:false}],
     ["Msg.engine5dev",{role:"bot",type:"engine",idx:5,loading:false}],
-    ["Msg.engine6policy",{role:"bot",type:"engine",idx:6,loading:false}],
   ];
   let ok=0, fail=0;
   for(const lang of ["en","ar","zh"]){

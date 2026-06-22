@@ -639,7 +639,7 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 .stepper{display:inline-flex;align-items:center;gap:9px;flex-wrap:nowrap;width:560px;max-width:100%;
   background:rgba(247,245,255,.97);border:1px solid #e4dcfb;border-radius:999px;padding:5px 11px;box-shadow:0 2px 10px rgba(79,70,229,.12)}
 @media(max-width:1180px){.stepper{width:auto}}
-.stepper-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap;
+.stepper-badge{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap;
   background:linear-gradient(120deg,#4f46e5 0%,#6d5ae6 45%,#2563eb 100%);border:1px solid rgba(255,255,255,.18);
   border-radius:999px;padding:3px 11px;box-shadow:0 2px 8px rgba(79,70,229,.28)}
 .stepper-badge .ic-gear{filter:brightness(0) invert(1);animation:gearspin 8s linear infinite}

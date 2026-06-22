@@ -853,7 +853,6 @@ const STORY = [
   {key:"balance",name:"eng_balance",icon:"⚖", time:"28s", dur:1900, viz:"heatmap", f:"f_gap",    conf:86},
   {key:"plan",   name:"eng_plan",   icon:"🏗", time:"35s", dur:2100, viz:"pipeline",f:"f_plan",   conf:85},
   {key:"dev",    name:"eng_dev",    icon:"👷", time:"22s", dur:1800, viz:"dev",     f:"f_dev",    conf:87},
-  {key:"policy", name:"eng_policy", icon:"⚖", time:"41s", dur:2200, viz:"policy",  f:"f_policy", conf:85},
 ];
 // extra figures from the PDF
 const Y1_IMPACT=[
