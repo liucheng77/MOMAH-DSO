@@ -33,7 +33,7 @@ const SOURCES11 = [
   { key:"moj",    status:"amber", sla:"weekly",    fresh:78 },
   { key:"gastat", status:"ok",    sla:"quarterly", fresh:90 },
   { key:"sec",    status:"ok",    sla:"daily",     fresh:94 },
-  { key:"private",status:"amber", sla:"weekly",    fresh:72 },
+  { key:"private",status:"ok",    sla:"weekly",    fresh:91 },
   { key:"geo",    status:"ok",    sla:"monthly",   fresh:88 },
 ];
 const COV_ACC = { ministry:"95%", private:"80%", total:"95% / 80%" };
@@ -1916,9 +1916,8 @@ function seedLog(t){
   for(let i=0;i<34;i++){
     const ts=new Date(base-off*1000).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
     off += 4+Math.floor(Math.random()*9);
-    if(i>0 && i%5===0){ const ev=HEALTH_EVENTS[((i/5)-1)%HEALTH_EVENTS.length]; out.push({ts,text:t(ev.k),health:ev}); }
-    else { const n=LOG_NORMAL[Math.floor(Math.random()*LOG_NORMAL.length)];
-      out.push({ts, text: Array.isArray(n)? (t(n[0])+" "+n[1]) : t(n)}); }
+    const n=LOG_NORMAL[Math.floor(Math.random()*LOG_NORMAL.length)];
+    out.push({ts, text: Array.isArray(n)? (t(n[0])+" "+n[1]) : t(n)});
   }
   return out;
 }
@@ -2268,12 +2267,9 @@ function App(){
 
   function pushLog(key,extra){ const txt = extra? (t(key)+" "+extra) : t(key);
     setLog(prev=>[{ts:timeStr(lang),text:txt},...prev].slice(0,40)); }
-  // ambient real-time log: mostly healthy info ticks, with the occasional unhealthy (clickable) event
-  useEffect(()=>{ if(!user) return; let n=0; const id=setInterval(()=>{
-      n++;
-      if(n%3===0){ const ev=HEALTH_EVENTS[Math.floor(Math.random()*HEALTH_EVENTS.length)];
-        setLog(prev=>[{ts:timeStr(lang),text:t(ev.k),health:ev},...prev].slice(0,40)); }
-      else { const keys=["log_idle","log_scan","log_route","log_feed"]; pushLog(keys[Math.floor(Math.random()*keys.length)]); }
+  // ambient real-time log: healthy info ticks only
+  useEffect(()=>{ if(!user) return; const id=setInterval(()=>{
+      const keys=["log_idle","log_scan","log_route","log_feed"]; pushLog(keys[Math.floor(Math.random()*keys.length)]);
     },120000); return ()=>clearInterval(id); /* eslint-disable-next-line */ },[user,lang]);
 
   function setUser(r){ setUserState(r); setRoute(r==="leader"?"cockpit":"hub"); if(r) setLog(seedLog(t)); }
