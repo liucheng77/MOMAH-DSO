@@ -1243,6 +1243,22 @@ const KI_RISKS=[
   {sev:"info",  t:"Seg A demand acceleration", t_zh:"A 段需求加速", d:"Riyadh Seg A registrations +3.2% MoM; if the trend holds, the gap-closure target is at risk.", d_zh:"利雅得 A 段登记环比 +3.2%;若延续,缺口闭合目标承压。"},
 ];
 function tcol(dt){ return dt==="good"?"var(--green-dark)":dt==="bad"?"var(--danger)":"var(--muted)"; }
+function CountUp({value,dur=950}){
+  const [d,setD]=useState(value);
+  useEffect(()=>{
+    const str=String(value); const m=str.match(/[−-]?[\d,]+(\.\d+)?/);
+    if(!m||typeof performance==="undefined"||typeof requestAnimationFrame==="undefined"){ setD(value); return; }
+    const raw=m[0]; const num=parseFloat(raw.replace(/,/g,"").replace("−","-")); if(isNaN(num)){ setD(value); return; }
+    const hasComma=raw.indexOf(",")>=0; const dec=(raw.split(".")[1]||"").length;
+    const pre=str.slice(0,m.index), suf=str.slice(m.index+raw.length);
+    const fmt=n=>{ const neg=n<0; let a=Math.abs(n); let s=dec?a.toFixed(dec):String(Math.round(a)); if(hasComma) s=Number(s).toLocaleString("en-US",{minimumFractionDigits:dec,maximumFractionDigits:dec}); return pre+(neg?"−":"")+s+suf; };
+    const t0=performance.now(); let raf;
+    const tick=now=>{ const p=Math.min(1,(now-t0)/dur); const e=1-Math.pow(1-p,3); setD(fmt(num*e)); if(p<1) raf=requestAnimationFrame(tick); else setD(value); };
+    raf=requestAnimationFrame(tick);
+    return ()=>cancelAnimationFrame(raf);
+  },[value,dur]);
+  return d;
+}
 function Hub(){
   const {t,lang,user,setRoute,cov,scn,setScn}=useStore();
   const Z=(o,b)=>(lang==="zh"&&o[b+"_zh"])?o[b+"_zh"]:o[b];
@@ -1251,11 +1267,11 @@ function Hub(){
       right={<span className="ki-legend"><span><span className="dot" style={{background:"var(--green)"}}/>{t("ki_real")}</span><span><span className="dot" style={{background:"#2563eb"}}/>{t("ki_mock")}</span></span>}/>
     <Section title={t("kpis_title")}>
       <div className="ki-grid">
-        {KI_KPI.map((k,i)=>{ const c=dcol(k.dir); return (<div key={i} className={"ki-card"+(k.real?"":" mock")}>
+        {KI_KPI.map((k,i)=>{ const c=dcol(k.dir); return (<div key={i} className={"ki-card pop"+(k.real?"":" mock")} style={{animationDelay:(i*55)+"ms"}}>
           <span className={"ki-src "+(k.real?"real":"mock")}>{Z(k,"src")}</span>
           <div className="ki-label">{Z(k,"label")}</div>
           <div className="ki-row">
-            <div className="ki-value" style={{color:c}}>{k.v}{k.unit&&<span className="ki-unit">{k.unit}</span>}</div>
+            <div className="ki-value" style={{color:c}}><CountUp value={String(k.v)}/>{k.unit&&<span className="ki-unit">{k.unit}</span>}</div>
             <div className="ki-spark2" aria-hidden="false">{k.series.map((pt,j)=>
               <span key={j} title={pt.m+(pt.m==="Dec"?" 2025":" 2026")+": "+pt.v} style={{height:pt.h+"%",background:c}}/>)}</div>
           </div>
@@ -1570,40 +1586,55 @@ function downloadBriefing(){
 /* ---- Multi-agent reasoning theater data ---- */
 const DS11=[["DS-01","Sakani"],["DS-02","Wafi"],["DS-03","IDMS"],["DS-04","Ejari"],["DS-05","MoF"],["DS-06","SEC"],["DS-07","MOJ Price"],["DS-08","GASTAT"],["DS-09","Private Mkt"],["DS-10","Geo/GIS"],["DS-11","Bank/Tahseel"]];
 const AGENTS_T=[
- {ag:"Orchestrator Agent",ag_zh:"编排 Agent",ic:"✦",lyr:"L3",lines:[
+ {ag:"Orchestrator Agent",ag_zh:"编排 Agent",ic:"✦",lyr:"L3",io:{in:"User query (NL)",out:"Routed task + plan"},lines:[
    {k:"think",t:"Parse intent: how big is the Riyadh Seg-A gap, and how to close it?",t_zh:"解析意图:利雅得 A 段供需缺口有多大?该怎么补?"},
-   {k:"call",t:"Query model registry → Supply-Demand Balancing (UC-03)",t_zh:"查询模型注册表 → 命中 Supply-Demand Balancing (UC-03)",ds:[]},
+   {k:"think",t:"Decompose → (a) size the gap, (b) attribute macro vs policy, (c) rank actions",t_zh:"拆解为三问 →(a)缺口多大,(b)宏观 vs 政策归因,(c)处方排序"},
+   {k:"call",t:"Query model registry · match capability → engine",t_zh:"查询模型注册表 · 能力匹配 → 引擎",ds:[]},
+   {k:"think",t:"Best match: Supply-Demand Balancing (UC-03); coverage = Total Market",t_zh:"最佳匹配:Supply-Demand Balancing (UC-03);覆盖 = 全市场"},
    {k:"think",t:"Routing confidence 92% ≥ 70% threshold → auto-run, no escalation",t_zh:"路由置信 92% ≥ 70% 阈值 → 自动执行,无需升级"},
    {k:"out",t:"Routed; co-scheduled Demand Intelligence & Conversion engines",t_zh:"已路由,并预约需求智能 / 转化吸纳引擎协同"}]},
- {ag:"Data Quality Monitor",ag_zh:"数据质量监控",ic:"◉",lyr:"L2",lines:[
+ {ag:"Data Quality Monitor",ag_zh:"数据质量监控",ic:"◉",lyr:"L2",io:{in:"11 raw sources",out:"Validated dataset · conf 88%"},lines:[
    {k:"call",t:"Pull 11 data sources in parallel",t_zh:"并行拉取 11 个数据源",ds:["DS-01","DS-02","DS-03","DS-04","DS-05","DS-06","DS-07","DS-08","DS-09","DS-10","DS-11"]},
-   {k:"think",t:"Validate completeness / timeliness / consistency / accuracy",t_zh:"逐源校验:完整性 / 时效 / 一致性 / 准确性"},
+   {k:"think",t:"Check completeness — 11/11 above 95% record coverage",t_zh:"完整性检查 —— 11/11 记录覆盖率 > 95%"},
+   {k:"think",t:"Check timeliness — DS-09 Private Mkt latency was 26h, now 1h (recovered)",t_zh:"时效检查 —— DS-09 私有市场延迟曾 26h,现 1h(已恢复)"},
+   {k:"think",t:"Cross-source consistency — Ejari vs MOJ price delta within 2%",t_zh:"跨源一致性 —— Ejari 与 MOJ 价格偏差 < 2%"},
    {k:"calc",t:"Data confidence = min(source confidences)",t_zh:"数据置信 = min(各源置信)",val:"88%"},
    {k:"out",t:"11/11 passed (Private Mkt recovered) — cleared into analysis",t_zh:"11/11 通过(Private Mkt 已恢复)— 放行进入分析"}]},
- {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",lines:[
-   {k:"think",t:"+50bps → affordability ↓ → B-segment forced down into A",t_zh:"加息 +50bps → 负担能力↓ → B 段被迫下迁 A 段"},
-   {k:"calc",t:"B→A migration = Seg B 13,100 × 18%",t_zh:"B→A 迁移 = Seg B 13,100 × 18%",val:"≈ 2,360"},
-   {k:"calc",t:"Seg A demand (Y3) = base 16,740 + 2,360",t_zh:"Seg A 需求(Y3)= 基线 16,740 + 迁移 2,360",val:"= 19,100"},
-   {k:"out",t:"Structural demand uplift (not transient)",t_zh:"需求结构性抬升(非短期波动)"}]},
- {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",lines:[
+ {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",io:{in:"Beneficiary + segment data",out:"Seg-A demand forecast 19,100"},lines:[
+   {k:"think",t:"Hypothesis: rate hike shifts demand down the segment ladder",t_zh:"假设:加息使需求沿段位下移"},
+   {k:"think",t:"+50bps → monthly instalment ↑ ~6% → affordability ↓ for Seg B",t_zh:"加息 +50bps → 月供 ↑ 约 6% → B 段负担能力下降"},
+   {k:"calc",t:"Affected Seg-B pool = 13,100 households",t_zh:"受影响 B 段群体 = 13,100 户",val:"13,100"},
+   {k:"calc",t:"B→A migration = 13,100 × 18% migration propensity",t_zh:"B→A 迁移 = 13,100 × 18% 迁移倾向",val:"≈ 2,360"},
+   {k:"calc",t:"Seg A demand (Y3) = base 16,740 + migration 2,360",t_zh:"Seg A 需求(Y3)= 基线 16,740 + 迁移 2,360",val:"= 19,100"},
+   {k:"think",t:"Migration is a one-way structural shift — won't revert when rates fall",t_zh:"迁移为单向结构性变化 —— 利率回落也难回流"},
+   {k:"out",t:"Structural demand uplift confirmed (not transient)",t_zh:"确认需求结构性抬升(非短期波动)"}]},
+ {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",io:{in:"Demand 19,100 + pipeline",out:"Gap 12,400 · coverage 35% · RED"},lines:[
    {k:"call",t:"Read supply pipeline (143 projects)",t_zh:"读取供给管线(143 项目)",ds:["DS-03","DS-08"]},
+   {k:"think",t:"Paper units overstate delivery — discount by ML conversion model (AUC 0.83)",t_zh:"账面套数高估交付 —— 用 ML 转化模型(AUC 0.83)折算"},
    {k:"calc",t:"Effective supply = pipeline 12,900 × conversion 52%",t_zh:"有效供给 = 管线 12,900 × 转化率 52%",val:"≈ 6,700"},
    {k:"calc",t:"Gap = demand 19,100 − effective supply 6,700",t_zh:"缺口 = 需求 19,100 − 有效供给 6,700",val:"= 12,400"},
    {k:"calc",t:"Coverage = 6,700 ÷ 19,100",t_zh:"覆盖率 = 6,700 ÷ 19,100",val:"= 35%"},
-   {k:"think",t:"Uncovered 65% > 30% threshold → RED, strategic-level",t_zh:"未覆盖 65% > 30% 阈值 → 红色,触发战略级"},
+   {k:"think",t:"Also a product-mix mismatch: 72% of pipeline targets Seg C–E",t_zh:"还存在产品错配:管线 72% 面向 C–E 段"},
+   {k:"think",t:"Gap rule: uncovered 65% > 30% threshold → RED, strategic-level",t_zh:"缺口规则:未覆盖 65% > 30% 阈值 → 红色,触发战略级"},
    {k:"out",t:"Riyadh Seg A gap 12,400 units · coverage 35% · RED",t_zh:"利雅得 A 段缺口 12,400 套 · 覆盖 35% · 红色"}]},
- {ag:"Conversion & Absorption Agent",ag_zh:"转化吸纳引擎",ic:"🎯",lyr:"L3",lines:[
+ {ag:"Conversion & Absorption Agent",ag_zh:"转化吸纳引擎",ic:"🎯",lyr:"L3",io:{in:"Pipeline + conversion rates",out:"Early-warning · residual gap 6,200"},lines:[
    {k:"calc",t:"Seg A conversion 52% vs Seg E 78%",t_zh:"Seg A 转化率 52% vs Seg E 78%",val:"−26pp"},
-   {k:"think",t:"Root cause: long approvals · thin margins · cancellation risk",t_zh:"根因:审批周期长 · 开发商利润薄 · 取消风险高"},
-   {k:"out",t:"Even at 100% pipeline, gap stays 6,200 → must add supply",t_zh:"管线即便 100% 兑现,缺口仍 6,200 套 → 必须新增供给"}]},
- {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"⚖",lyr:"L3",lines:[
-   {k:"think",t:"Causal-chain simulation over six measures (UC-02→04→06)",t_zh:"对六项措施跑因果链模拟(UC-02→04→06)"},
-   {k:"calc",t:"M1 developer subsidy +15% → +3,100/yr",t_zh:"M1 开发商补贴 +15% → +3,100 套/年",val:"35%→85%"},
+   {k:"think",t:"Root cause: long approval cycles · thin developer margins · cancellation risk",t_zh:"根因:审批周期长 · 开发商利润薄 · 取消风险高"},
+   {k:"calc",t:"Even if all 23 Seg-A projects hit 100%: 12,900 − 19,100",t_zh:"即便 23 个 A 段项目 100% 兑现:12,900 − 19,100",val:"gap 6,200"},
+   {k:"think",t:"Conclusion: pipeline acceleration alone can't close it",t_zh:"结论:仅靠加速管线无法补足"},
+   {k:"out",t:"Must add new supply — triggers early-warning to Planning",t_zh:"必须新增供给 —— 触发早期预警至规划"}]},
+ {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"⚖",lyr:"L3",io:{in:"Gap + 6 measures",out:"Ranked toolkit · M1+M2+M3"},lines:[
+   {k:"think",t:"Run causal-chain simulation over six measures (UC-02→04→06)",t_zh:"对六项措施跑因果链模拟(UC-02→04→06)"},
+   {k:"calc",t:"M1 developer subsidy +15% → +3,100/yr · SAR 775/unit",t_zh:"M1 开发商补贴 +15% → +3,100 套/年 · 每套 SAR 775",val:"35%→85%"},
+   {k:"calc",t:"M2 land release −40% → +2,000/yr",t_zh:"M2 土地释放 −40% → +2,000 套/年",val:"+12pp"},
    {k:"calc",t:"M6 lower down-payment → demand +18%, no new supply",t_zh:"M6 降首付 → 需求 +18% 无新增供给",val:"35%→38% ✕"},
+   {k:"think",t:"M6 is counter-productive in a supply-constrained market → reject",t_zh:"M6 在供给受限市场适得其反 → 否决"},
    {k:"out",t:"Recommend M1+M2+M3 combo; reject M6",t_zh:"推荐 M1+M2+M3 组合;反对 M6"}]},
- {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,lines:[
-   {k:"think",t:"Uncovered 65% > 30% → requires Planning Manager approval",t_zh:"未覆盖 65% > 30% → 需 Planning Manager 批准"}]},
- {ag:"Output · Dispatch",ag_zh:"产出与分发",ic:"✓",lyr:"L5",lines:[
+ {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,io:{in:"Draft recommendation",out:"Awaiting human approval"},lines:[
+   {k:"think",t:"Severity = RED and gap > 30% → above autonomous scope",t_zh:"严重度 = 红色 且 缺口 > 30% → 超出自治范围"},
+   {k:"think",t:"Guardrails: HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31",t_zh:"护栏:HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31"},
+   {k:"think",t:"Hold output as draft → requires Planning Manager approval",t_zh:"产出保持草稿 → 需 Planning Manager 批准"}]},
+ {ag:"Output · Dispatch",ag_zh:"产出与分发",ic:"✓",lyr:"L5",io:{in:"Approved recommendation",out:"PDF · alert · SSOT push"},lines:[
    {k:"out",t:"Generate gap briefing (PDF) + early-warning",t_zh:"生成缺口简报(PDF)+ 早期预警"},
    {k:"out",t:"Write audit log (user / time / reason)",t_zh:"写入审计日志(用户 / 时间 / 原因)"},
    {k:"out",t:"Push SSOT → AI_H_03 / CoPilot",t_zh:"SSOT 接口推送 → AI_H_03 / CoPilot"}]},
@@ -1633,10 +1664,12 @@ function StoryStepper({states}){
 function ChatAnalysis(){
   const {t,lang,cov,pushLog,setRoute,addReport,seed,clearSeed}=useStore();
   const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
-  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai;
+  const [flow,setFlow]=useState(false);
+  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
+  useEffect(()=>{ if(ai.on&&endRef.current) endRef.current.scrollIntoView({behavior:"smooth",block:"end"}); },[ai]);
   function advance(cur){
     const ag=AGENTS_T[cur.ag];
     if(cur.line<ag.lines.length-1){
@@ -1683,7 +1716,7 @@ function ChatAnalysis(){
   const orchSt=ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
   return (<div className="fade">
     <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
-      right={<span className="chip info">✦ Orchestrator · {orchSt}</span>}/>
+      right={<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>}/>
     <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
         : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
@@ -1705,8 +1738,20 @@ function ChatAnalysis(){
             <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div></div>
           <AiRec d={AIREC.shock}/>
         </div>}
+        <div ref={endRef} style={{height:1}}/>
       </div>
     </div>
+    {flow&&<Drawer title={L("Multi-Agent Flow · Agent I/O","多智能体流 · Agent I/O")} onClose={()=>setFlow(false)}>
+      <div className="muted" style={{fontSize:12.5,marginBottom:14}}>{L("Use-case storyline (UC-03 Supply-Demand Balancing) — each agent's inputs and outputs wired through the L1→L5 pipeline.","用例故事线(UC-03 供需平衡为主线)—— 各智能体的输入 / 输出在 L1→L5 流水线中串联。")}</div>
+      <div className="ioflow">
+        {AGENTS_T.map((ag,i)=>(<div key={i} className={"ionode"+(ag.gate?" gate":"")}>
+          <div className="io in">▸ {L("IN","输入")}: <b>{ag.io?ag.io.in:"—"}</b></div>
+          <div className="iocore"><span className="aic">{ag.ic}</span><b style={{flex:1}}>{Z(ag,"ag")}</b><span className="alyr">{ag.lyr}</span></div>
+          <div className="io out">{L("OUT","输出")}: <b>{ag.io?ag.io.out:"—"}</b></div>
+          {i<AGENTS_T.length-1&&<div className="ioarrow">↓</div>}
+        </div>))}
+      </div>
+    </Drawer>}
   </div>);
 }
 function Msg({m,onGenReport,onRoute,onRun}){
@@ -1932,6 +1977,14 @@ function Modal({title,onClose,children,wide}){
       <div className="modal-body">{children}</div>
     </div></div>);
 }
+function Drawer({title,onClose,children,foot}){
+  return (<div className="drawer-ov" onClick={onClose}>
+    <div className="drawer-panel" onClick={e=>e.stopPropagation()}>
+      <div className="drawer-head"><h3>{title}</h3><button className="modal-x" onClick={onClose} aria-label="close">✕</button></div>
+      <div className="drawer-body">{children}</div>
+      {foot&&<div className="drawer-foot">{foot}</div>}
+    </div></div>);
+}
 const REPORTS_META=[
   {id:"weekly",   icon:"⚡", color:"#2563eb", nameKey:"rp_weekly",   ref:"DSO-WR-2026-W25", date:"22 Jun 2026 · 06:00", cov:"ministry"},
   {id:"monthly",  icon:"📊", color:"#059669", nameKey:"rp_monthly",  ref:"DSO-MR-2026-06",  date:"01 Jul 2026 · 06:00", cov:"total"},
@@ -2020,13 +2073,10 @@ function Reports(){
         {log.length===0&&<div className="muted">{t("noItems")}</div>}
       </div>
     </Section>
-    {pr&&<Modal wide title={<span style={{color:pr.color}}>{pr.icon} {t(pr.nameKey)}</span>} onClose={()=>setPreview(null)}>
-      <iframe title="report" srcDoc={decodeReport(preview)} style={{width:"100%",height:"66vh",border:"1px solid var(--line)",borderRadius:8,background:"#fff"}}/>
-      <div style={{display:"flex",gap:8,marginTop:12,justifyContent:"flex-end"}}>
-        <button className="btn secondary" onClick={()=>setPreview(null)}>{t("close")}</button>
-        <button className="btn" onClick={()=>downloadReport(preview)}>⬇ {t("download")}</button>
-      </div>
-    </Modal>}
+    {pr&&<Drawer title={<span style={{color:pr.color}}>{pr.icon} {t(pr.nameKey)}</span>} onClose={()=>setPreview(null)}
+      foot={<><button className="btn secondary" onClick={()=>setPreview(null)}>{t("close")}</button><button className="btn" onClick={()=>downloadReport(preview)}>⬇ {t("download")}</button></>}>
+      <iframe title="report" srcDoc={decodeReport(preview)} style={{flex:1,minHeight:0,width:"100%",border:"1px solid var(--line)",borderRadius:8,background:"#fff"}}/>
+    </Drawer>}
     {health&&<Modal title={<span className="sect-right"><span className={"chip "+(health.sev==="error"?"danger":"amber")}>{health.sev==="error"?("✕ "+t("sev_red")):("⚠ "+t("sev_amber"))}</span> {t(health.k)}</span>} onClose={()=>setHealth(null)}>
       {health.sla&&<div className="banner" style={{marginBottom:12}}>📐 {t("sla_label")}: {t(health.sla)}</div>}
       <div style={{fontSize:13.5,lineHeight:1.75}}>{t(health.dk)}</div>
