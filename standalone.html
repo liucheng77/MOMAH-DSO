@@ -89,6 +89,32 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .notif-row{display:flex;align-items:center;gap:8px;padding:8px 6px;border-top:1px dashed var(--line);font-size:13px}
 .sev-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--muted)}
 .sev-dot.red{background:#b42318}.sev-dot.amber{background:#b9770e}
+/* multi-agent reasoning theater */
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.theater{display:grid;grid-template-columns:212px 1fr;gap:16px;align-items:start}
+@media(max-width:880px){.theater{grid-template-columns:1fr}}
+.dsrail{padding:14px !important}
+.dsrail .rail-h{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+.dsc{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;background:#fff;transition:.3s}
+.dsc.ok{border-color:var(--green);background:var(--green-50)}
+.dsc .st{font-size:10px;color:var(--muted)}.dsc.ok .st{color:var(--green-dark);font-weight:700}
+.agentcard{border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:10px;background:#fff}
+.agentcard.active{border-color:#4f46e5;box-shadow:0 3px 16px rgba(79,70,229,.13)}
+.agentcard.gatec{border-color:#b9770e;background:#fdf4e3}
+.agentcard .ah{display:flex;align-items:center;gap:9px;font-weight:700}
+.agentcard .aic{width:26px;height:26px;border-radius:7px;background:#eef0fc;color:#4f46e5;display:grid;place-items:center;flex:0 0 auto;font-size:14px}
+.agentcard .alyr{font-size:10.5px;font-weight:700;color:#4f46e5;margin-inline-start:auto}
+.tln{font-size:12.5px;margin:7px 0 0;padding-inline-start:23px;position:relative;animation:tfade .35s}
+.tln.think{color:var(--muted)}.tln.think:before{content:"✦";position:absolute;inset-inline-start:0;color:#4f46e5}
+.tln.call:before{content:"⛁";position:absolute;inset-inline-start:0;color:#4f46e5}
+.tln.calc{color:var(--ink)}.tln.calc:before{content:"∑";position:absolute;inset-inline-start:0;color:var(--green)}
+.tln.out{color:var(--green-dark);font-weight:600}.tln.out:before{content:"→";position:absolute;inset-inline-start:0;color:var(--green)}
+.tln .res{font-weight:700;color:var(--green-dark);background:var(--green-50);padding:1px 8px;border-radius:6px;margin-inline-start:7px;font-variant-numeric:tabular-nums}
+.tln .dots:after{content:"";animation:tdots 1.1s steps(4,end) infinite}
+@keyframes tdots{0%{content:""}25%{content:"·"}50%{content:"··"}75%{content:"···"}}
+@keyframes tfade{from{opacity:0;transform:translateY(3px)}to{opacity:1}}
+.gate-card{border:1.5px solid #b9770e;background:#fdf4e3;border-radius:12px;padding:16px;margin-bottom:10px}
+.btn.amber{background:#b9770e;color:#fff;border-color:#b9770e}.btn.amber:hover{filter:brightness(1.06)}
 .topbar .tbtn{background:#fff;border:1px solid var(--line);color:var(--ink);
   border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
 .topbar .tbtn:hover{background:var(--green-50);border-color:var(--green-100);color:var(--green-dark)}
@@ -714,7 +740,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 21:15 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 21:27 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2269,6 +2295,48 @@ function downloadBriefing(){
     setTimeout(()=>URL.revokeObjectURL(url),1500);
   }catch(e){ window.print(); }
 }
+/* ---- Multi-agent reasoning theater data ---- */
+const DS11=[["DS-01","Sakani"],["DS-02","Wafi"],["DS-03","IDMS"],["DS-04","Ejari"],["DS-05","MoF"],["DS-06","SEC"],["DS-07","MOJ Price"],["DS-08","GASTAT"],["DS-09","Private Mkt"],["DS-10","Geo/GIS"],["DS-11","Bank/Tahseel"]];
+const AGENTS_T=[
+ {ag:"Orchestrator Agent",ag_zh:"编排 Agent",ic:"✦",lyr:"L3",lines:[
+   {k:"think",t:"Parse intent: how big is the Riyadh Seg-A gap, and how to close it?",t_zh:"解析意图:利雅得 A 段供需缺口有多大?该怎么补?"},
+   {k:"call",t:"Query model registry → Supply-Demand Balancing (UC-03)",t_zh:"查询模型注册表 → 命中 Supply-Demand Balancing (UC-03)",ds:[]},
+   {k:"think",t:"Routing confidence 92% ≥ 70% threshold → auto-run, no escalation",t_zh:"路由置信 92% ≥ 70% 阈值 → 自动执行,无需升级"},
+   {k:"out",t:"Routed; co-scheduled Demand Intelligence & Conversion engines",t_zh:"已路由,并预约需求智能 / 转化吸纳引擎协同"}]},
+ {ag:"Data Quality Monitor",ag_zh:"数据质量监控",ic:"◉",lyr:"L2",lines:[
+   {k:"call",t:"Pull 11 data sources in parallel",t_zh:"并行拉取 11 个数据源",ds:["DS-01","DS-02","DS-03","DS-04","DS-05","DS-06","DS-07","DS-08","DS-09","DS-10","DS-11"]},
+   {k:"think",t:"Validate completeness / timeliness / consistency / accuracy",t_zh:"逐源校验:完整性 / 时效 / 一致性 / 准确性"},
+   {k:"calc",t:"Data confidence = min(source confidences)",t_zh:"数据置信 = min(各源置信)",val:"88%"},
+   {k:"out",t:"11/11 passed (Private Mkt recovered) — cleared into analysis",t_zh:"11/11 通过(Private Mkt 已恢复)— 放行进入分析"}]},
+ {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",lines:[
+   {k:"think",t:"+50bps → affordability ↓ → B-segment forced down into A",t_zh:"加息 +50bps → 负担能力↓ → B 段被迫下迁 A 段"},
+   {k:"calc",t:"B→A migration = Seg B 13,100 × 18%",t_zh:"B→A 迁移 = Seg B 13,100 × 18%",val:"≈ 2,360"},
+   {k:"calc",t:"Seg A demand (Y3) = base 16,740 + 2,360",t_zh:"Seg A 需求(Y3)= 基线 16,740 + 迁移 2,360",val:"= 19,100"},
+   {k:"out",t:"Structural demand uplift (not transient)",t_zh:"需求结构性抬升(非短期波动)"}]},
+ {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",lines:[
+   {k:"call",t:"Read supply pipeline (143 projects)",t_zh:"读取供给管线(143 项目)",ds:["DS-03","DS-08"]},
+   {k:"calc",t:"Effective supply = pipeline 12,900 × conversion 52%",t_zh:"有效供给 = 管线 12,900 × 转化率 52%",val:"≈ 6,700"},
+   {k:"calc",t:"Gap = demand 19,100 − effective supply 6,700",t_zh:"缺口 = 需求 19,100 − 有效供给 6,700",val:"= 12,400"},
+   {k:"calc",t:"Coverage = 6,700 ÷ 19,100",t_zh:"覆盖率 = 6,700 ÷ 19,100",val:"= 35%"},
+   {k:"think",t:"Uncovered 65% > 30% threshold → RED, strategic-level",t_zh:"未覆盖 65% > 30% 阈值 → 红色,触发战略级"},
+   {k:"out",t:"Riyadh Seg A gap 12,400 units · coverage 35% · RED",t_zh:"利雅得 A 段缺口 12,400 套 · 覆盖 35% · 红色"}]},
+ {ag:"Conversion & Absorption Agent",ag_zh:"转化吸纳引擎",ic:"🎯",lyr:"L3",lines:[
+   {k:"calc",t:"Seg A conversion 52% vs Seg E 78%",t_zh:"Seg A 转化率 52% vs Seg E 78%",val:"−26pp"},
+   {k:"think",t:"Root cause: long approvals · thin margins · cancellation risk",t_zh:"根因:审批周期长 · 开发商利润薄 · 取消风险高"},
+   {k:"out",t:"Even at 100% pipeline, gap stays 6,200 → must add supply",t_zh:"管线即便 100% 兑现,缺口仍 6,200 套 → 必须新增供给"}]},
+ {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"⚖",lyr:"L3",lines:[
+   {k:"think",t:"Causal-chain simulation over six measures (UC-02→04→06)",t_zh:"对六项措施跑因果链模拟(UC-02→04→06)"},
+   {k:"calc",t:"M1 developer subsidy +15% → +3,100/yr",t_zh:"M1 开发商补贴 +15% → +3,100 套/年",val:"35%→85%"},
+   {k:"calc",t:"M6 lower down-payment → demand +18%, no new supply",t_zh:"M6 降首付 → 需求 +18% 无新增供给",val:"35%→38% ✕"},
+   {k:"out",t:"Recommend M1+M2+M3 combo; reject M6",t_zh:"推荐 M1+M2+M3 组合;反对 M6"}]},
+ {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,lines:[
+   {k:"think",t:"Uncovered 65% > 30% → requires Planning Manager approval",t_zh:"未覆盖 65% > 30% → 需 Planning Manager 批准"}]},
+ {ag:"Output · Dispatch",ag_zh:"产出与分发",ic:"✓",lyr:"L5",lines:[
+   {k:"out",t:"Generate gap briefing (PDF) + early-warning",t_zh:"生成缺口简报(PDF)+ 早期预警"},
+   {k:"out",t:"Write audit log (user / time / reason)",t_zh:"写入审计日志(用户 / 时间 / 原因)"},
+   {k:"out",t:"Push SSOT → AI_H_03 / CoPilot",t_zh:"SSOT 接口推送 → AI_H_03 / CoPilot"}]},
+];
+
 // Orchestrator status — fixed-width element in the chat header. Idle: badge + grey nodes + "auto";
 // running: same footprint with nodes lighting up + "x/7 · <engine>". Width stays constant.
 function StoryStepper({states}){
@@ -2291,103 +2359,80 @@ function StoryStepper({states}){
   </div>);
 }
 function ChatAnalysis(){
-  const {t,cov,setRoute,pushLog,addReport,seed,clearSeed}=useStore();
-  const [msgs,setMsgs]=useState([]);
-  const [busy,setBusy]=useState(false);
-  const [input,setInput]=useState("");
-  const [storyStates,setStoryStates]=useState(null);
-  const scrollRef=useRef(null);
-  const idRef=useRef(0);
-  useEffect(()=>{ if(scrollRef.current) scrollRef.current.scrollTop=scrollRef.current.scrollHeight; },[msgs,busy]);
+  const {t,lang,cov,pushLog,setRoute,addReport,seed,clearSeed}=useStore();
+  const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
+  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai;
+  const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
+  const L=(en,zh)=>lang==="zh"?zh:en;
+  useEffect(()=>()=>clearTimeout(tRef.current),[]);
+  function advance(cur){
+    const ag=AGENTS_T[cur.ag];
+    if(cur.line<ag.lines.length-1){
+      const nl=cur.line+1, ln=ag.lines[nl], ds={...cur.ds};
+      if(ln.k==="call"&&ln.ds) ln.ds.forEach(d=>{ds[d]=true;});
+      const next={...cur,line:nl,ds}; setAi(next);
+      if(cur.playing) tRef.current=setTimeout(()=>advance(next), ln.k==="calc"?900:ln.k==="call"?850:680);
+    } else if(ag.gate){ setAi({...cur,gate:true,playing:false}); }
+    else if(cur.ag<AGENTS_T.length-1){ const next={...cur,ag:cur.ag+1,line:-1}; setAi(next); pushLog("log_route"); if(cur.playing) tRef.current=setTimeout(()=>advance(next),500); }
+    else { setAi({...cur,done:true,playing:false}); pushLog("log_report"); addReport({ref:"DSO-2026-0619-URG-001",nameKey:"repName_brief",cov,conf:88}); }
+  }
+  function start(){ clearTimeout(tRef.current); pushLog("log_cross"); const cur={on:true,ag:0,line:-1,ds:{},gate:false,done:false,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
+  function play(){ const cur={...aiRef.current,playing:true}; setAi(cur); advance(cur); }
+  function pause(){ clearTimeout(tRef.current); setAi({...aiRef.current,playing:false}); }
+  function stepOne(){ clearTimeout(tRef.current); advance({...aiRef.current,playing:false}); }
+  function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,ag:aiRef.current.ag+1,line:-1,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
+  function reset(){ clearTimeout(tRef.current); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false}); }
+  useEffect(()=>{ if(seed){ start(); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
 
-  function push(m){ idRef.current+=1; const id=idRef.current; setMsgs(prev=>[...prev,{id,...m}]); return id; }
-  function run(scnId){
-    if(busy) return;
-    const scn=SCN[scnId]; if(!scn) return;
-    setStoryStates(null);
-    push({role:"user",text:t(scnId)});
-    if(scn.type==="handoff"){ pushLog("log_policy"); setTimeout(()=>setRoute("policy"),500);
-      push({role:"bot",type:"text",text:t("a_demand")? "↪ "+t("nav_policy") : ""}); return; }
-    setBusy(true);
-    pushLog(scn.type==="cross"?"log_cross":scn.type==="escalate"?"log_route":"log_route");
-    const thinkId=push({role:"bot",type:"think",scn:scnId,steps:scn.steps.map(s=>({eng:s[0],k:s[1],st:"idle"})),i:0});
-    let i=0;
-    const tick=()=>{
-      setMsgs(prev=>prev.map(m=>{ if(m.id!==thinkId) return m;
-        const steps=m.steps.map((s,idx)=> idx<i?{...s,st:"ok"}: idx===i?{...s,st:"run"}:s ); return {...m,steps}; }));
-      i+=1;
-      if(i<=scn.steps.length){ setTimeout(tick,640); }
-      else {
-        setMsgs(prev=>prev.map(m=> m.id===thinkId?{...m,steps:m.steps.map(s=>({...s,st:"ok"}))}:m));
-        setBusy(false);
-        if(scn.type==="escalate"){ push({role:"bot",type:"escalate",scn:scnId}); }
-        else { push({role:"bot",type:"answer",scn:scnId}); if(scn.report){ pushLog("log_route"); } }
-      }
-    };
-    setTimeout(tick,500);
-  }
-  function genReport(scnId){
-    const scn=SCN[scnId]; const ref=scn.brief?"DSO-2026-0619-URG-001":refNo();
-    addReport({ ref, nameKey:scn.report, cov, conf:scn.conf });
-    push({role:"bot",type:"report",scn:scnId,ref});
-    pushLog("log_report",ref);
-  }
-  // progressive multi-agent storyline: question → agents stream in one-by-one → summary
-  function runStory(){
-    if(busy) return;
-    setStoryStates(STORY.map(()=>"idle"));
-    push({role:"user",text:t("q_shock")});
-    setBusy(true); pushLog("log_cross");
-    push({role:"bot",type:"text",text:"✦ "+t("plan_title")+" — "+t("story_intro")});
-    const setSt=(i,v)=>setStoryStates(prev=>{ const n=[...(prev||STORY.map(()=>"idle"))]; n[i]=v; return n; });
-    const step=(i)=>{
-      if(i>=STORY.length){ setTimeout(()=>{ push({role:"bot",type:"summary"}); setBusy(false); pushLog("log_report"); },900); return; }
-      setSt(i,"run"); pushLog("log_route");
-      const eid=push({role:"bot",type:"engine",idx:i,loading:true});
-      setTimeout(()=>{ setMsgs(prev=>prev.map(m=>m.id===eid?{...m,loading:false}:m)); setSt(i,"done"); setTimeout(()=>step(i+1),900); }, STORY[i].dur);
-    };
-    setTimeout(()=>step(0),650);
-  }
-  function runHistory(){
-    if(busy) return;
-    setStoryStates(null);
-    push({role:"user",text:t("q_history")});
-    setBusy(true); pushLog("log_route");
-    setTimeout(()=>{ push({role:"bot",type:"hist"}); setBusy(false); },900);
-  }
-  function go(id){ if(id==="q_shock") runStory(); else if(id==="q_history") runHistory(); else run(id); }
-  function freeSend(){
-    const q=input.trim().toLowerCase(); setInput("");
-    if(!q) return;
-    let id="q_vague";
-    if(/rate|interest|bps|利率|加息|فائدة|shock|冲击/.test(q)) id="q_shock";
-    else if(/histor|历史|تاريخ|5 ?year|五年/.test(q)) id="q_history";
-    else if(/gap|缺口|فجوة|supply|供给|عرض/.test(q)) id="q_gap";
-    else if(/demand|趋势|需求|طلب|trend|segment|客群|段/.test(q)) id="q_demand";
-    else if(/financ|融资|政策|policy|تمويل|سياسة/.test(q)) id="q_policy";
-    else { push({role:"user",text:input||q}); push({role:"bot",type:"text",text:t("a_vague")}); return; }
-    go(id);
-  }
-  useEffect(()=>{ if(seed){ go(seed); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
-
-  const presets=["q_shock","q_history","q_demand","q_gap","q_vague"];
-  return (<div className="fade">
-    <PageHeader title={t("nav_chat")} sub={t("chat_sub")} cls="ph-end" right={<StoryStepper states={storyStates}/>}/>
-    <div className="card pad" style={{display:"flex",flexDirection:"column"}}>
-      <div className="preset-row">
-        <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{t("presets")}</span>
-        {presets.map(p=><button key={p} className={"preset"+(p==="q_vague"?" alt":p==="q_shock"?"":"")} onClick={()=>go(p)} disabled={busy}>{p==="q_shock"?"⚡ ":""}{t(p).length>40?t(p).slice(0,38)+"…":t(p)}</button>)}
+  if(!ai.on){
+    const ex=["⚡ "+L("Rate-hike +50bps impact on Riyadh Seg-A gap","加息 +50bps 对利雅得 A 段缺口的影响"),L("Is the gap a policy or a macro problem?","缺口是政策问题还是宏观问题?"),L("What should we do to close it?","该怎么补这个缺口?")];
+    return (<div className="fade">
+      <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end"/>
+      <div className="card pad" style={{textAlign:"center",padding:"34px 18px"}}>
+        <div className="muted" style={{marginBottom:14,fontSize:13}}>✦ {L("Ask in natural language — the Orchestrator routes to the right engines and shows its full reasoning.","用自然语言提问 —— 编排 Agent 路由到对应引擎,并展示完整推理过程。")}</div>
+        <button className="btn" onClick={start}>▶ {L("Run multi-agent analysis","运行多智能体分析")}</button>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginTop:16}}>
+          {ex.map((e,i)=><button key={i} className="preset" onClick={start}>{e}</button>)}
+        </div>
       </div>
-      <div className="chat-wrap">
-        <div className="chat-scroll" ref={scrollRef}>
-          {msgs.length===0&&<div className="muted" style={{textAlign:"center",margin:"30px 0",fontSize:13}}>✦ {t("chat_sub")}</div>}
-          {msgs.map(m=><Msg key={m.id} m={m} onGenReport={genReport} onRoute={setRoute} onRun={run}/>)}
-        </div>
-        <div className="chat-input">
-          <input className="input" placeholder={t("chat_ph")} value={input} disabled={busy}
-            onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")freeSend();}}/>
-          <button className="btn" onClick={freeSend} disabled={busy}>{busy?t("running"):t("send")}</button>
-        </div>
+    </div>);
+  }
+  const rail=DS11.map(d=>{const ok=ai.ds[d[0]];return (<div key={d[0]} className={"dsc"+(ok?" ok":"")}><span>{d[0]} {d[1]}</span><span className="st">{ok?"✓":"·"}</span></div>);});
+  const cards=[];
+  for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
+    const ag=AGENTS_T[i]; const active=(i===ai.ag&&!ai.done);
+    const shown=(i<ai.ag)?ag.lines.length:(ai.line+1);
+    const lns=[];
+    for(let j=0;j<shown;j++){ const ln=ag.lines[j]; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
+      lns.push(<div key={j} className={"tln "+ln.k}>{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</div>); }
+    cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")}>
+      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
+  }
+  const orchSt=ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
+  return (<div className="fade">
+    <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
+      right={<span className="chip info">✦ Orchestrator · {orchSt}</span>}/>
+    <div className="ctrl">
+      {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
+        : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
+      {(!ai.done&&!ai.gate)?<button className="btn ghost sm" onClick={stepOne}>⏭ {L("Step","下一步")}</button>:null}
+      <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
+    </div>
+    <div className="theater">
+      <div className="dsrail card pad"><div className="rail-h">{L("Data sources · 11","数据源 · 11")}</div>{rail}</div>
+      <div>
+        {cards}
+        {ai.gate&&<div className="gate-card">
+          <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
+          <div className="muted" style={{fontSize:12.5,margin:"8px 0 12px"}}>{L("AI output is a draft until you approve; it won't be filed or dispatched. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿,不会上报或分发。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
+          <div className="row" style={{flexWrap:"wrap",gap:8}}><button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button><button className="btn ghost" onClick={reset}>{L("Return","退回")}</button></div>
+        </div>}
+        {ai.done&&<div style={{marginTop:6}}>
+          <div className="card pad" style={{marginBottom:14}}><div className="row" style={{justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+            <span className="chip">✓ {L("Complete · audit logged · SSOT pushed","完成 · 审计已记录 · SSOT 已推送")}</span>
+            <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div></div>
+          <AiRec d={AIREC.shock}/>
+        </div>}
       </div>
     </div>
   </div>);
