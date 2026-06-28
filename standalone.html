@@ -73,10 +73,22 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
   justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:40;
   border-bottom:3px solid var(--green);box-shadow:0 1px 8px rgba(16,33,28,.07)}
 .topbar .brand{display:flex;align-items:center;gap:12px;font-weight:700}
-.topbar .brand .topbar-logo{height:38px;width:auto;display:block;flex:0 0 auto}
-.topbar .brand .topbar-sep{width:1px;height:30px;background:var(--line);display:inline-block}
-.topbar .brand .topbar-app{font-weight:700;font-size:22px;color:var(--ink);line-height:1.1}
-.topbar .right{display:flex;align-items:center;gap:8px}
+.topbar .brand .topbar-logo{height:34px;width:auto;display:block;flex:0 0 auto}
+.topbar .brand .topbar-sep{width:1px;height:28px;background:var(--line);display:inline-block}
+.topbar .brand .topbar-app{font-weight:700;font-size:18px;color:var(--ink);line-height:1.1;white-space:nowrap}
+.topbar .topnav{display:flex;align-items:center;gap:2px;margin-inline-start:18px;flex:1 1 auto;min-width:0;overflow-x:auto}
+.topbar .tnav{border:0;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:600;padding:8px 13px;border-radius:8px;cursor:pointer;border-bottom:2.5px solid transparent;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;position:relative}
+.topbar .tnav:hover{color:var(--ink)}
+.topbar .tnav.on{color:var(--green-dark);border-bottom-color:var(--green)}
+.topbar .tnav .ico{font-size:13px}
+.topbar .tnav .badge-count{position:static;margin-inline-start:2px}
+.topbar .right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.topbar .icobtn{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:17px;position:relative;flex:0 0 auto}
+.topbar .icobtn:hover{background:var(--green-50);color:var(--green-dark);border-color:var(--green-100)}
+.topbar .icobtn .badge{position:absolute;top:-5px;inset-inline-end:-5px;background:#b42318;color:#fff;font-size:9px;line-height:1;border-radius:999px;padding:2px 4px;font-weight:700}
+.notif-row{display:flex;align-items:center;gap:8px;padding:8px 6px;border-top:1px dashed var(--line);font-size:13px}
+.sev-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--muted)}
+.sev-dot.red{background:#b42318}.sev-dot.amber{background:#b9770e}
 .topbar .tbtn{background:#fff;border:1px solid var(--line);color:var(--ink);
   border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
 .topbar .tbtn:hover{background:var(--green-50);border-color:var(--green-100);color:var(--green-dark)}
@@ -702,7 +714,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-23 19:00 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 21:15 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -1667,16 +1679,36 @@ function CoverageSwitch(){
   </span>);
 }
 function TopBar(){
-  const {t,lang,setLang,user,setUser,reset}=useStore();
+  const {t,lang,setLang,user,setUser,reset,route,setRoute,alerts}=useStore();
   const [open,setOpen]=useState(false);
+  const [notif,setNotif]=useState(false);
+  const openAlerts=alerts.filter(a=>!a.ack).length;
+  const notifLbl=lang==="zh"?"通知":lang==="ar"?"التنبيهات":"Notifications";
   return (<div className="topbar">
     <div className="brand">
       <img className="topbar-logo" src="./assets/logo.png" alt="MoMAH" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/logo.png";} else if(f==="1"){im.dataset.f="2";im.src="assets/logo.png";} else im.style.display="none";}}/>
       <span className="topbar-sep"/>
       <span className="topbar-app">{t("appName")}</span>
     </div>
+    <nav className="topnav">
+      {NAV[user].map(([k,ic,r])=>{
+        const badge = k==="nav_monitor"&&openAlerts;
+        return (<button key={k} className={"tnav"+(route===r?" on":"")} onClick={()=>setRoute(r)}>
+          <span className="ico">{ic}</span>{t(k)}{badge?<span className="badge-count">{badge}</span>:null}</button>);
+      })}
+    </nav>
     <div className="right">
       <CoverageSwitch/>
+      <button className="icobtn" title="Search" aria-label="Search">⌕</button>
+      <div className="usermenu">
+        <button className="icobtn" title={notifLbl} aria-label={notifLbl} onClick={()=>setNotif(n=>!n)}>◔{openAlerts?<span className="badge">{openAlerts}</span>:null}</button>
+        {notif&&<div className="panel" onMouseLeave={()=>setNotif(false)} style={{width:300}}>
+          <div style={{padding:"4px 8px 8px",fontWeight:700}}>{notifLbl}</div>
+          {alerts.filter(a=>!a.ack).length===0&&<div className="muted" style={{padding:"6px 8px",fontSize:12}}>{t("noItems")}</div>}
+          {alerts.filter(a=>!a.ack).slice(0,5).map(a=>(<div key={a.id} className="notif-row">
+            <span className={"sev-dot "+a.sev}/><span style={{flex:1}}>{t(a.tk)}</span><span className="muted" style={{fontSize:11}}>{a.ts}</span></div>))}
+        </div>}
+      </div>
       <button className="tbtn" onClick={()=>setLang(lang==="ar"?"en":"ar")}><img className="ic-lang" src="./assets/icon-language.svg" alt="" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/icon-language.svg";} else if(f==="1"){im.dataset.f="2";im.src="assets/icon-language.svg";} else im.style.display="none";}}/> {lang==="ar"?"English":"العربية"}</button>
       <div className="usermenu">
         <button className="tbtn" onClick={()=>setOpen(o=>!o)}>{UserIcon} {t(user)} ▾</button>
@@ -2988,7 +3020,7 @@ function App(){
 
   return (<Ctx.Provider value={store}>
     <TopBar/>
-    <div className="shell"><Sidebar/><div className="content">{page}</div></div>
+    <div className="shell"><div className="content">{page}</div></div>
     <AgentLog/>
     <button className="buildstamp" title={t("release_notes")} onClick={()=>setShowNotes(true)}><span className="bs-dot"/><b>{RELEASE_NOTES.en[0].ver}</b> · {BUILD_TIME}</button>
     {showNotes&&<Modal title={"📦 "+t("release_notes")} onClose={()=>setShowNotes(false)}>

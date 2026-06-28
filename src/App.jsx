@@ -977,16 +977,36 @@ function CoverageSwitch(){
   </span>);
 }
 function TopBar(){
-  const {t,lang,setLang,user,setUser,reset}=useStore();
+  const {t,lang,setLang,user,setUser,reset,route,setRoute,alerts}=useStore();
   const [open,setOpen]=useState(false);
+  const [notif,setNotif]=useState(false);
+  const openAlerts=alerts.filter(a=>!a.ack).length;
+  const notifLbl=lang==="zh"?"通知":lang==="ar"?"التنبيهات":"Notifications";
   return (<div className="topbar">
     <div className="brand">
       <img className="topbar-logo" src="/assets/logo.png" alt="MoMAH" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/logo.png";} else if(f==="1"){im.dataset.f="2";im.src="assets/logo.png";} else im.style.display="none";}}/>
       <span className="topbar-sep"/>
       <span className="topbar-app">{t("appName")}</span>
     </div>
+    <nav className="topnav">
+      {NAV[user].map(([k,ic,r])=>{
+        const badge = k==="nav_monitor"&&openAlerts;
+        return (<button key={k} className={"tnav"+(route===r?" on":"")} onClick={()=>setRoute(r)}>
+          <span className="ico">{ic}</span>{t(k)}{badge?<span className="badge-count">{badge}</span>:null}</button>);
+      })}
+    </nav>
     <div className="right">
       <CoverageSwitch/>
+      <button className="icobtn" title="Search" aria-label="Search">⌕</button>
+      <div className="usermenu">
+        <button className="icobtn" title={notifLbl} aria-label={notifLbl} onClick={()=>setNotif(n=>!n)}>◔{openAlerts?<span className="badge">{openAlerts}</span>:null}</button>
+        {notif&&<div className="panel" onMouseLeave={()=>setNotif(false)} style={{width:300}}>
+          <div style={{padding:"4px 8px 8px",fontWeight:700}}>{notifLbl}</div>
+          {alerts.filter(a=>!a.ack).length===0&&<div className="muted" style={{padding:"6px 8px",fontSize:12}}>{t("noItems")}</div>}
+          {alerts.filter(a=>!a.ack).slice(0,5).map(a=>(<div key={a.id} className="notif-row">
+            <span className={"sev-dot "+a.sev}/><span style={{flex:1}}>{t(a.tk)}</span><span className="muted" style={{fontSize:11}}>{a.ts}</span></div>))}
+        </div>}
+      </div>
       <button className="tbtn" onClick={()=>setLang(lang==="ar"?"en":"ar")}><img className="ic-lang" src="/assets/icon-language.svg" alt="" onError={e=>{const im=e.currentTarget,f=im.dataset.f||"0"; if(f==="0"){im.dataset.f="1";im.src="public/assets/icon-language.svg";} else if(f==="1"){im.dataset.f="2";im.src="assets/icon-language.svg";} else im.style.display="none";}}/> {lang==="ar"?"English":"العربية"}</button>
       <div className="usermenu">
         <button className="tbtn" onClick={()=>setOpen(o=>!o)}>{UserIcon} {t(user)} ▾</button>
@@ -2298,7 +2318,7 @@ function App(){
 
   return (<Ctx.Provider value={store}>
     <TopBar/>
-    <div className="shell"><Sidebar/><div className="content">{page}</div></div>
+    <div className="shell"><div className="content">{page}</div></div>
     <AgentLog/>
     <button className="buildstamp" title={t("release_notes")} onClick={()=>setShowNotes(true)}><span className="bs-dot"/><b>{RELEASE_NOTES.en[0].ver}</b> · {BUILD_TIME}</button>
     {showNotes&&<Modal title={"📦 "+t("release_notes")} onClose={()=>setShowNotes(false)}>
