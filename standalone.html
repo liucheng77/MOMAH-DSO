@@ -186,13 +186,31 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .va-io .io-box.out{border-color:#9ad3b4;background:#eef9f2;color:#13593a}
 .va-io .io-l{display:block;font-size:9px;font-weight:700;letter-spacing:.5px;margin-bottom:3px;opacity:.8}
 .va-io .io-arrow{align-self:center;color:#9aa3ab;font-size:14px;flex:0 0 auto}
+.va-io.col{flex-direction:column;align-items:stretch;gap:4px}
+.va-io.col .io-arrow.down{align-self:center;line-height:1}
+/* horizontal wide agent I/O flow */
+.hscroll{flex:1;min-height:0;overflow:auto}
+.hflow{display:flex;align-items:stretch;min-width:max-content;padding-bottom:10px}
+.hcol{flex:0 0 auto;align-self:stretch}
+.hsrc,.hdeliv{width:172px;background:#eef1ee;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.hstage{width:236px;border:1.5px solid #2563eb;border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.hstage-h{background:#2563eb;color:#fff;font-weight:700;font-size:12.5px;padding:9px 12px;line-height:1.25}
+.hstage-b{padding:8px;display:flex;flex-direction:column;gap:8px}
+.hstage.gate{border-color:#e6c878;width:210px}
+.hstage.gate .hstage-h{background:#fdf4e3;color:#7a5a12}
+.hgate-b{padding:11px 13px;font-size:12.5px}
+.hconn{flex:0 0 auto;width:122px;display:flex;align-items:center;justify-content:center;position:relative;align-self:center}
+.hconn:before{content:"";position:absolute;inset-inline-start:0;inset-inline-end:0;top:50%;transform:translateY(-50%);height:3px;background-image:linear-gradient(90deg,#2563eb 55%,transparent 0);background-size:11px 100%;background-repeat:repeat-x;animation:flowdashX .55s linear infinite}
+@keyframes flowdashX{to{background-position:11px 0}}
+.hconn .vlabel{position:relative;z-index:1;background:#eaf0fb;border:1px solid #d4e0f7;color:#2f57b6;font-size:10px;font-weight:600;border-radius:7px;padding:3px 7px;text-align:center;line-height:1.25;max-width:108px}
 @keyframes tfade{from{opacity:0;transform:translateY(3px)}to{opacity:1}}
 .gate-card{border:1.5px solid #b9770e;background:#fdf4e3;border-radius:12px;padding:16px;margin-bottom:10px}
 .btn.amber{background:#b9770e;color:#fff;border-color:#b9770e}.btn.amber:hover{filter:brightness(1.06)}
 /* side drawer */
-.drawer-ov{position:fixed;inset:0;background:rgba(16,33,28,.42);z-index:60;display:flex;justify-content:flex-end;animation:ovf .2s}
+.drawer-ov{position:fixed;inset:0;background:rgba(16,33,28,.46);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:60;display:flex;justify-content:flex-end;animation:ovf .2s}
 [dir=rtl] .drawer-ov{justify-content:flex-start}
 .drawer-panel{width:min(760px,94vw);background:#fff;height:100vh;display:flex;flex-direction:column;box-shadow:-10px 0 36px rgba(16,33,28,.2);animation:drslide .3s cubic-bezier(.2,.7,.2,1)}
+.drawer-panel.wide{width:min(1280px,97vw)}
 @keyframes drslide{from{transform:translateX(100%)}to{transform:translateX(0)}}
 [dir=rtl] .drawer-panel{animation:drslideR .3s cubic-bezier(.2,.7,.2,1)}
 @keyframes drslideR{from{transform:translateX(-100%)}to{transform:translateX(0)}}
@@ -898,7 +916,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 22:17 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 22:21 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2745,44 +2763,46 @@ const FLOW_STAGES=[
 function FlowDiagram({lang,onClose}){
   const L=(en,zh)=>lang==="zh"?zh:en;
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
-  const Conn=({label})=>(<div className="vconn"><span className="vlabel">{label}</span></div>);
+  const Conn=({label})=>(<div className="hconn"><span className="vlabel">{label}</span></div>);
   const agent=(a,j)=>(<div key={j} className="vagent">
     <div className="va-h"><span className="aic">{a.ic}</span><b style={{flex:1}}>{a.n}</b><span className="gdot" title="live"/></div>
-    <div className="va-io">
+    <div className="va-io col">
       <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
-      <span className="io-arrow">→</span>
+      <span className="io-arrow down">↓</span>
       <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
     </div>
   </div>);
-  return (<Drawer title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
-    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:12}}>
+  return (<Drawer wide title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
+    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:14}}>
       <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
       <span><span className="lg sw-gate"/>{L("Human gate","人工门")}</span>
       <span><span className="lg sw-agent"/>{L("Agent (live)","智能体(存活)")}</span>
       <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
     </div>
-    <div className="vflow">
-      <div className="vsrc">
-        <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
-        <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
-      </div>
-      <Conn label={L("Raw demand / supply / macro feeds","原始 需求 / 供给 / 宏观")}/>
-      {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
-        <div className="vstage">
-          <div className="vstage-h">{Z(s,"t")}</div>
-          <div className="vstage-b">{s.ag.map(agent)}</div>
+    <div className="hscroll">
+      <div className="hflow">
+        <div className="hcol hsrc">
+          <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
+          <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
         </div>
-        <Conn label={Z(s,"hand")}/>
-      </React.Fragment>))}
-      <div className="vstage gate">
-        <div className="vstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
-        <div className="vgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
-          <div className="muted" style={{fontSize:11,marginTop:4}}>HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31</div></div>
-      </div>
-      <Conn label={L("Approved recommendation","已批准建议")}/>
-      <div className="vdeliv">
-        <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
-        <div className="muted" style={{fontSize:12,marginTop:4}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+        <Conn label={L("Raw feeds","原始数据")}/>
+        {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
+          <div className="hcol hstage">
+            <div className="hstage-h">{Z(s,"t")}</div>
+            <div className="hstage-b">{s.ag.map(agent)}</div>
+          </div>
+          <Conn label={Z(s,"hand")}/>
+        </React.Fragment>))}
+        <div className="hcol hstage gate">
+          <div className="hstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
+          <div className="hgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
+            <div className="muted" style={{fontSize:11,marginTop:5}}>HUMAN-REVIEWED 04:48<br/>LEGAL CLEARED 05:31</div></div>
+        </div>
+        <Conn label={L("Approved recommendation","已批准建议")}/>
+        <div className="hcol hdeliv">
+          <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
+          <div className="muted" style={{fontSize:12,marginTop:6}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+        </div>
       </div>
     </div>
   </Drawer>);
@@ -3010,9 +3030,9 @@ function Modal({title,onClose,children,wide}){
       <div className="modal-body">{children}</div>
     </div></div>);
 }
-function Drawer({title,onClose,children,foot}){
+function Drawer({title,onClose,children,foot,wide}){
   return (<div className="drawer-ov" onClick={onClose}>
-    <div className="drawer-panel" onClick={e=>e.stopPropagation()}>
+    <div className={"drawer-panel"+(wide?" wide":"")} onClick={e=>e.stopPropagation()}>
       <div className="drawer-head"><h3>{title}</h3><button className="modal-x" onClick={onClose} aria-label="close">✕</button></div>
       <div className="drawer-body">{children}</div>
       {foot&&<div className="drawer-foot">{foot}</div>}

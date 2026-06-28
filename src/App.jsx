@@ -1859,44 +1859,46 @@ const FLOW_STAGES=[
 function FlowDiagram({lang,onClose}){
   const L=(en,zh)=>lang==="zh"?zh:en;
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
-  const Conn=({label})=>(<div className="vconn"><span className="vlabel">{label}</span></div>);
+  const Conn=({label})=>(<div className="hconn"><span className="vlabel">{label}</span></div>);
   const agent=(a,j)=>(<div key={j} className="vagent">
     <div className="va-h"><span className="aic">{a.ic}</span><b style={{flex:1}}>{a.n}</b><span className="gdot" title="live"/></div>
-    <div className="va-io">
+    <div className="va-io col">
       <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
-      <span className="io-arrow">→</span>
+      <span className="io-arrow down">↓</span>
       <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
     </div>
   </div>);
-  return (<Drawer title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
-    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:12}}>
+  return (<Drawer wide title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
+    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:14}}>
       <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
       <span><span className="lg sw-gate"/>{L("Human gate","人工门")}</span>
       <span><span className="lg sw-agent"/>{L("Agent (live)","智能体(存活)")}</span>
       <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
     </div>
-    <div className="vflow">
-      <div className="vsrc">
-        <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
-        <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
-      </div>
-      <Conn label={L("Raw demand / supply / macro feeds","原始 需求 / 供给 / 宏观")}/>
-      {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
-        <div className="vstage">
-          <div className="vstage-h">{Z(s,"t")}</div>
-          <div className="vstage-b">{s.ag.map(agent)}</div>
+    <div className="hscroll">
+      <div className="hflow">
+        <div className="hcol hsrc">
+          <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
+          <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
         </div>
-        <Conn label={Z(s,"hand")}/>
-      </React.Fragment>))}
-      <div className="vstage gate">
-        <div className="vstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
-        <div className="vgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
-          <div className="muted" style={{fontSize:11,marginTop:4}}>HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31</div></div>
-      </div>
-      <Conn label={L("Approved recommendation","已批准建议")}/>
-      <div className="vdeliv">
-        <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
-        <div className="muted" style={{fontSize:12,marginTop:4}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+        <Conn label={L("Raw feeds","原始数据")}/>
+        {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
+          <div className="hcol hstage">
+            <div className="hstage-h">{Z(s,"t")}</div>
+            <div className="hstage-b">{s.ag.map(agent)}</div>
+          </div>
+          <Conn label={Z(s,"hand")}/>
+        </React.Fragment>))}
+        <div className="hcol hstage gate">
+          <div className="hstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
+          <div className="hgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
+            <div className="muted" style={{fontSize:11,marginTop:5}}>HUMAN-REVIEWED 04:48<br/>LEGAL CLEARED 05:31</div></div>
+        </div>
+        <Conn label={L("Approved recommendation","已批准建议")}/>
+        <div className="hcol hdeliv">
+          <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
+          <div className="muted" style={{fontSize:12,marginTop:6}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+        </div>
       </div>
     </div>
   </Drawer>);
@@ -2124,9 +2126,9 @@ function Modal({title,onClose,children,wide}){
       <div className="modal-body">{children}</div>
     </div></div>);
 }
-function Drawer({title,onClose,children,foot}){
+function Drawer({title,onClose,children,foot,wide}){
   return (<div className="drawer-ov" onClick={onClose}>
-    <div className="drawer-panel" onClick={e=>e.stopPropagation()}>
+    <div className={"drawer-panel"+(wide?" wide":"")} onClick={e=>e.stopPropagation()}>
       <div className="drawer-head"><h3>{title}</h3><button className="modal-x" onClick={onClose} aria-label="close">✕</button></div>
       <div className="drawer-body">{children}</div>
       {foot&&<div className="drawer-foot">{foot}</div>}
