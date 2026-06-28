@@ -190,14 +190,15 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .va-io.col .io-arrow.down{align-self:center;line-height:1}
 /* horizontal wide agent I/O flow */
 .hscroll{flex:1;min-height:0;overflow:auto}
-.hsnake{display:flex;flex-direction:column;min-width:max-content;padding-bottom:10px}
+.hsnake{display:flex;flex-direction:column;width:max-content;padding-bottom:10px}
 .hrow{display:flex;align-items:stretch}
-.hreturn{position:relative;height:54px}
-.hreturn .hline{position:absolute;inset-inline-start:26px;inset-inline-end:26px;top:50%;transform:translateY(-50%);height:3px;background-image:linear-gradient(90deg,#2563eb 55%,transparent 0);background-size:11px 100%;background-repeat:repeat-x;animation:flowdashX .55s linear infinite}
+/* carriage-return connector: rises from Conversion bottom (right, ~99px in) → across → drops into Policy top (left, ~99px in) */
+.hreturn{position:relative;height:62px}
+.hreturn .hline{position:absolute;inset-inline-start:99px;inset-inline-end:99px;top:50%;transform:translateY(-50%);height:3px;background-image:linear-gradient(90deg,#2563eb 55%,transparent 0);background-size:11px 100%;background-repeat:repeat-x;animation:flowdashX .55s linear infinite}
 .hreturn .elbow{position:absolute;width:3px;background:#2563eb}
-.hreturn .elbow.r{inset-inline-end:26px;top:-8px;height:calc(50% + 8px)}
-.hreturn .elbow.l{inset-inline-start:26px;bottom:-8px;height:calc(50% + 8px)}
-.hreturn .elbow.l:after{content:"▼";position:absolute;inset-inline-start:-5px;bottom:-12px;color:#2563eb;font-size:11px}
+.hreturn .elbow.r{inset-inline-end:99px;top:0;height:50%}
+.hreturn .elbow.l{inset-inline-start:99px;top:50%;height:50%}
+.hreturn .elbow.l:after{content:"▼";position:absolute;inset-inline-start:-5px;bottom:-12px;color:#2563eb;font-size:12px}
 .hreturn .vlabel{position:absolute;inset-inline-start:50%;top:50%;transform:translate(-50%,-50%);z-index:1;background:#eaf0fb;border:1px solid #d4e0f7;color:#2f57b6;font-size:10px;font-weight:600;border-radius:7px;padding:3px 9px;white-space:nowrap}
 .hcol{flex:0 0 auto;align-self:stretch}
 .hsrc,.hdeliv{width:150px;background:#eef1ee;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
@@ -930,7 +931,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 22:32 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 22:38 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
