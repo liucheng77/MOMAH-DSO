@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSO · Interactive Analyst Journey</title>
+<style>
+:root {
+  --bg:#0a0f1e; --panel:#161e2e; --card:#1e293b; --border:#334155;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b;
+  --blue:#3b82f6; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+  --cyan:#06b6d4; --purple:#8b5cf6; --pink:#ec4899;
+  --radius:10px; --radius-lg:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.7;min-height:100vh}
+.container{max-width:1040px;margin:0 auto;padding:24px 28px}
+
+/* ── Header ── */
+.header{display:flex;align-items:center;gap:16px;padding:20px 24px;background:linear-gradient(135deg,rgba(30,41,59,.6),rgba(15,23,42,.4));border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:20px;backdrop-filter:blur(8px)}
+.header-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 2px 12px rgba(59,130,246,.3)}
+.header-info{flex:1;min-width:200px}
+.header-info h1{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.header-info .sub{font-size:11px;color:var(--text2);margin-top:2px}
+.header .mode-tag{font-size:10px;background:rgba(16,185,129,.15);color:#6ee7b7;padding:5px 12px;border-radius:20px;border:1px solid rgba(16,185,129,.25);white-space:nowrap}
+
+/* ── Stepper ── */
+.stepper{display:flex;align-items:center;gap:4px;margin-bottom:20px;overflow-x:auto;padding:10px 16px;font-size:12px;flex-wrap:wrap;background:var(--panel);border-radius:var(--radius);border:1px solid var(--border)}
+.step-item{display:flex;align-items:center;gap:6px;color:var(--text3);white-space:nowrap;padding:6px 12px;border-radius:8px;transition:all .25s}
+.step-item .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;transition:all .3s}
+.step-item.active{color:var(--text);font-weight:600;background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.step-item.active .dot{background:var(--blue);box-shadow:0 0 8px rgba(59,130,246,.5)}
+.step-item.done{color:var(--green)}
+.step-item.done .dot{background:var(--green)}
+.step-arrow{color:var(--text3);margin:0 4px;font-size:10px}
+
+/* ── Chat ── */
+.chat{display:flex;flex-direction:column;gap:18px;padding:0 4px}
+.msg-agent,.msg-user,.msg-analysis,.msg-alert,.msg-full{width:100%;padding:18px 22px;border-radius:var(--radius);font-size:14px;line-height:1.75;position:relative}
+.msg-agent{max-width:100%;background:var(--panel);border:1px solid var(--border)}
+.msg-user{max-width:56%;align-self:flex-end;background:linear-gradient(135deg,#1a3250,#1e3a5f);border:1px solid rgba(59,130,246,.25);border-radius:var(--radius) var(--radius) 4px var(--radius)}
+.msg-analysis{max-width:100%;background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(6,78,59,.08));border:1px solid rgba(16,185,129,.15)}
+.msg-alert{max-width:100%;background:linear-gradient(135deg,rgba(239,68,68,.06),rgba(127,29,29,.08));border:1px solid rgba(239,68,68,.15)}
+.msg-full{max-width:100%;padding:0;background:none;border:none}
+.msg .tag{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text2);margin-bottom:6px;font-weight:600}
+
+/* ── Thinking ── */
+.thinking{display:flex;align-items:center;gap:8px;padding:12px 18px;font-size:13px;color:var(--text2)}
+.thinking .dots{display:flex;gap:5px}
+.thinking .dots span{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:dotBounce 1.4s infinite}
+.thinking .dots span:nth-child(2){animation-delay:.2s}
+.thinking .dots span:nth-child(3){animation-delay:.4s}
+@keyframes dotBounce{0%,80%,100%{opacity:0}40%{opacity:1}}
+
+/* ── Mind Map ── */
+.mindmap-wrap{margin:10px 0}
+.mm-root{background:linear-gradient(135deg,rgba(30,58,95,.8),rgba(30,64,175,.6));border:2px solid rgba(59,130,246,.4);border-radius:var(--radius-lg);padding:20px 24px;cursor:pointer;transition:all .3s;text-align:center}
+.mm-root:hover{border-color:var(--cyan);box-shadow:0 0 24px rgba(59,130,246,.2);transform:translateY(-1px)}
+.mm-root h3{font-size:16px;margin-bottom:6px}
+.mm-root .hint{font-size:11px;color:var(--text2);margin-top:8px}
+.mm-lines{display:flex;justify-content:center;gap:24px;margin-top:2px}
+.mm-line{width:2px;height:28px;background:var(--border);transition:all .4s}
+.mm-line.active{background:var(--blue);box-shadow:0 0 6px rgba(59,130,246,.4)}
+.mm-branches{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px;opacity:0;max-height:0;overflow:hidden;transition:all .5s ease}
+.mm-branches.open{opacity:1;max-height:300px}
+.branch{padding:18px;border-radius:var(--radius);background:var(--card);border:1px solid transparent;cursor:pointer;transition:all .2s}
+.branch:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.branch.neg{border-left:4px solid var(--red)}
+.branch.mix{border-left:4px solid var(--amber)}
+.branch.pos{border-left:4px solid var(--green)}
+.branch h4{font-size:13px;margin-bottom:6px}
+.branch p{font-size:11px;color:var(--text2);line-height:1.5}
+
+/* ── Cards / Tables ── */
+.card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);margin:8px 0;width:100%}
+.card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.card-ttl{font-size:14px;font-weight:600}
+.badge{font-size:10px;padding:4px 10px;border-radius:8px;font-weight:600}
+.badge-b{background:rgba(59,130,246,.15);color:#60a5fa}
+.badge-a{background:rgba(245,158,11,.15);color:#fbbf24}
+.badge-g{background:rgba(16,185,129,.15);color:#34d399}
+.badge-r{background:rgba(239,68,68,.15);color:#fca5a5}
+
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.tbl th{background:var(--panel);padding:9px 12px;text-align:left;font-weight:600;color:var(--text2);border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+.tbl td{padding:8px 12px;border-bottom:1px solid rgba(71,85,105,.4)}
+.tbl .hi{color:var(--red);font-weight:700}
+.tbl .ok{color:var(--green);font-weight:700}
+.tbl .wa{color:var(--amber);font-weight:700}
+.tbl tr:hover{background:rgba(59,130,246,.04)}
+
+.insight{padding:16px 20px;border-radius:var(--radius);margin:10px 0;font-size:13px;line-height:1.7}
+.insight.inf{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2)}
+.insight.ok{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2)}
+.insight.wrn{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
+.insight.amb{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)}
+
+.sc-row{display:flex;gap:10px;margin:10px 0;flex-wrap:wrap;font-size:12px}
+.sc-tag{padding:6px 14px;border-radius:8px;color:#fff;font-weight:500;font-size:12px}
+.sc-tag.sc-good{background:rgba(16,185,129,.2);color:#4ade80}
+.sc-tag.sc-base{background:rgba(59,130,246,.2);color:#93c5fd}
+.sc-tag.sc-bad{background:rgba(239,68,68,.2);color:#fca5a5}
+
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.btn{padding:10px 20px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;font-weight:500}
+.btn:hover{background:var(--panel);border-color:var(--blue);transform:translateY(-1px);box-shadow:0 2px 8px rgba(59,130,246,.15)}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,.25)}
+.btn.pri:hover{box-shadow:0 4px 14px rgba(59,130,246,.4)}
+.btn.suc{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.25)}
+.btn.suc:hover{box-shadow:0 4px 14px rgba(16,185,129,.4)}
+.btn.warn{background:var(--amber);border-color:var(--amber);color:#000}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn.sm{padding:5px 12px;font-size:11px}
+.btn:disabled{opacity:.4;pointer-events:none;transform:none;box-shadow:none}
+
+/* ── PDF Preview ── */
+.pdf-wrap{width:100%;border-radius:var(--radius-lg);overflow:hidden;margin:8px 0;box-shadow:0 4px 24px rgba(0,0,0,.4);border:2px solid var(--border)}
+.pdf-wrap iframe{width:100%;height:620px;border:none;display:block}
+
+/* ── Chart Images ── */
+.chart-img{width:100%;border-radius:var(--radius);margin:8px 0;display:block;border:1px solid var(--border)}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+.chart-row .chart-img{margin:0}
+.chart-caption{font-size:10px;color:var(--text2);text-align:center;margin-top:4px}
+
+/* ── Phase Divider ── */
+.phase-divider{text-align:center;font-size:11px;color:var(--text3);padding:8px 0;letter-spacing:1px;font-weight:500}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .45s ease}
+.hidden{display:none!important}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">🏠</div>
+  <div class="header-info">
+    <h1>DSO · Interactive Analyst Journey</h1>
+    <div class="sub">AI_H_01 | Ahmed Al-Qahtani — Housing Data Analyst</div>
+  </div>
+  <div class="mode-tag">MOMAH · Total Market Coverage</div>
+</div>
+
+<!-- STEPPER -->
+<div class="stepper" id="stepper">
+  <span class="step-item active" data-sid="0"><span class="dot"></span>问题发现</span><span class="step-arrow">→</span>
+  <span class="step-item" data-sid="1"><span class="dot"></span>宏观冲击</span><span class="step-arrow">→</span>
+  <span class="step-item" data-sid="2"><span class="dot"></span>需求预测</span><span class="step-arrow">→</span>
+  <span class="step-item" data-sid="3"><span class="dot"></span>缺口分析</span><span class="step-arrow">→</span>
+  <span class="step-item" data-sid="4"><span class="dot"></span>供给评估</span><span class="step-arrow">→</span>
+  <span class="step-item" data-sid="5"><span class="dot"></span>措施对比</span><span class="step-arrow">→</span>
+  <span class="step-item" data-sid="6"><span class="dot"></span>报告定稿</span>
+</div>
+
+<!-- CHAT -->
+<div class="chat" id="chat"></div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATE MACHINE
+// ═══════════════════════════════════════════
+const PHASES = ['发现','宏观冲击','需求预测','缺口分析','供给评估','措施对比','报告定稿'];
+
+let state = {
+  step: 0,
+  choices: {},     // analyst decisions per phase
+  reportEdits: [], // analyst annotations on report
+  locked: false    // prevent double-click
+};
+
+// ═══════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════
+function $(id) { return document.getElementById(id); }
+
+function chatBox() { return $('chat'); }
+
+function scrollDown() {
+  chatBox().lastElementChild?.scrollIntoView({behavior:'smooth',block:'end'});
+}
+
+function addMsg(type, html, delay=300) {
+  const div = document.createElement('div');
+  var cls = 'msg-' + type;
+  div.className = cls + ' fade-in';
+  div.innerHTML = html;
+  setTimeout(() => {
+    chatBox().appendChild(div);
+    scrollDown();
+  }, delay);
+}
+
+function addPhaseDivider(step) {
+  const div = document.createElement('div');
+  div.className = 'phase-divider fade-in';
+  div.textContent = '── Phase ' + (step+1) + ' · ' + PHASES[step] + ' ──';
+  chatBox().appendChild(div);
+  scrollDown();
+}
+
+function updateStepper(idx) {
+  state.step = idx;
+  document.querySelectorAll('.step-item').forEach(function(el,i){
+    el.classList.remove('active','done');
+    if (i < idx) el.classList.add('done');
+    if (i === idx) el.classList.add('active');
+  });
+}
+
+function showThinking(text, duration, callback) {
+  const div = document.createElement('div');
+  div.className = 'msg-agent fade-in';
+  div.innerHTML = '<div class="thinking">' + text + ' <span class="dots"><span></span><span></span><span></span></span></div>';
+  chatBox().appendChild(div);
+  scrollDown();
+  setTimeout(function(){
+    div.remove();
+    if (callback) callback();
+  }, duration);
+}
+
+// ═══════════════════════════════════════════
+//  PHASE ROUTER
+// ═══════════════════════════════════════════
+function goPhase(idx) {
+  if (state.locked) return;
+  state.locked = true;
+  setTimeout(function(){ state.locked = false; }, 800);
+  updateStepper(idx);
+  switch(idx) {
+    case 0: phase0(); break;
+    case 1: phase1(); break;
+    case 2: phase2(); break;
+    case 3: phase3(); break;
+    case 4: phase4(); break;
+    case 5: phase5(); break;
+    case 6: phase6(); break;
+  }
+}
+
+// ═══════════════════════════════════════════
+//  PHASE 0 — DISCOVERY (问题发现)
+// ═══════════════════════════════════════════
+function phase0() {
+  addPhaseDivider(0);
+
+  // Rate alert
+  addMsg('alert',
+    '<div class="tag">Sunday, 19 June 2026 · 08:04 GMT+3</div>' +
+    '<strong>Ahmed Al-Qahtani</strong> 打开 DSO 仪表板，一条红色横幅在顶部闪烁：' +
+    '<div class="insight wrn" style="margin:10px 0">' +
+      '<strong>⚠ SAMA Rate Alert</strong><br>' +
+      '沙特央行在休会 9 个月后，宣布将政策利率从 <strong>4.25% 上调至 4.75%</strong>（+50bps）。<br>' +
+      '这是自 2024 年 6 月以来首次加息。Next review: Jul 2026.' +
+    '</div>'
+  );
+
+  // Analyst reaction
+  addMsg('user',
+    '这不对劲……从 2022 年峰值 6.00% 降了两年，现在突然又加 50 个基点？<br><br>' +
+    '我需要了解这次冲击的影响范围和严重程度。',
+    600
+  );
+
+  // Thinking
+  setTimeout(function(){
+    showThinking('DSO Agent 正在构建利率冲击的影响脑图...', 2200, function(){
+      // Mind map
+      addMsg('agent',
+        '<div class="tag">DSO Agent 建议 — 冲击影响分析</div>' +
+        '<div class="mindmap-wrap">' +
+          '<div class="mm-root" id="mmRoot" onclick="expandMindmap()">' +
+            '<h3>⬆ SAMA Policy Rate: 4.25% → 4.75% (+50bps)</h3>' +
+            '<div class="hint">点击展开影响分析</div>' +
+          '</div>' +
+          '<div style="display:flex;justify-content:center;gap:20px" id="mmLines">' +
+            '<div class="mm-line"></div><div class="mm-line"></div><div class="mm-line"></div>' +
+          '</div>' +
+          '<div class="mm-branches" id="mmBranches">' +
+            '<div class="branch neg">' +
+              '<h4>📉 Housing Demand</h4>' +
+              '<p>月供变贵 → 可负担房价上限下降 → 购房者转向更低价位住房 → Most in Need 需求激增</p>' +
+            '</div>' +
+            '<div class="branch neg">' +
+              '<h4>🏗️ Housing Supply</h4>' +
+              '<p>开发商融资成本上升 → Most in Need 住房利润更薄 → 项目转化率下滑 → 缺口扩大</p>' +
+            '</div>' +
+            '<div class="branch mix">' +
+              '<h4>💰 Fiscal Budget</h4>' +
+              '<p>Sakani补贴人数激增 +22% → 财政压力 ~SAR 1.8B/年 · 政府收入端可能因油价传导</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="insight inf" style="margin-top:12px">' +
+          '<strong>DSO 建议：</strong>先量化宏观经济指标的冲击强度——计算利率、通胀、GDP等 6 大指标与住房供需的相关性，构建三种情景。<br>' +
+          '<strong>理由：</strong>宏观是下游所有分析的锚。没有情景，需求预测和缺口分析没有基线。' +
+        '</div>' +
+        '<div class="btn-row" id="p0Btns">' +
+          '<button class="btn pri" onclick="acceptPhase0()">✅ 同意，开始宏观分析</button>' +
+        '</div>'
+      );
+    });
+  }, 1200);
+}
+
+function expandMindmap() {
+  $('mmBranches').classList.add('open');
+  var lines = $('mmLines').children;
+  for (var i=0; i<lines.length; i++) lines[i].classList.add('active');
+  $('mmRoot').querySelector('.hint').textContent = '已展开：需求 · 供给 · 财政三方面影响';
+}
+
+function acceptPhase0() {
+  state.choices['discovery'] = 'macro';
+  $('p0Btns').innerHTML = '<span style="font-size:12px;color:var(--green)">✅ 已确认，正在启动宏观分析引擎...</span>';
+  expandMindmap();
+  goPhase(1);
+}
+
+// ═══════════════════════════════════════════
+//  PHASE 1 — MACRO IMPACT (宏观冲击)
+// ═══════════════════════════════════════════
+function phase1() {
+  addPhaseDivider(1);
+
+  showThinking('UC-09 Macro-Economic Engine 运行中... 计算 Pearson r 相关性... 构建三种情景...', 2800, function(){
+
+    addMsg('agent',
+      '<div class="tag">UC-09 Macro-Economic Impact Engine · 47s</div>' +
+      '<div class="card">' +
+        '<div class="card-hd"><span class="card-ttl">Pearson r — 宏观经济指标 vs 住房供需</span><span class="badge badge-a">基准情景 55%</span></div>' +
+        '<img src="charts/chart1_macro_corr.png" class="chart-img" alt="Macro Correlation">' +
+        '<div style="font-size:11px;color:var(--text2);margin-top:6px">利率主导驱动：r=-0.90 vs 价格、r=-0.85 vs 需求 — 加息直接压制供需两端。|r|>0.6 阈值识别 4 个强预测指标。</div>' +
+      '</div>'
+    );
+
+    addMsg('agent',
+      '<div class="sc-row">' +
+        '<span class="sc-tag sc-good">🟢 乐观 20%: 降至3.75% by Dec 2027</span>' +
+        '<span class="sc-tag sc-base">🟡 基准 55%: 维持4.75% 至2028</span>' +
+        '<span class="sc-tag sc-bad">🔴 悲观 25%: 升至5.00% by Mar 2027</span>' +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--text2)">' +
+        '利率直接压制供需两端。人口和 GDP 的正相关性说明：如果经济持续增长，需求自发膨胀——但没有供给配合，缺口只会加大。' +
+      '</div>' +
+      '<div class="insight inf" style="margin-top:12px">' +
+        '<strong>DSO 建议下一步：</strong>有了情景基线，需要量化"谁会受影响"——按住房类型预测未来 3 年利雅得需求，重点追踪购房者从 Low/Mid Income 向 Most in Need 住房的转移。<br>' +
+        '<strong>理由：</strong>利率抬高月供后，家庭可负担的房价上限下降——他们收入的段位没变，能买的房子变了。' +
+      '</div>' +
+      '<div class="btn-row" id="p1Btns">' +
+        '<button class="btn pri" onclick="acceptPhase1()">✅ 同意，预测需求</button>' +
+      '</div>'
+    );
+
+  });
+}
+
+function acceptPhase1() {
+  state.choices['macro'] = 'demand';
+  $('p1Btns').innerHTML = '<span style="font-size:12px;color:var(--green)">✅ 已确认，正在启动需求预测引擎...</span>';
+  goPhase(2);
+}
+
+// ═══════════════════════════════════════════
+//  PHASE 2 — DEMAND FORECAST (需求预测)
+// ═══════════════════════════════════════════
+function phase2() {
+  addPhaseDivider(2);
+
+  showThinking('UC-02 Demand Intelligence Engine 运行中... 人口队列模型 + 集成学习... 计算段间转移...', 2800, function(){
+
+    addMsg('agent',
+      '<div class="tag">UC-02 Demand Intelligence Engine · 31s</div>' +
+      '<div class="card">' +
+        '<div class="card-hd"><span class="card-ttl">Riyadh 5-Year Demand Forecast — 基准情景</span><span class="badge badge-b">Unit: Households</span></div>' +
+        '<img src="charts/chart2_demand_forecast.png" class="chart-img" alt="Demand Forecast">' +
+        '<div style="font-size:11px;color:var(--text2);margin-top:6px;padding:6px 10px;background:rgba(59,130,246,.08);border-radius:6px">' +
+          '📌 <strong>Note:</strong> 表中分类为<strong>住房类型</strong>（按价位），非家庭收入段。Most in Need=保障房，Low-High Income=不同价位的市场住房。利率影响的是家庭<strong>能负担的住房价位</strong>，而非家庭本身的收入分类。' +
+        '</div>' +
+      '</div>'
+    );
+
+    addMsg('alert',
+      '<strong>⚠ Critical Finding: 18% 购房者降级至 Most in Need 住房</strong><br>' +
+      '2,100 户 Low Income 家庭（月收入 5-8K SAR）因月供上升，从 Low Income 住房转向更便宜的 Most in Need 住房。<br>' +
+      '加息不改变家庭收入段——它改变的是<strong>家庭能负担得起的住房价位</strong>。月供每增加 SAR 500，可负担房价下降约 SAR 85,000。<br>' +
+      '政府补贴负担预计增加 <strong>+22%（~SAR 1.8B）</strong>。'
+    );
+
+    addMsg('agent',
+      '<div class="card">' +
+        '<div class="card-ttl" style="margin-bottom:8px">加息前后需求结构变化</div>' +
+        '<img src="charts/chart3_segment_shift.png" class="chart-img" alt="Segment Shift">' +
+      '</div>'
+    );
+
+    addMsg('agent',
+      '<div style="font-size:12px;color:var(--text2)">' +
+        '<strong>Scenario Sensitivity:</strong><br>' +
+        '🟢 Optimistic (降级 12%) → Most in Need Y3: 17,800<br>' +
+        '🟡 Base (降级 18%) → Most in Need Y3: 19,100<br>' +
+        '🔴 Pessimistic (降级 26%) → Most in Need Y3: 21,400' +
+      '</div>' +
+      '<div class="insight inf" style="margin-top:12px">' +
+        '<strong>DSO 建议下一步：</strong>18% 购房者转向 Most in Need 住房，Y3 需求达 19,100 套。现在的关键问题是：<br>' +
+        '<strong>这些需求能不能被供给管道消化？</strong><br>' +
+        '建议先做供需缺口分析（UC-03），把新增 Most in Need 需求与现有供给管道进行四维匹配。<br>' +
+        '<strong>理由：</strong>如果供给能消化就不需要政策干预；如果不能，缺口大小决定政策力度。' +
+      '</div>' +
+      '<div class="btn-row" id="p2Btns">' +
+        '<button class="btn pri" onclick="acceptPhase2()">✅ 同意，分析缺口</button>' +
+      '</div>'
+    );
+
+  });
+}
+
+function acceptPhase2() {
+  state.choices['demand'] = 'gap';
+  $('p2Btns').innerHTML = '<span style="font-size:12px;color:var(--green)">✅ 已确认，正在启动缺口分析引擎...</span>';
+  goPhase(3);
+}
+
+// ═══════════════════════════════════════════
+//  PHASE 3 — GAP ANALYSIS (缺口分析)
+// ═══════════════════════════════════════════
+function phase3() {
+  addPhaseDivider(3);
+
+  showThinking('UC-03 Supply-Demand Balancing Engine 运行中... 四维匹配... 根因分解...', 2500, function(){
+
+    addMsg('agent',
+      '<div class="tag">UC-03 Supply-Demand Balancing Engine · 28s</div>' +
+      '<div class="card">' +
+        '<div class="card-hd"><span class="card-ttl">供需缺口 Heatmap · 基准情景 Y3</span><span class="badge badge-r">红色=缺口 · 绿色=过剩</span></div>' +
+        '<img src="charts/chart4_gap_heatmap.png" class="chart-img" alt="Gap Heatmap">' +
+      '</div>'
+    );
+
+    addMsg('agent',
+      '<div class="card">' +
+        '<div class="card-ttl" style="margin-bottom:14px">Riyadh Most in Need 缺口 — 根因分解</div>' +
+        '<div style="display:flex;flex-direction:column;gap:10px">' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div style="width:130px;font-size:12px;text-align:right;flex-shrink:0">需求降级</div>' +
+            '<div style="flex:1;height:28px;background:var(--panel);border-radius:6px;overflow:hidden">' +
+              '<div style="width:48%;height:100%;background:linear-gradient(90deg,#dc2626,#ef4444);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:12px;font-weight:700;color:#fff">48%</div>' +
+            '</div>' +
+            '<div style="font-size:10px;color:var(--text2);width:200px">~5,950 套来自购房者降级</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div style="width:130px;font-size:12px;text-align:right;flex-shrink:0">供给错配</div>' +
+            '<div style="flex:1;height:28px;background:var(--panel);border-radius:6px;overflow:hidden">' +
+              '<div style="width:32%;height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:12px;font-weight:700;color:#000">32%</div>' +
+            '</div>' +
+            '<div style="font-size:10px;color:var(--text2);width:200px">72% 管道面向中高端</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div style="width:130px;font-size:12px;text-align:right;flex-shrink:0">转化率偏低</div>' +
+            '<div style="flex:1;height:28px;background:var(--panel);border-radius:6px;overflow:hidden">' +
+              '<div style="width:14%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:12px;font-weight:700;color:#fff">14%</div>' +
+            '</div>' +
+            '<div style="font-size:10px;color:var(--text2);width:200px">Most in Need 52% vs High 78%</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div style="width:130px;font-size:12px;text-align:right;flex-shrink:0">开发商优先级</div>' +
+            '<div style="flex:1;height:28px;background:var(--panel);border-radius:6px;overflow:hidden">' +
+              '<div style="width:6%;height:100%;background:linear-gradient(90deg,#64748b,#94a3b8);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;font-weight:700;color:#fff">6%</div>' +
+            '</div>' +
+            '<div style="font-size:10px;color:var(--text2);width:200px">48% 开发商列为最低优先</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+
+    addMsg('analysis',
+      '<strong>核心矛盾：供给管道错配</strong><br>' +
+      '不是总量不够——Upper-Mid/High Income 住房大量过剩。问题是 <strong>72% 的管道面向中高端</strong>，而冲击集中在 Most in Need。<br>' +
+      '这不是"缺口"，而是<strong>"产品不对路"</strong>。'
+    );
+
+    addMsg('agent',
+      '<div class="insight inf">' +
+        '<strong>DSO 建议下一步：</strong>缺口已经确认——利雅得 Most in Need 12,400 套缺口，根源是供给管道错配。<br>' +
+        '现在需要评估现有供给能力：143 个活跃项目实际能交付多少？哪些开发商可以快速响应？<br>' +
+        '<strong>建议运行：</strong>UC-04（供给规划）+ UC-08（开发商评估）。' +
+      '</div>' +
+      '<div class="btn-row" id="p3Btns">' +
+        '<button class="btn pri" onclick="acceptPhase3()">✅ 同意，评估供给能力</button>' +
+      '</div>'
+    );
+
+  });
+}
+
+function acceptPhase3() {
+  state.choices['gap'] = 'supply';
+  $('p3Btns').innerHTML = '<span style="font-size:12px;color:var(--green)">✅ 已确认，正在启动供给评估引擎...</span>';
+  goPhase(4);
+}
+
+// ═══════════════════════════════════════════
+//  PHASE 4 — SUPPLY ASSESSMENT (供给评估)
+// ═══════════════════════════════════════════
+function phase4() {
+  addPhaseDivider(4);
+
+  showThinking('UC-04 Strategic Supply Planning + UC-08 Developer Value Chain 运行中... ML模型... 五维评分...', 3000, function(){
+
+    addMsg('agent',
+      '<div class="tag">UC-04 Strategic Supply Planning · 35s</div>' +
+      '<div class="card">' +
+        '<div class="card-ttl" style="margin-bottom:10px">转换率分析 & 缺口闭合情景</div>' +
+        '<img src="charts/chart5_conversion.png" class="chart-img" alt="Conversion Analysis">' +
+        '<div style="font-size:10px;color:var(--text2);margin-top:4px">ML Model: Survival Analysis + Gradient Boosting · AUC 0.83</div>' +
+      '</div>'
+    );
+
+    addMsg('agent',
+      '<div class="tag">UC-08 Developer Value Chain · 22s</div>' +
+      '<div class="card">' +
+        '<div class="card-ttl" style="margin-bottom:10px">Riyadh 活跃开发商 — 五维雷达评分</div>' +
+        '<img src="charts/chart6_developer_radar.png" class="chart-img" alt="Developer Radar">' +
+        '<div style="font-size:11px;color:var(--text2);margin-top:6px">' +
+          '<strong>Top 3 A-grade:</strong> Al-Majd (92), Riyadh Housing, Watan — 合计 4,200 套/年 Most in Need 产能 | 6 B-grade: +3,100/yr with subsidy' +
+        '</div>' +
+      '</div>'
+    );
+
+    addMsg('analysis',
+      '<strong>好消息：3 家 Tier A 开发商可立即启动</strong>，产出 4,200 套/年。<br>' +
+      '<strong>坏消息：</strong>仅现有管道（含 Tier A）只能覆盖 35% 的缺口。6 家 Tier B 开发商需要激励才能入场——他们目前认为 Most in Need 住房利润太薄。'
+    );
+
+    // ── Policy Direction: Step 1 — DSO recommends supply-first ──
+    addMsg('agent',
+      '<div class="tag">DSO 建议 — 政策方向</div>' +
+      '<div class="insight inf">' +
+        '<strong>诊断：缺口根源是供给端——Most in Need 住房利润薄导致开发商不建。</strong><br>' +
+        'Most in Need 转化率 52% vs High Income 78%，72%管道面向中高端。<br><br>' +
+        '<strong>DSO 推荐：供给端优先（Supply-First）</strong><br>' +
+        '激励开发商增加 Most in Need 住房交付，每 SAR 1 投入产出 0.7 套住房。<br>' +
+        '需求端措施（补贴、降首付）不配合供给 = 对存量竞价 = 推高价格 + 扩大缺口。<br><br>' +
+        '<strong>在做决定之前，建议先对比另外两个方向的分析：</strong>' +
+      '</div>' +
+      '<div class="btn-row" id="p4Btns">' +
+        '<button class="btn pri" onclick="showAltPolicies()">📊 查看另外两个选项的对比分析</button>' +
+      '</div>'
+    );
+
+  });
+}
+
+// ── Policy Direction: Step 2 — Show alternative analyses ──
+function showAltPolicies() {
+  $('p4Btns').innerHTML = '<span style="font-size:12px;color:var(--text2)">对比分析已展开 ↓</span>';
+
+  // Option 2: Balanced
+  addMsg('agent',
+    '<div class="card">' +
+      '<div class="card-hd"><span class="card-ttl">⚖️ 选项 B：供需兼顾</span><span class="badge badge-a">备选</span></div>' +
+      '<table class="tbl">' +
+        '<tr><th>维度</th><th>评估</th></tr>' +
+        '<tr><td>供给措施</td><td>M1+M2（与供给优先相同），但拆分预算 30% 给 M5</td></tr>' +
+        '<tr><td>需求措施</td><td>M5 按揭补贴 +2pp，缓解 Low Income 家庭月供压力</td></tr>' +
+        '<tr><td>缺口闭合</td><td class="ok">35% → 78%（低于供给优先的 97%）</td></tr>' +
+        '<tr><td>成本/套</td><td class="wa">SAR 978（供给优先的 2 倍）</td></tr>' +
+        '<tr><td>政治可行性</td><td class="ok">较高 — 兼顾各方利益，但效率折损明显</td></tr>' +
+        '<tr><td>风险</td><td>需求补贴分流供给预算 → 开发商激励不足 → 闭合率下滑</td></tr>' +
+      '</table>' +
+    '</div>'
+  );
+
+  // Option 3: Demand-first
+  addMsg('alert',
+    '<div class="card" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3)">' +
+      '<div class="card-hd"><span class="card-ttl" style="color:var(--red)">💰 选项 C：需求端优先</span><span class="badge badge-r">⚠ 高风险</span></div>' +
+      '<table class="tbl">' +
+        '<tr><th>维度</th><th>评估</th></tr>' +
+        '<tr><td>核心逻辑</td><td>M5+M6 降低购房门槛 → 拉动需求 → 倒逼供给</td></tr>' +
+        '<tr><td>供给端</td><td class="hi">零增长 — 开发商没有新增激励去建 Most in Need 住房</td></tr>' +
+        '<tr><td>需求端</td><td class="hi">+2,600 新增购房者涌入市场</td></tr>' +
+        '<tr><td>缺口变化</td><td class="hi">35% → 30%（恶化 5pp）</td></tr>' +
+        '<tr><td>价格效应</td><td class="hi">需求增加 + 供给不变 = 推高价格 8-12%</td></tr>' +
+        '<tr><td>成本/套</td><td class="hi">SAR 1,567（供给优先的 3.2 倍）</td></tr>' +
+        '<tr><td>核心风险</td><td class="hi">对存量竞价 → 价格螺旋 → Most in Need 家庭更买不起 → 缺口扩大</td></tr>' +
+      '</table>' +
+    '</div>'
+  );
+
+  // Summary comparison table
+  addMsg('agent',
+    '<div class="card">' +
+      '<div class="card-ttl" style="margin-bottom:10px">三方向对比总结</div>' +
+      '<table class="tbl">' +
+        '<tr><th>方向</th><th>缺口闭合</th><th>成本/套</th><th>价格风险</th><th>时效</th><th>推荐度</th></tr>' +
+        '<tr><td class="ok"><strong>A · 供给优先 ★</strong></td><td class="ok">35%→97%</td><td class="ok">SAR 485</td><td class="ok">低</td><td class="ok">1年</td><td class="ok">★★★★★</td></tr>' +
+        '<tr><td>B · 供需兼顾</td><td class="wa">35%→78%</td><td class="wa">SAR 978</td><td>中</td><td>1年</td><td>★★★☆☆</td></tr>' +
+        '<tr><td class="hi">C · 需求优先</td><td class="hi">35%→30%</td><td class="hi">SAR 1,567</td><td class="hi">高</td><td>3月</td><td class="hi">★☆☆☆☆</td></tr>' +
+      '</table>' +
+      '<div class="insight inf" style="margin-top:12px">' +
+        '<strong>结论：</strong>A 方案（供给优先）在所有维度上均优于 B 和 C。<br>' +
+        'B 方案政治可行性尚可但效率折损严重；C 方案在经济逻辑上存在根本缺陷。<br>' +
+        '<strong>DSO 仍推荐供给端优先。</strong>' +
+      '</div>' +
+    '</div>'
+  );
+
+  // Final confirm button
+  addMsg('agent',
+    '<div class="btn-row" id="p4ConfirmBtns">' +
+      '<button class="btn suc" onclick="confirmSupplyFirst()">✅ 经过对比，确认供给端优先</button>' +
+      '<button class="btn" onclick="confirmSupplyFirst(\'balanced\')">⚖️ 还是选择供需兼顾</button>' +
+    '</div>'
+  );
+}
+
+function confirmSupplyFirst(override) {
+  var choice = override || 'supply-first';
+  state.choices['policyDirection'] = choice;
+
+  var btns = document.querySelectorAll('#p4ConfirmBtns .btn');
+  for (var i=0; i<btns.length; i++) { btns[i].disabled = true; btns[i].style.opacity = '0.5'; }
+
+  if (choice === 'supply-first') {
+    addMsg('analysis', '<strong>✅ 供给端优先 — 认同这个方向。</strong><br>利率冲击下，需求变化是被动的（月供决定），供给响应才是主动的（政策决定）。先枚举所有可行措施，再做成本效益排序。');
+  } else {
+    addMsg('analysis', '<strong>⚖️ 供需兼顾 — 理解。</strong>政治上可能确实需要需求端配套。我会把供给措施放在优先位，同时标注需求端措施作为有条件补充。');
+  }
+
+  addMsg('agent',
+    '<div class="btn-row">' +
+      '<button class="btn pri" onclick="goPhase(5)">✅ 继续，对比政策措施</button>' +
+    '</div>'
+  );
+}
+
+// ═══════════════════════════════════════════
+//  PHASE 5 — POLICY COMPARISON (措施对比)
+// ═══════════════════════════════════════════
+function phase5() {
+  addPhaseDivider(5);
+
+  showThinking('UC-06 Policy Impact Simulation 运行中... 枚举 M1-M6... 计算效果/成本/风险... 构建组合...', 3200, function(){
+
+    addMsg('agent',
+      '<div class="tag">UC-06 Policy Impact Simulation · 41s</div>' +
+      '<div class="card">' +
+        '<div class="card-ttl" style="margin-bottom:10px">六项应对措施 — 全工具箱</div>' +
+        '<table class="tbl">' +
+          '<tr><th>#</th><th>措施</th><th>供给影响 (全国)</th><th>Riyadh 闭合</th><th>成本/年</th><th>周期</th></tr>' +
+          '<tr><td>M1</td><td>开发商补贴 +15%</td><td>+3,100/年 (R:~1,860)</td><td class="ok">35%→85%</td><td>SAR 2.4B</td><td>6月</td></tr>' +
+          '<tr><td>M2</td><td>土地释放 40%</td><td>+2,000/年 (R:~1,200)</td><td>+12pp</td><td>SAR 0.8B</td><td>3月</td></tr>' +
+          '<tr><td>M3</td><td>审批 18→6月</td><td>+1,500/年 (R:~900)</td><td>+9pp</td><td>~零成本</td><td>1月</td></tr>' +
+          '<tr><td>M4</td><td>PPP 5,000 合同</td><td>+5,000 (R:~3,000)</td><td>+30pp (Y2+)</td><td>SAR 5.2B×1</td><td>18月</td></tr>' +
+          '<tr><td>M5</td><td>按揭补贴 +2pp</td><td>无</td><td>中立</td><td>SAR 3.1B</td><td>3月</td></tr>' +
+          '<tr><td>M6</td><td>降首付 10→5%</td><td>无 (+2,600 购房者)</td><td class="hi">35%→38%</td><td>~SAR 4B 隐性</td><td>立即</td></tr>' +
+        '</table>' +
+      '</div>'
+    );
+
+    // Warning if demand-first was chosen
+    var warnPart = '';
+    if (state.choices['policyDirection'] === 'demand-first') {
+      warnPart =
+        '<div class="insight wrn">' +
+          '<strong>⚠ Warning:</strong> M5+M6 纯需求端策略会让缺口从 35% 恶化到 30%。<br>' +
+          '2,600 新增购房者涌入零增长供给 = 推高价格 + 扩大缺口。<br>' +
+          '<strong>建议重新考虑供给端方案。</strong>' +
+        '</div>';
+    }
+
+    addMsg('agent',
+      '<div class="card">' +
+        '<div class="card-ttl" style="margin-bottom:10px">政策模拟：供给端 vs 需求端对比</div>' +
+        '<img src="charts/chart7_policy.png" class="chart-img" alt="Policy Comparison">' +
+      '</div>' + warnPart
+    );
+
+    addMsg('agent',
+      '<div class="card">' +
+        '<div class="card-ttl" style="margin-bottom:10px">区域脆弱性 & 组合策略总览</div>' +
+        '<img src="charts/chart8_vulnerability.png" class="chart-img" alt="Vulnerability & Combos">' +
+      '</div>'
+    );
+
+    addMsg('agent',
+      '<div class="tag">DSO 最终建议</div>' +
+      '<div class="insight ok">' +
+        '<strong>DSO 推荐：组合 #1 — Quick-Win Supply Stack (M1+M2+M3)</strong><br>' +
+        '• 缺口闭合：35% → <strong>97%</strong><br>' +
+        '• 成本效率：<strong>SAR 485/套</strong>（组合#2 的 67%、组合#3 的 50%、组合#4 的 31%）<br>' +
+        '• 时效：<strong>1 年内完全见效</strong>，无需新立法<br>' +
+        '• 悲观情景下仍有 ~70% 闭合 — 安全余量充足<br><br>' +
+        '<strong>建议据此生成部长简报。是否批准？</strong>' +
+      '</div>' +
+      '<div class="btn-row" id="p5Btns">' +
+        '<button class="btn suc" onclick="chooseFinal(\'accept\')">✅ 批准，生成简报</button>' +
+        '<button class="btn" onclick="chooseFinal(\'add-demand\')">+ 补充 M5 按揭补贴</button>' +
+        '<button class="btn warn" onclick="chooseFinal(\'full\')">✏️ 采用组合#2 全面加速</button>' +
+      '</div>'
+    );
+
+  });
+}
+
+function chooseFinal(choice) {
+  state.choices['finalDecision'] = choice;
+  var btns = $('p5Btns').querySelectorAll('.btn');
+  for (var i=0; i<btns.length; i++) { btns[i].disabled = true; btns[i].style.opacity = '0.5'; }
+
+  if (choice === 'accept') {
+    addMsg('user', '同意。组合 #1 就是最优方案。请生成完整的部长简报 PDF——包含所有分析图表、数据表和战略建议。MOMAH 品牌模板。');
+    state.choices['combo'] = '#1';
+  } else if (choice === 'add-demand') {
+    addMsg('user', '组合 #1 是供给核心，但政治压力下可能需要需求端补充。请基于组合 #3（M1+M5）生成简报，并在报告中标注 M5 必须配合 M1 实施。');
+    state.choices['combo'] = '#3';
+  } else {
+    addMsg('user', '我想把 M4（PPP 合同）也纳入——虽然见效慢，但长期是结构性方案。请按组合 #2（M1+M2+M3+M4）生成简报。');
+    state.choices['combo'] = '#2';
+  }
+
+  addMsg('agent',
+    '<div class="btn-row">' +
+      '<button class="btn pri" onclick="goPhase(6)">📄 开始生成简报</button>' +
+    '</div>'
+  );
+}
+
+// ═══════════════════════════════════════════
+//  PHASE 6 — REPORT & ITERATION (报告定稿)
+// ═══════════════════════════════════════════
+function phase6() {
+  addPhaseDivider(6);
+
+  showThinking('UC-07 Report Generation Engine 运行中... 生成 8 张图表... LLM 双语摘要... PDF 编译...', 4000, function(){
+
+    addMsg('agent',
+      '<div class="tag">UC-07 Report Generation · 38s — 简报已生成</div>' +
+      '<div style="color:var(--green);margin-top:6px">✅ DSO_Ministerial_Briefing.pdf · 8 charts + 2 tables · DGA Standard</div>'
+    );
+
+    addMsg('full',
+      '<div class="tag">简报预览 — 请审阅</div>' +
+      '<div class="pdf-wrap">' +
+        '<iframe src="DSO_Ministerial_Briefing.pdf"></iframe>' +
+      '</div>'
+    );
+
+    // Actions
+    addMsg('agent',
+      '<div class="tag">简报已生成 — 你可以审阅并确认</div>' +
+      '<div class="btn-row" id="p6EditBtns">' +
+        '<button class="btn sm" onclick="editReport(\'rate\')">📝 补充利率历史时间线</button>' +
+        '<button class="btn sm" onclick="editReport(\'eastern\')">📝 补充东部省数据</button>' +
+        '<button class="btn sm" onclick="editReport(\'risk\')">📝 补充悲观情景压力测试</button>' +
+        '<button class="btn sm suc" onclick="finalizeReport()">✅ 满意，生成最终版</button>' +
+      '</div>' +
+      '<div style="margin-top:8px;padding:10px 14px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;font-size:12px">' +
+        '📥 <a href="DSO_Ministerial_Briefing.pdf" download style="color:var(--green);text-decoration:underline;font-weight:600">下载 PDF</a>' +
+        ' <span style="color:var(--text2)">(8 charts + 2 tables · DGA Std)</span>' +
+        ' &nbsp;|&nbsp; 📄 <a href="DSO_Ministerial_Briefing.docx" download style="color:var(--cyan);text-decoration:underline;font-weight:600">下载 Word</a>' +
+      '</div>'
+    );
+
+  });
+}
+
+function editReport(topic) {
+  if (state.reportEdits.indexOf(topic) >= 0) return;
+  state.reportEdits.push(topic);
+
+  var note = '';
+  if (topic === 'rate') {
+    note = '建议在简报中增加 SAMA 利率决策历史时间线，说明此次加息是在 9 个月降息周期后的突然逆转，与市场预期相反——这会放大需求端的心理冲击。';
+  } else if (topic === 'eastern') {
+    note = '东部省 Low Income 缺口（-8,700）被报告中一笔带过。建议在政策矩阵中注明 M1+M2+M3 的措施是全国性部署，东部省可按比例受益（~20% 产出分配）。';
+  } else if (topic === 'risk') {
+    note = '悲观情景下（SAMA 再加 25bps 至 5.00%）Most in Need 缺口会膨胀至 17,200 套（+39%）。建议增加一段悲观情景作为压力测试底线，并明确当前措施在悲观下仍能达到 ~70% 闭合。';
+  }
+
+  addMsg('user',
+    '<div style="background:#fef08a;color:#1e293b;padding:10px 14px;border-radius:8px;font-size:12px">' +
+      '<strong>✏️ Ahmed 补充意见：</strong> ' + note +
+    '</div>',
+    200
+  );
+}
+
+function finalizeReport() {
+  var btns = $('p6EditBtns').querySelectorAll('.btn');
+  for (var i=0; i<btns.length; i++) { btns[i].disabled = true; btns[i].style.opacity = '0.5'; }
+
+  showThinking('重新编译简报... 融入 Ahmed 的修改意见... 更新图表和叙事...', 3500, function(){
+
+    addMsg('agent',
+      '<div style="color:var(--green);font-weight:600">✅ 最终简报已更新 — DSO_Ministerial_Briefing_vFINAL.pdf</div>' +
+      '<div style="font-size:12px;color:var(--text2);margin-top:4px">' +
+        '已融入 ' + state.reportEdits.length + ' 项分析师意见 · 13 pages · 9 charts · Human Reviewed' +
+      '</div>'
+    );
+
+    addMsg('analysis',
+      '<strong>🎯 Journey Complete</strong><br>' +
+      '<strong>总耗时：</strong>~4 分钟（传统方式 3-4 天）<br>' +
+      '<strong>分析步骤：</strong>宏观 → 需求 → 缺口 → 供给 → 政策 → 报告<br>' +
+      '<strong>分析师互动次数：</strong>' + (Object.keys(state.choices).length + state.reportEdits.length) + ' 次<br>' +
+      '<strong>最终方案：</strong>Combo ' + (state.choices['combo'] || '#1') + ' · SAR 3.2B/yr · ' +
+      (state.choices['combo'] === '#3' ? '78%' : (state.choices['combo'] === '#2' ? '100%+' : '97%')) + ' 闭合'
+    );
+
+    updateStepper(7);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+(function init() {
+  setTimeout(function(){ goPhase(0); }, 500);
+})();
+</script>
+
+</body>
+</html>
