@@ -1702,14 +1702,15 @@ function ChatAnalysis(){
       </div>
     </div>);
   }
-  const rail=DS11.map(d=>{const ok=ai.ds[d[0]];return (<div key={d[0]} className={"dsc"+(ok?" ok":"")}><span>{d[0]} {d[1]}</span><span className="st">{ok?"✓":"·"}</span></div>);});
+  const rail=DS11.map(d=>{const ok=ai.ds[d[0]];return (<div key={d[0]} className={"dsc"+(ok?" ok":"")}><span className="livedot"/><span className="dsname">{d[0]} {d[1]}</span><span className="st">{ok?"✓":"LIVE"}</span></div>);});
+  const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
   const cards=[];
   for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
     const ag=AGENTS_T[i]; const active=(i===ai.ag&&!ai.done);
     const shown=(i<ai.ag)?ag.lines.length:(ai.line+1);
     const lns=[];
     for(let j=0;j<shown;j++){ const ln=ag.lines[j]; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
-      lns.push(<div key={j} className={"tln "+ln.k}>{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</div>); }
+      lns.push(<div key={j} className={"tln "+ln.k}><span className={"kind "+ln.k}>{kindLbl(ln.k)}</span><span className="ttx">{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</span></div>); }
     cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")}>
       <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
   }
@@ -1724,8 +1725,8 @@ function ChatAnalysis(){
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
     <div className="theater">
-      <div className="dsrail card pad"><div className="rail-h">{L("Data sources · 11","数据源 · 11")}</div>{rail}</div>
-      <div>
+      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Data sources · LIVE","数据源 · 实时")}</div>{rail}</div>
+      <div className="tstream">
         {cards}
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
@@ -1741,17 +1742,62 @@ function ChatAnalysis(){
         <div ref={endRef} style={{height:1}}/>
       </div>
     </div>
-    {flow&&<Drawer title={L("Multi-Agent Flow · Agent I/O","多智能体流 · Agent I/O")} onClose={()=>setFlow(false)}>
-      <div className="muted" style={{fontSize:12.5,marginBottom:14}}>{L("Use-case storyline (UC-03 Supply-Demand Balancing) — each agent's inputs and outputs wired through the L1→L5 pipeline.","用例故事线(UC-03 供需平衡为主线)—— 各智能体的输入 / 输出在 L1→L5 流水线中串联。")}</div>
-      <div className="ioflow">
-        {AGENTS_T.map((ag,i)=>(<div key={i} className={"ionode"+(ag.gate?" gate":"")}>
-          <div className="io in">▸ {L("IN","输入")}: <b>{ag.io?ag.io.in:"—"}</b></div>
-          <div className="iocore"><span className="aic">{ag.ic}</span><b style={{flex:1}}>{Z(ag,"ag")}</b><span className="alyr">{ag.lyr}</span></div>
-          <div className="io out">{L("OUT","输出")}: <b>{ag.io?ag.io.out:"—"}</b></div>
-          {i<AGENTS_T.length-1&&<div className="ioarrow">↓</div>}
-        </div>))}
+    {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
+  </div>);
+}
+const FLOW_SRC=["SAP / Asas","Etimad","Esnad","Sakani","Wafi","Ejari","MOJ Price","GASTAT","Private Mkt","Geo / GIS","Bank stmts"];
+const FLOW_STAGES=[
+ {t:"Intake & Data Quality",t_zh:"接入与数据质量",ag:["Orchestrator Agent","Data Quality Monitor","Proactive Insights"],in:"Raw demand, supply & macro feeds",in_zh:"原始 需求 / 供给 / 宏观 数据"},
+ {t:"Demand Intelligence",t_zh:"需求智能",ag:["Demand Intelligence Agent","Data Querying Agent"],in:"Unified dataset + DQ flags · 88%",in_zh:"统一数据 + 质量标记 · 88%"},
+ {t:"Supply-Demand Balancing",t_zh:"供需平衡",ag:["Supply-Demand Balancing Agent","Data Querying Agent"],in:"Seg-A demand 19,100 + migration",in_zh:"A 段需求 19,100 + 迁移"},
+ {t:"Conversion & Absorption",t_zh:"转化吸纳",ag:["Conversion & Absorption Agent","Proactive Insights"],in:"Gap 12,400 · coverage 35%",in_zh:"缺口 12,400 · 覆盖 35%"},
+ {t:"Policy Simulation",t_zh:"政策模拟",ag:["Policy Simulation Agent","Data Querying Agent"],in:"Residual gap + macro/policy attribution",in_zh:"剩余缺口 + 宏观/政策归因"},
+];
+function FlowDiagram({lang,onClose}){
+  const L=(en,zh)=>lang==="zh"?zh:en;
+  const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
+  const conn=(label)=>(<div className="fconn"><span className="flabel">{label}</span><span className="farrow">→</span></div>);
+  return (<div className="flow-ov" onClick={onClose}>
+    <div className="flow-panel" onClick={e=>e.stopPropagation()}>
+      <div className="flow-head">
+        <div><h3>{L("Demand & Supply Optimizer — Use-case storyline & agent I/O flow","Demand & Supply Optimizer — 用例故事线与 Agent I/O 流")}</h3>
+          <div className="muted" style={{fontSize:12}}>{L("Sources → UC chain (agents & I/O) → mandatory human gate → deliverables","数据源 → 用例链(智能体与 I/O)→ 强制人工门 → 交付物")}</div></div>
+        <button className="modal-x" onClick={onClose} aria-label="close">✕</button>
       </div>
-    </Drawer>}
+      <div className="flow-legend">
+        <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
+        <span><span className="lg sw-gate"/>{L("Mandatory human gate","强制人工门")}</span>
+        <span><span className="lg sw-agent"/>{L("Agent chip","智能体")}</span>
+        <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
+      </div>
+      <div className="flow-body">
+        <div className="flow-row">
+          <div className="fsrc">
+            <div className="fsrc-h">{L("Data Sources","数据源")}</div>
+            {FLOW_SRC.map((s,i)=><div key={i} className="fsrc-i">· {s}</div>)}
+          </div>
+          {conn(L("Raw feeds","原始数据"))}
+          {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
+            {i>0&&conn(Z(s,"in"))}
+            <div className="fstage">
+              <div className="fstage-h">{Z(s,"t")}</div>
+              {s.ag.map((a,j)=><div key={j} className="fchip"><span className="gdot"/>{a}</div>)}
+            </div>
+          </React.Fragment>))}
+          {conn(L("Ranked toolkit · M1+M2+M3","排序工具箱 · M1+M2+M3"))}
+          <div className="fstage gate">
+            <div className="fstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
+            <div className="fgate-b">{L("Validate & approve · draft recommendation · authorize export","校验与批准 · 草稿建议 · 授权导出")}</div>
+            <div className="fgate-b muted" style={{fontSize:11}}>HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31</div>
+          </div>
+          {conn(L("Approved recommendation","已批准建议"))}
+          <div className="fdeliv">
+            <div className="fdeliv-h">📦 {L("Deliverables","交付物")}</div>
+            <div className="muted" style={{fontSize:12}}>{L("Gap briefing (PDF) · early-warning · SSOT push → AI_H_03 / CoPilot","缺口简报(PDF)· 早期预警 · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>);
 }
 function Msg({m,onGenReport,onRoute,onRun}){
@@ -2388,7 +2434,6 @@ function App(){
   return (<Ctx.Provider value={store}>
     <TopBar/>
     <div className="shell"><div className="content">{page}</div></div>
-    <AgentLog/>
     <button className="buildstamp" title={t("release_notes")} onClick={()=>setShowNotes(true)}><span className="bs-dot"/><b>{RELEASE_NOTES.en[0].ver}</b> · {BUILD_TIME}</button>
     {showNotes&&<Modal title={"📦 "+t("release_notes")} onClose={()=>setShowNotes(false)}>
       <div className="timeline">
