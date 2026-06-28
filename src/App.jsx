@@ -1745,6 +1745,8 @@ function ChatAnalysis(){
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
+  const orchSt=!ai.on?L("ready","就绪"):ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
+  const mafChip=<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
   useEffect(()=>{ if(ai.on&&endRef.current) endRef.current.scrollIntoView({behavior:"smooth",block:"end"}); },[ai]);
   function advance(cur){
@@ -1769,7 +1771,7 @@ function ChatAnalysis(){
   if(!ai.on){
     const ex=["⚡ "+L("Rate-hike +50bps impact on Riyadh Seg-A gap","加息 +50bps 对利雅得 A 段缺口的影响"),L("Is the gap a policy or a macro problem?","缺口是政策问题还是宏观问题?"),L("What should we do to close it?","该怎么补这个缺口?")];
     return (<div className="fade">
-      <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end"/>
+      <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
       <div className="ai-brief-grid">
         <div className="ai-brief-main card pad">
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
@@ -1802,10 +1804,9 @@ function ChatAnalysis(){
     cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")}>
       <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
   }
-  const orchSt=ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
   return (<div className="fade">
     <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
-      right={<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>}/>
+      right={mafChip}/>
     <ReasoningStatus ai={ai} L={L} Z={Z}/>
     <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
@@ -1861,7 +1862,7 @@ function FlowDiagram({lang,onClose}){
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const Conn=({label})=>(<div className="hconn"><span className="vlabel">{label}</span></div>);
   const agent=(a,j)=>(<div key={j} className="vagent">
-    <div className="va-h"><span className="aic">{a.ic}</span><b style={{flex:1}}>{a.n}</b><span className="gdot" title="live"/></div>
+    <div className="va-h"><span className="gdot" title="live"/><b style={{flex:1}}>{a.n}</b></div>
     <div className="va-io col">
       <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
       <span className="io-arrow down">↓</span>
