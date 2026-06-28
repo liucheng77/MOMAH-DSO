@@ -1584,7 +1584,7 @@ function downloadBriefing(){
   }catch(e){ window.print(); }
 }
 /* ---- Multi-agent reasoning theater data ---- */
-const DS11=[["DS-01","Sakani"],["DS-02","Wafi"],["DS-03","IDMS"],["DS-04","Ejari"],["DS-05","MoF"],["DS-06","SEC"],["DS-07","MOJ Price"],["DS-08","GASTAT"],["DS-09","Private Mkt"],["DS-10","Geo/GIS"],["DS-11","Bank/Tahseel"]];
+const DS11=[["DS-01","Sakani"],["DS-02","Wafi"],["DS-03","IDMS"],["DS-04","Ejari"],["DS-05","MoF/Budget"],["DS-06","SEC"],["DS-07","MOJ Price"],["DS-08","GASTAT"],["DS-09","Private Mkt"],["DS-10","Geo/GIS"],["DS-11","Banks/Loans"]];
 const AGENTS_T=[
  {ag:"Orchestrator Agent",ag_zh:"编排 Agent",ic:"✦",lyr:"L3",io:{in:"User query (NL)",out:"Routed task + plan"},lines:[
    {k:"think",t:"Parse intent: how big is the Riyadh Seg-A gap, and how to close it?",t_zh:"解析意图:利雅得 A 段供需缺口有多大?该怎么补?"},
@@ -1630,8 +1630,17 @@ const AGENTS_T=[
    {k:"calc",t:"M6 lower down-payment → demand +18%, no new supply",t_zh:"M6 降首付 → 需求 +18% 无新增供给",val:"35%→38% ✕"},
    {k:"think",t:"M6 is counter-productive in a supply-constrained market → reject",t_zh:"M6 在供给受限市场适得其反 → 否决"},
    {k:"out",t:"Recommend M1+M2+M3 combo; reject M6",t_zh:"推荐 M1+M2+M3 组合;反对 M6"}]},
+ {ag:"Fiscal Continuity Agent",ag_zh:"财政延续性 Agent",ic:"﷼",lyr:"L3",io:{in:"Policy toolkit + investment / loan envelope",out:"Continuity score · fiscal-safe recommendation"},lines:[
+   {k:"call",t:"Pull budget envelope, investment pipeline, and housing-loan book",t_zh:"拉取预算包、投资管线与住房贷款池",ds:["DS-05","DS-11"]},
+   {k:"think",t:"Check whether the recommended supply toolkit is fundable beyond the first year",t_zh:"检查推荐供给工具箱是否能跨年度持续承受"},
+   {k:"calc",t:"Visible exposure = investment SAR 7.6B + developer subsidy SAR 2.4B",t_zh:"显性敞口 = 投资 SAR 76 亿 + 开发商补贴 SAR 24 亿",val:"SAR 10.0B"},
+   {k:"calc",t:"Loan stress = SAR 18.4B loan book × 50bps × 65% pass-through",t_zh:"贷款压力 = SAR 184 亿贷款池 × 50bps × 65% 传导",val:"SAR 0.60B/yr"},
+   {k:"calc",t:"Continuity score = affordability + conversion + fiscal exposure + data confidence",t_zh:"延续性评分 = 可负担性 + 转化 + 财政敞口 + 数据置信",val:"72/100"},
+   {k:"think",t:"Base case is fundable; pessimistic case needs phased approval and a quarterly cap",t_zh:"基准情景可承受;悲观情景需分阶段批准并设置季度上限"},
+   {k:"out",t:"Fiscal-safe path: approve M1+M2+M3, cap PPP exposure, avoid demand-only loan relief",t_zh:"财政安全路径:批准 M1+M2+M3,限制 PPP 敞口,避免只刺激需求的贷款纾困"}]},
  {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,io:{in:"Draft recommendation",out:"Awaiting human approval"},lines:[
    {k:"think",t:"Severity = RED and gap > 30% → above autonomous scope",t_zh:"严重度 = 红色 且 缺口 > 30% → 超出自治范围"},
+   {k:"think",t:"Fiscal exposure > SAR 2B → finance-continuity review required",t_zh:"财政敞口 > SAR 20 亿 → 需要财政延续性复核"},
    {k:"think",t:"Guardrails: HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31",t_zh:"护栏:HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31"},
    {k:"think",t:"Hold output as draft → requires Planning Manager approval",t_zh:"产出保持草稿 → 需 Planning Manager 批准"}]},
  {ag:"Output · Dispatch",ag_zh:"产出与分发",ic:"✓",lyr:"L5",io:{in:"Approved recommendation",out:"PDF · alert · SSOT push"},lines:[
@@ -1659,6 +1668,74 @@ function StoryStepper({states}){
       </React.Fragment>))}
     </div>
     <span className="stepper-cap" title={cap}>{cap}</span>
+  </div>);
+}
+function computeFiscalContinuity(lv){
+  const supplyUnits = Math.round(3100*(lv.subsidy/15));
+  const devSubsidy = +(2.4*(lv.subsidy/15)).toFixed(2);
+  const investmentTopup = +Math.max(0,lv.investment-7.6).toFixed(2);
+  const pppExposure = +(investmentTopup*0.42).toFixed(2);
+  const loanStress = +(lv.loan*(lv.rate/10000)*0.65).toFixed(2);
+  const visibleExposure = +(lv.investment+devSubsidy+pppExposure).toFixed(2);
+  const annualBurden = +(devSubsidy/3+loanStress).toFixed(2);
+  const closure = Math.min(92,Math.round(35+(supplyUnits/3100)*50+(lv.investment-7.6)*1.8));
+  const score = Math.max(38,Math.min(92,Math.round(91-annualBurden*4-(lv.rate-25)*0.2+(closure-35)*0.23)));
+  const tone = score>=75?"good":score>=62?"warn":"bad";
+  return {supplyUnits,devSubsidy,pppExposure,loanStress,visibleExposure,annualBurden,closure,score,tone};
+}
+function FiscalContinuityPanel({compact=false}){
+  const {lang}=useStore();
+  const L=(en,zh)=>lang==="zh"?zh:en;
+  const [lv,setLv]=useState({investment:7.6,loan:18.4,rate:50,subsidy:15});
+  const m=useMemo(()=>computeFiscalContinuity(lv),[lv]);
+  const set=(k,v)=>setLv(prev=>({...prev,[k]:Number(v)}));
+  const b=v=>"SAR "+v.toFixed(1)+"B";
+  const chipCls=m.tone==="good"?"":m.tone==="warn"?" amber":" danger";
+  const rows=[
+    {k:"investment",label:L("Investment envelope","投资金额"),min:5,max:12,step:.2,val:lv.investment,unit:"SAR B"},
+    {k:"loan",label:L("Loan book at risk","贷款金额"),min:10,max:28,step:.2,val:lv.loan,unit:"SAR B"},
+    {k:"rate",label:L("Rate shock","利率冲击"),min:25,max:100,step:25,val:lv.rate,unit:"bps"},
+    {k:"subsidy",label:L("Developer subsidy","开发商补贴"),min:5,max:25,step:1,val:lv.subsidy,unit:"%"},
+  ];
+  return (<div className={"fiscal-card"+(compact?" compact":"")}>
+    <div className="fiscal-head">
+      <div><div className="eyebrow">{L("AI fiscal continuity","AI 财政延续性")}</div>
+        <h3>{L("Can this recommendation survive the budget cycle?","这条建议能否跨预算周期持续?")}</h3></div>
+      <span className={"chip"+chipCls}>{L("Score","评分")}: {m.score}/100</span>
+    </div>
+    <div className="fiscal-metrics">
+      <div><span>{L("Gap closure","缺口补足")}</span><b>{m.closure}%</b></div>
+      <div><span>{L("Fiscal exposure","财政敞口")}</span><b>{b(m.visibleExposure)}</b></div>
+      <div><span>{L("Loan stress","贷款压力")}</span><b>{b(m.loanStress)}/yr</b></div>
+    </div>
+    <div className="fiscal-controls">
+      {rows.map(r=><label key={r.k} className="fslider">
+        <span><b>{r.label}</b><em>{r.val}{r.unit==="SAR B"?" SAR B":r.unit}</em></span>
+        <input type="range" min={r.min} max={r.max} step={r.step} value={r.val} onChange={e=>set(r.k,e.target.value)}/>
+      </label>)}
+    </div>
+    <div className="calc-chain">
+      <div><b>1</b><span>{L("Visible exposure","显性敞口")} = {b(lv.investment)} + {b(m.devSubsidy)} + {b(m.pppExposure)} = <strong>{b(m.visibleExposure)}</strong></span></div>
+      <div><b>2</b><span>{L("Loan stress","贷款压力")} = {b(lv.loan)} × {lv.rate}bps × 65% = <strong>{b(m.loanStress)}/yr</strong></span></div>
+      <div><b>3</b><span>{L("Decision","决策")} = {L("fund M1+M2+M3, cap PPP exposure, reject demand-only relief","支持 M1+M2+M3, 限制 PPP 敞口, 拒绝只刺激需求的纾困")}</span></div>
+    </div>
+    {!compact&&<div className="output-stack">
+      <div><span>Output</span><b>{L("Fiscal-safe recommendation","财政安全建议")}</b></div>
+      <div><span>API</span><b>/dso/v1/scenario/fiscal-continuity</b></div>
+      <div><span>Dispatch</span><b>CoPilot + AI_H_03 + audit log</b></div>
+    </div>}
+  </div>);
+}
+function ReasoningStatus({ai,L,Z}){
+  const active = ai.ag>=0 && ai.ag<AGENTS_T.length ? AGENTS_T[ai.ag] : null;
+  const line = active && ai.line>=0 ? active.lines[ai.line] : null;
+  const sourceCount = Object.keys(ai.ds||{}).length;
+  const status = ai.done?L("Output package ready","产出包已就绪"):ai.gate?L("Waiting for human gate","等待人工治理门"):active?Z(active,"ag"):L("Ready","就绪");
+  return (<div className="reasoning-status card">
+    <div className="rs-cell live"><span className="livedot"/><span>{L("Active AI work","当前 AI 动作")}</span><b>{status}</b></div>
+    <div className="rs-cell"><span>{L("Current step","当前步骤")}</span><b>{line?Z(line,"t"):L("Preparing routing plan","准备路由计划")}</b></div>
+    <div className="rs-cell"><span>{L("Sources touched","已触达数据源")}</span><b>{sourceCount}/11</b></div>
+    <div className="rs-cell"><span>{L("Next output","下一项输出")}</span><b>{L("recommendation + API payload + PDF","建议 + API Payload + PDF")}</b></div>
   </div>);
 }
 function ChatAnalysis(){
@@ -1693,13 +1770,24 @@ function ChatAnalysis(){
     const ex=["⚡ "+L("Rate-hike +50bps impact on Riyadh Seg-A gap","加息 +50bps 对利雅得 A 段缺口的影响"),L("Is the gap a policy or a macro problem?","缺口是政策问题还是宏观问题?"),L("What should we do to close it?","该怎么补这个缺口?")];
     return (<div className="fade">
       <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end"/>
-      <div className="card pad" style={{textAlign:"center",padding:"34px 18px"}}>
-        <div className="muted" style={{marginBottom:14,fontSize:13}}>✦ {L("Ask in natural language — the Orchestrator routes to the right engines and shows its full reasoning.","用自然语言提问 —— 编排 Agent 路由到对应引擎,并展示完整推理过程。")}</div>
-        <button className="btn" onClick={start}>▶ {L("Run multi-agent analysis","运行多智能体分析")}</button>
-        <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginTop:16}}>
-          {ex.map((e,i)=><button key={i} className="preset" onClick={start}>{e}</button>)}
+      <div className="ai-brief-grid">
+        <div className="ai-brief-main card pad">
+          <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
+          <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
+          <p>{L("The demo now starts from an AI investigation, not a report export. Watch the Orchestrator call agents, expose the calculation chain, and package the output for CoPilot / AI_H_03.","演示从 AI 调查开始,不是从导出报告开始。观看编排器调用 Agent、展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
+          <div className="ai-brief-actions">
+            <button className="btn" onClick={start}>▶ {L("Run AI reasoning theater","运行 AI 推理剧场")}</button>
+            <button className="btn secondary" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
+          </div>
+          <div className="preset-row">
+            {ex.map((e,i)=><button key={i} className="preset" onClick={start}>{e}</button>)}
+          </div>
+        </div>
+        <div className="ai-brief-side">
+          <FiscalContinuityPanel compact/>
         </div>
       </div>
+      {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
     </div>);
   }
   const rail=DS11.map(d=>{const ok=ai.ds[d[0]];return (<div key={d[0]} className={"dsc"+(ok?" ok":"")}><span className="livedot"/><span className="dsname">{d[0]} {d[1]}</span><span className="st">{ok?"✓":"LIVE"}</span></div>);});
@@ -1718,13 +1806,14 @@ function ChatAnalysis(){
   return (<div className="fade">
     <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
       right={<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>}/>
+    <ReasoningStatus ai={ai} L={L} Z={Z}/>
     <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
         : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
       {(!ai.done&&!ai.gate)?<button className="btn ghost sm" onClick={stepOne}>⏭ {L("Step","下一步")}</button>:null}
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
-    <div className="theater">
+    <div className="theater theater-fiscal">
       <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Data sources · LIVE","数据源 · 实时")}</div>{rail}</div>
       <div className="tstream">
         {cards}
@@ -1741,64 +1830,76 @@ function ChatAnalysis(){
         </div>}
         <div ref={endRef} style={{height:1}}/>
       </div>
+      <FiscalContinuityPanel/>
     </div>
     {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
   </div>);
 }
 const FLOW_SRC=["SAP / Asas","Etimad","Esnad","Sakani","Wafi","Ejari","MOJ Price","GASTAT","Private Mkt","Geo / GIS","Bank stmts"];
 const FLOW_STAGES=[
- {t:"Intake & Data Quality",t_zh:"接入与数据质量",ag:["Orchestrator Agent","Data Quality Monitor","Proactive Insights"],in:"Raw demand, supply & macro feeds",in_zh:"原始 需求 / 供给 / 宏观 数据"},
- {t:"Demand Intelligence",t_zh:"需求智能",ag:["Demand Intelligence Agent","Data Querying Agent"],in:"Unified dataset + DQ flags · 88%",in_zh:"统一数据 + 质量标记 · 88%"},
- {t:"Supply-Demand Balancing",t_zh:"供需平衡",ag:["Supply-Demand Balancing Agent","Data Querying Agent"],in:"Seg-A demand 19,100 + migration",in_zh:"A 段需求 19,100 + 迁移"},
- {t:"Conversion & Absorption",t_zh:"转化吸纳",ag:["Conversion & Absorption Agent","Proactive Insights"],in:"Gap 12,400 · coverage 35%",in_zh:"缺口 12,400 · 覆盖 35%"},
- {t:"Policy Simulation",t_zh:"政策模拟",ag:["Policy Simulation Agent","Data Querying Agent"],in:"Residual gap + macro/policy attribution",in_zh:"剩余缺口 + 宏观/政策归因"},
+ {t:"Intake & Data Quality",t_zh:"接入与数据质量",hand:"Unified dataset + DQ flags · 88%",hand_zh:"统一数据 + 质量标记 · 88%",ag:[
+   {n:"Orchestrator Agent",ic:"✦",in:"User query (NL)",in_zh:"用户提问(NL)",out:"Routed task + plan",out_zh:"路由任务 + 计划"},
+   {n:"Data Quality Monitor",ic:"◉",in:"11 raw sources",in_zh:"11 原始源",out:"Validated set · 88%",out_zh:"校验数据 · 88%"}]},
+ {t:"Demand Intelligence",t_zh:"需求智能",hand:"Seg-A demand 19,100",hand_zh:"A 段需求 19,100",ag:[
+   {n:"Demand Intelligence Agent",ic:"📈",in:"Validated dataset",in_zh:"校验数据集",out:"Seg-A demand 19,100",out_zh:"A 段需求 19,100"},
+   {n:"Data Querying Agent",ic:"🔎",in:"Segment / beneficiary tables",in_zh:"段位 / 受益人表",out:"B→A migration 2,360",out_zh:"B→A 迁移 2,360"}]},
+ {t:"Supply-Demand Balancing",t_zh:"供需平衡",hand:"Gap 12,400 · coverage 35%",hand_zh:"缺口 12,400 · 覆盖 35%",ag:[
+   {n:"Supply-Demand Balancing Agent",ic:"⚖",in:"Demand + pipeline",in_zh:"需求 + 管线",out:"Gap 12,400 · 35%",out_zh:"缺口 12,400 · 35%"},
+   {n:"Data Querying Agent",ic:"🔎",in:"143 projects",in_zh:"143 个项目",out:"Effective supply 6,700",out_zh:"有效供给 6,700"}]},
+ {t:"Conversion & Absorption",t_zh:"转化吸纳",hand:"Residual gap 6,200 + alert",hand_zh:"剩余缺口 6,200 + 预警",ag:[
+   {n:"Conversion & Absorption Agent",ic:"🎯",in:"Pipeline + conv rates",in_zh:"管线 + 转化率",out:"Residual gap 6,200",out_zh:"剩余缺口 6,200"},
+   {n:"Proactive Insights",ic:"💡",in:"Conversion trend",in_zh:"转化趋势",out:"Early-warning",out_zh:"早期预警"}]},
+ {t:"Policy Simulation",t_zh:"政策模拟",hand:"Ranked toolkit (draft)",hand_zh:"排序工具箱(草稿)",ag:[
+   {n:"Policy Simulation Agent",ic:"⚖",in:"Gap + six measures",in_zh:"缺口 + 六项措施",out:"Toolkit M1+M2+M3",out_zh:"工具箱 M1+M2+M3"},
+   {n:"Data Querying Agent",ic:"🔎",in:"Causal-chain inputs",in_zh:"因果链输入",out:"M6 counter-indication",out_zh:"M6 反指征"}]},
+ {t:"Fiscal Continuity",t_zh:"财政延续性",hand:"Fiscal-safe recommendation",hand_zh:"财政安全建议",ag:[
+   {n:"Fiscal Continuity Agent",ic:"💠",in:"Toolkit + invest / loan",in_zh:"工具箱 + 投资 / 贷款",out:"3-yr fiscal path",out_zh:"3 年财政路径"},
+   {n:"Finance Rules Engine",ic:"📐",in:"5% cap envelope",in_zh:"5% 上限信封",out:"Within cap ✓",out_zh:"上限内 ✓"}]},
 ];
 function FlowDiagram({lang,onClose}){
   const L=(en,zh)=>lang==="zh"?zh:en;
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
-  const conn=(label)=>(<div className="fconn"><span className="flabel">{label}</span><span className="farrow">→</span></div>);
-  return (<div className="flow-ov" onClick={onClose}>
-    <div className="flow-panel" onClick={e=>e.stopPropagation()}>
-      <div className="flow-head">
-        <div><h3>{L("Demand & Supply Optimizer — Use-case storyline & agent I/O flow","Demand & Supply Optimizer — 用例故事线与 Agent I/O 流")}</h3>
-          <div className="muted" style={{fontSize:12}}>{L("Sources → UC chain (agents & I/O) → mandatory human gate → deliverables","数据源 → 用例链(智能体与 I/O)→ 强制人工门 → 交付物")}</div></div>
-        <button className="modal-x" onClick={onClose} aria-label="close">✕</button>
-      </div>
-      <div className="flow-legend">
-        <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
-        <span><span className="lg sw-gate"/>{L("Mandatory human gate","强制人工门")}</span>
-        <span><span className="lg sw-agent"/>{L("Agent chip","智能体")}</span>
-        <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
-      </div>
-      <div className="flow-body">
-        <div className="flow-row">
-          <div className="fsrc">
-            <div className="fsrc-h">{L("Data Sources","数据源")}</div>
-            {FLOW_SRC.map((s,i)=><div key={i} className="fsrc-i">· {s}</div>)}
-          </div>
-          {conn(L("Raw feeds","原始数据"))}
-          {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
-            {i>0&&conn(Z(s,"in"))}
-            <div className="fstage">
-              <div className="fstage-h">{Z(s,"t")}</div>
-              {s.ag.map((a,j)=><div key={j} className="fchip"><span className="gdot"/>{a}</div>)}
-            </div>
-          </React.Fragment>))}
-          {conn(L("Ranked toolkit · M1+M2+M3","排序工具箱 · M1+M2+M3"))}
-          <div className="fstage gate">
-            <div className="fstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
-            <div className="fgate-b">{L("Validate & approve · draft recommendation · authorize export","校验与批准 · 草稿建议 · 授权导出")}</div>
-            <div className="fgate-b muted" style={{fontSize:11}}>HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31</div>
-          </div>
-          {conn(L("Approved recommendation","已批准建议"))}
-          <div className="fdeliv">
-            <div className="fdeliv-h">📦 {L("Deliverables","交付物")}</div>
-            <div className="muted" style={{fontSize:12}}>{L("Gap briefing (PDF) · early-warning · SSOT push → AI_H_03 / CoPilot","缺口简报(PDF)· 早期预警 · SSOT 推送 → AI_H_03 / CoPilot")}</div>
-          </div>
-        </div>
-      </div>
+  const Conn=({label})=>(<div className="vconn"><span className="vlabel">{label}</span></div>);
+  const agent=(a,j)=>(<div key={j} className="vagent">
+    <div className="va-h"><span className="aic">{a.ic}</span><b style={{flex:1}}>{a.n}</b><span className="gdot" title="live"/></div>
+    <div className="va-io">
+      <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
+      <span className="io-arrow">→</span>
+      <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
     </div>
   </div>);
+  return (<Drawer title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
+    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:12}}>
+      <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
+      <span><span className="lg sw-gate"/>{L("Human gate","人工门")}</span>
+      <span><span className="lg sw-agent"/>{L("Agent (live)","智能体(存活)")}</span>
+      <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
+    </div>
+    <div className="vflow">
+      <div className="vsrc">
+        <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
+        <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
+      </div>
+      <Conn label={L("Raw demand / supply / macro feeds","原始 需求 / 供给 / 宏观")}/>
+      {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
+        <div className="vstage">
+          <div className="vstage-h">{Z(s,"t")}</div>
+          <div className="vstage-b">{s.ag.map(agent)}</div>
+        </div>
+        <Conn label={Z(s,"hand")}/>
+      </React.Fragment>))}
+      <div className="vstage gate">
+        <div className="vstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
+        <div className="vgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
+          <div className="muted" style={{fontSize:11,marginTop:4}}>HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31</div></div>
+      </div>
+      <Conn label={L("Approved recommendation","已批准建议")}/>
+      <div className="vdeliv">
+        <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
+        <div className="muted" style={{fontSize:12,marginTop:4}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+      </div>
+    </div>
+  </Drawer>);
 }
 function Msg({m,onGenReport,onRoute,onRun}){
   const {t,cov}=useStore();
