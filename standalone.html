@@ -190,7 +190,15 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .va-io.col .io-arrow.down{align-self:center;line-height:1}
 /* horizontal wide agent I/O flow */
 .hscroll{flex:1;min-height:0;overflow:auto}
-.hflow{display:flex;flex-wrap:wrap;align-items:stretch;align-content:flex-start;row-gap:16px;padding-bottom:10px}
+.hsnake{display:flex;flex-direction:column;min-width:max-content;padding-bottom:10px}
+.hrow{display:flex;align-items:stretch}
+.hreturn{position:relative;height:54px}
+.hreturn .hline{position:absolute;inset-inline-start:26px;inset-inline-end:26px;top:50%;transform:translateY(-50%);height:3px;background-image:linear-gradient(90deg,#2563eb 55%,transparent 0);background-size:11px 100%;background-repeat:repeat-x;animation:flowdashX .55s linear infinite}
+.hreturn .elbow{position:absolute;width:3px;background:#2563eb}
+.hreturn .elbow.r{inset-inline-end:26px;top:-8px;height:calc(50% + 8px)}
+.hreturn .elbow.l{inset-inline-start:26px;bottom:-8px;height:calc(50% + 8px)}
+.hreturn .elbow.l:after{content:"▼";position:absolute;inset-inline-start:-5px;bottom:-12px;color:#2563eb;font-size:11px}
+.hreturn .vlabel{position:absolute;inset-inline-start:50%;top:50%;transform:translate(-50%,-50%);z-index:1;background:#eaf0fb;border:1px solid #d4e0f7;color:#2f57b6;font-size:10px;font-weight:600;border-radius:7px;padding:3px 9px;white-space:nowrap}
 .hcol{flex:0 0 auto;align-self:stretch}
 .hsrc,.hdeliv{width:150px;background:#eef1ee;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .hstage{width:198px;border:1.5px solid #2563eb;border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
@@ -922,7 +930,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 22:29 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 22:32 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2779,6 +2787,8 @@ function FlowDiagram({lang,onClose}){
       <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
     </div>
   </div>);
+  const stageBox=(s,k)=>(<div key={k} className="hcol hstage"><div className="hstage-h">{Z(s,"t")}</div><div className="hstage-b">{s.ag.map(agent)}</div></div>);
+  const r1=FLOW_STAGES.slice(0,4), r2=FLOW_STAGES.slice(4);
   return (<Drawer wide title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
     <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:14}}>
       <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
@@ -2787,28 +2797,28 @@ function FlowDiagram({lang,onClose}){
       <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
     </div>
     <div className="hscroll">
-      <div className="hflow">
-        <div className="hcol hsrc">
-          <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
-          <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
-        </div>
-        <Conn label={L("Raw feeds","原始数据")}/>
-        {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
-          <div className="hcol hstage">
-            <div className="hstage-h">{Z(s,"t")}</div>
-            <div className="hstage-b">{s.ag.map(agent)}</div>
+      <div className="hsnake">
+        <div className="hrow">
+          <div className="hcol hsrc">
+            <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
+            <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
           </div>
-          <Conn label={Z(s,"hand")}/>
-        </React.Fragment>))}
-        <div className="hcol hstage gate">
-          <div className="hstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
-          <div className="hgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
-            <div className="muted" style={{fontSize:11,marginTop:5}}>HUMAN-REVIEWED 04:48<br/>LEGAL CLEARED 05:31</div></div>
+          <Conn label={L("Raw feeds","原始数据")}/>
+          {r1.map((s,i)=>(<React.Fragment key={i}>{stageBox(s,i)}{i<r1.length-1&&<Conn label={Z(s,"hand")}/>}</React.Fragment>))}
         </div>
-        <Conn label={L("Approved recommendation","已批准建议")}/>
-        <div className="hcol hdeliv">
-          <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
-          <div className="muted" style={{fontSize:12,marginTop:6}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+        <div className="hreturn"><span className="elbow r"/><span className="hline"/><span className="vlabel">↩ {Z(r1[r1.length-1],"hand")}</span><span className="elbow l"/></div>
+        <div className="hrow">
+          {r2.map((s,i)=>(<React.Fragment key={i}>{stageBox(s,i)}<Conn label={Z(s,"hand")}/></React.Fragment>))}
+          <div className="hcol hstage gate">
+            <div className="hstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
+            <div className="hgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
+              <div className="muted" style={{fontSize:11,marginTop:5}}>HUMAN-REVIEWED 04:48<br/>LEGAL CLEARED 05:31</div></div>
+          </div>
+          <Conn label={L("Approved recommendation","已批准建议")}/>
+          <div className="hcol hdeliv">
+            <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
+            <div className="muted" style={{fontSize:12,marginTop:6}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+          </div>
         </div>
       </div>
     </div>

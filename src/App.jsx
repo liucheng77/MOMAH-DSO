@@ -1869,6 +1869,8 @@ function FlowDiagram({lang,onClose}){
       <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
     </div>
   </div>);
+  const stageBox=(s,k)=>(<div key={k} className="hcol hstage"><div className="hstage-h">{Z(s,"t")}</div><div className="hstage-b">{s.ag.map(agent)}</div></div>);
+  const r1=FLOW_STAGES.slice(0,4), r2=FLOW_STAGES.slice(4);
   return (<Drawer wide title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
     <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:14}}>
       <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
@@ -1877,28 +1879,28 @@ function FlowDiagram({lang,onClose}){
       <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
     </div>
     <div className="hscroll">
-      <div className="hflow">
-        <div className="hcol hsrc">
-          <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
-          <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
-        </div>
-        <Conn label={L("Raw feeds","原始数据")}/>
-        {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
-          <div className="hcol hstage">
-            <div className="hstage-h">{Z(s,"t")}</div>
-            <div className="hstage-b">{s.ag.map(agent)}</div>
+      <div className="hsnake">
+        <div className="hrow">
+          <div className="hcol hsrc">
+            <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
+            <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
           </div>
-          <Conn label={Z(s,"hand")}/>
-        </React.Fragment>))}
-        <div className="hcol hstage gate">
-          <div className="hstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
-          <div className="hgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
-            <div className="muted" style={{fontSize:11,marginTop:5}}>HUMAN-REVIEWED 04:48<br/>LEGAL CLEARED 05:31</div></div>
+          <Conn label={L("Raw feeds","原始数据")}/>
+          {r1.map((s,i)=>(<React.Fragment key={i}>{stageBox(s,i)}{i<r1.length-1&&<Conn label={Z(s,"hand")}/>}</React.Fragment>))}
         </div>
-        <Conn label={L("Approved recommendation","已批准建议")}/>
-        <div className="hcol hdeliv">
-          <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
-          <div className="muted" style={{fontSize:12,marginTop:6}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+        <div className="hreturn"><span className="elbow r"/><span className="hline"/><span className="vlabel">↩ {Z(r1[r1.length-1],"hand")}</span><span className="elbow l"/></div>
+        <div className="hrow">
+          {r2.map((s,i)=>(<React.Fragment key={i}>{stageBox(s,i)}<Conn label={Z(s,"hand")}/></React.Fragment>))}
+          <div className="hcol hstage gate">
+            <div className="hstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
+            <div className="hgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
+              <div className="muted" style={{fontSize:11,marginTop:5}}>HUMAN-REVIEWED 04:48<br/>LEGAL CLEARED 05:31</div></div>
+          </div>
+          <Conn label={L("Approved recommendation","已批准建议")}/>
+          <div className="hcol hdeliv">
+            <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
+            <div className="muted" style={{fontSize:12,marginTop:6}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+          </div>
         </div>
       </div>
     </div>
