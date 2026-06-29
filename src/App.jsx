@@ -1730,7 +1730,7 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
   return (<div className={"fiscal-card"+(compact?" compact":"")+(active?" synced":"")}>
     <div className="fiscal-head">
       <div><div className="eyebrow">{L("AI financial sustainability","AI 财政可持续性")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div>
-        <h3>{L("Can this allocation survive the Phase-3 budget cycle?","这笔分配能否撑过 Phase 3 预算周期?")}</h3></div>
+        <h3>{L("Is this recommendation fiscally sustainable through the budget cycle?","这套建议在财政上能否持续(撑过预算周期)?")}</h3></div>
       <span className={"chip"+chipCls} title={band.l}>{L("Score","评分")} {m.score}/100</span>
     </div>
     {active&&<div className="synced-note">{L("From Financial Sustainability Agent: sustainability index 72 → 67 · net fiscal impact ≈ SAR 8B","来自 财政可持续 Agent:可持续指数 72 → 67 · 净财政冲击 ≈ SAR 8B")}</div>}
