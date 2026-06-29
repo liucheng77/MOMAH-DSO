@@ -1828,7 +1828,7 @@ function ChatAnalysis(){
     const isActive=idxs.includes(ai.ag)&&!ai.done;
     const passed=idxs.length>0&&Math.max.apply(null,idxs)<ai.ag;
     const done=ai.done||passed;
-    const reached=isActive||done;
+    const reached=isActive;   // only the running agent stays expanded; completed ones collapse
     const k=done?a.acts.length:isActive?Math.max(1,Math.ceil(((ai.line+1)/linesLen)*a.acts.length)):0;
     const ticked=new Set(a.order.slice(0,k));
     return (<div key={a.key} className={"agrow"+(isActive?" active":done?" done":"")}>
@@ -1896,8 +1896,8 @@ const FLOW_STAGES=[
  {t:"Policy Simulation",t_zh:"政策模拟",hand:"Ranked toolkit (draft)",hand_zh:"排序工具箱(草稿)",ag:[
    {n:"Policy Simulation Agent",ic:"⚖",in:"Gap + six measures",in_zh:"缺口 + 六项措施",out:"Toolkit M1+M2+M3",out_zh:"工具箱 M1+M2+M3"},
    {n:"Data Querying Agent",ic:"🔎",in:"Causal-chain inputs",in_zh:"因果链输入",out:"M6 counter-indication",out_zh:"M6 反指征"}]},
- {t:"Fiscal Continuity",t_zh:"财政延续性",hand:"Fiscal-safe recommendation",hand_zh:"财政安全建议",ag:[
-   {n:"Fiscal Continuity Agent",ic:"💠",in:"Toolkit + invest / loan",in_zh:"工具箱 + 投资 / 贷款",out:"3-yr fiscal path",out_zh:"3 年财政路径"},
+ {t:"Financial Sustainability",t_zh:"财政可持续",hand:"Fiscal-safe recommendation",hand_zh:"财政安全建议",ag:[
+   {n:"Financial Sustainability Agent",ic:"💰",in:"Debt + Sakani + V2030 + Brent",in_zh:"债务 + Sakani + V2030 + Brent",out:"Net SAR 8B · index 72→67",out_zh:"净 SAR 8B · 指数 72→67"},
    {n:"Finance Rules Engine",ic:"📐",in:"5% cap envelope",in_zh:"5% 上限信封",out:"Within cap ✓",out_zh:"上限内 ✓"}]},
 ];
 function FlowDiagram({lang,onClose}){
