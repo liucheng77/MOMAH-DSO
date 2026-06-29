@@ -307,7 +307,7 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 /* multi-agent flow chip */
 .maf-chip{border:1px solid #c7c2f2;background:#eef0fc;color:#4f46e5;font:inherit;font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:.15s}
 .maf-chip:hover{background:#4f46e5;color:#fff;border-color:#4f46e5}
-.ai-brief-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:stretch}
+.ai-brief-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:stretch}
 .ai-brief-main{padding:30px 32px!important;background:linear-gradient(135deg,#ffffff 0%,#f7fbff 56%,#eef0fc 100%);border-color:#d9ddf7;position:relative;overflow:hidden}
 .ai-brief-main:before{content:"";position:absolute;inset-inline-end:28px;top:28px;width:96px;height:96px;border-radius:50%;border:1px solid #d9ddf7;background:radial-gradient(circle,#fff 0 34%,#eef0fc 35% 58%,transparent 59%)}
 .eyebrow{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4f46e5;margin-bottom:8px}
@@ -1009,7 +1009,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:58 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 21:04 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2774,13 +2774,13 @@ function ChatAnalysis(){
   const [flv,setFlv]=useState(FISCAL_DEFAULTS);
   const fres=computeFiscalContinuity(flv);
   const [q,setQ]=useState("");
-  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
+  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
   const orchSt=!ai.on?L("ready","就绪"):ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
   const mafChip=<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
-  useEffect(()=>{ if(ai.on&&endRef.current) endRef.current.scrollIntoView({behavior:"smooth",block:"end"}); },[ai]);
+  useEffect(()=>{ if(ai.on&&streamRef.current){ const el=streamRef.current; el.scrollTo({top:el.scrollHeight,behavior:"smooth"}); } },[ai]);
   function advance(cur){
     const ag=AGENTS_T[cur.ag];
     if(cur.line<ag.lines.length-1){
@@ -2805,6 +2805,9 @@ function ChatAnalysis(){
     return (<div className="fade">
       <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
       <div className="ai-brief-grid">
+        <div className="ai-brief-side">
+          <FiscalContinuityPanel compact/>
+        </div>
         <div className="ai-brief-main card pad">
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
           <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
@@ -2822,9 +2825,6 @@ function ChatAnalysis(){
               <button className="btn" onClick={start}>➤ {L("Ask","提问")}</button>
             </div>
           </div>
-        </div>
-        <div className="ai-brief-side">
-          <FiscalContinuityPanel compact/>
         </div>
       </div>
       {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
@@ -2869,7 +2869,7 @@ function ChatAnalysis(){
     </div>
     <div className="theater theater-fiscal">
       <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
-      <div className="tstream">
+      <div className="tstream" ref={streamRef}>
         {cards}
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>

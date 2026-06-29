@@ -1777,13 +1777,13 @@ function ChatAnalysis(){
   const [flv,setFlv]=useState(FISCAL_DEFAULTS);
   const fres=computeFiscalContinuity(flv);
   const [q,setQ]=useState("");
-  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
+  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
   const orchSt=!ai.on?L("ready","就绪"):ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
   const mafChip=<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
-  useEffect(()=>{ if(ai.on&&endRef.current) endRef.current.scrollIntoView({behavior:"smooth",block:"end"}); },[ai]);
+  useEffect(()=>{ if(ai.on&&streamRef.current){ const el=streamRef.current; el.scrollTo({top:el.scrollHeight,behavior:"smooth"}); } },[ai]);
   function advance(cur){
     const ag=AGENTS_T[cur.ag];
     if(cur.line<ag.lines.length-1){
@@ -1808,6 +1808,9 @@ function ChatAnalysis(){
     return (<div className="fade">
       <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
       <div className="ai-brief-grid">
+        <div className="ai-brief-side">
+          <FiscalContinuityPanel compact/>
+        </div>
         <div className="ai-brief-main card pad">
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
           <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
@@ -1825,9 +1828,6 @@ function ChatAnalysis(){
               <button className="btn" onClick={start}>➤ {L("Ask","提问")}</button>
             </div>
           </div>
-        </div>
-        <div className="ai-brief-side">
-          <FiscalContinuityPanel compact/>
         </div>
       </div>
       {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
@@ -1872,7 +1872,7 @@ function ChatAnalysis(){
     </div>
     <div className="theater theater-fiscal">
       <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
-      <div className="tstream">
+      <div className="tstream" ref={streamRef}>
         {cards}
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
