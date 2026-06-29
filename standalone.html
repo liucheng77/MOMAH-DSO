@@ -1009,7 +1009,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:55 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:58 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2723,7 +2723,7 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
     {k:"leak",label:L("Leakage detection (days)","泄漏检测(天)"),min:1,max:21,step:1,val:lv.leak,fmt:v=>v+"d",note:L("target < 7 days","目标 < 7 天")},
     {k:"mape",label:L("Forecast accuracy (MAPE)","预测准确度 MAPE"),min:2,max:20,step:.5,val:lv.mape,fmt:v=>v+"%",note:L("target < 8%","目标 < 8%")},
   ];
-  const shown=compact?rows.slice(0,3):rows;
+  const shown=rows.slice(0,3);   // unified to 3 sliders (match the 3 KPI cards) in both intro and theater
   return (<div className={"fiscal-card"+(compact?" compact":"")+(active?" synced":"")}>
     <div className="fiscal-head">
       <div><div className="eyebrow">{L("AI financial sustainability","AI 财政可持续性")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div>
