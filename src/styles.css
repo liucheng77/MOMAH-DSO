@@ -190,6 +190,22 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .va-io .io-arrow{align-self:center;color:#9aa3ab;font-size:14px;flex:0 0 auto}
 .va-io.col{flex-direction:column;align-items:stretch;gap:4px}
 .va-io.col .io-arrow.down{align-self:center;line-height:1}
+/* flow toolbar / ownership band / storyline agent rows (ref: directorate flow) */
+.flow-tabs{display:flex;justify-content:flex-end;margin:-4px 0 12px}
+.flow-tabs .seg{display:inline-flex;background:#eef1ee;border-radius:999px;padding:3px}
+.flow-tabs .seg button{border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);padding:6px 15px;border-radius:999px;cursor:pointer}
+.flow-tabs .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(16,33,28,.12)}
+.flow-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#f6f9ff;border:1px solid #e0e8f6;border-radius:10px;padding:9px 13px;margin-bottom:16px}
+.fown{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11.5px}
+.fown-l{font-weight:800;color:var(--muted);letter-spacing:.04em;font-size:10.5px}
+.fchip-plat{background:#2563eb;color:#fff;border-radius:999px;padding:3px 11px;font-weight:700;font-size:11px}
+.fchip-cust{background:#fff;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:3px 11px;font-weight:600;font-size:11px}
+.fstatus{color:var(--green-dark);font-size:11.5px;font-weight:700;white-space:nowrap}
+.fag{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;margin-bottom:7px;font-size:12.5px}
+.fag b{font-weight:600}
+.fdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.fdot.plat{background:#2563eb}
+.fdot.cust{background:#fff;border:1.5px solid #c2c9d4}
 /* horizontal wide agent I/O flow */
 .hscroll{flex:1;min-height:0;overflow:auto}
 .hsnake{display:flex;flex-direction:column;width:max-content;padding-bottom:10px}

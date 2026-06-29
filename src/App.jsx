@@ -1882,44 +1882,53 @@ function ChatAnalysis(){
 const FLOW_SRC=["SAP / Asas","Etimad","Esnad","Sakani","Wafi","Ejari","MOJ Price","GASTAT","Private Mkt","Geo / GIS","Bank stmts"];
 const FLOW_STAGES=[
  {t:"Intake & Data Quality",t_zh:"接入与数据质量",hand:"Unified dataset + DQ flags · 88%",hand_zh:"统一数据 + 质量标记 · 88%",ag:[
-   {n:"Orchestrator Agent",ic:"✦",in:"User query (NL)",in_zh:"用户提问(NL)",out:"Routed task + plan",out_zh:"路由任务 + 计划"},
-   {n:"Data Quality Monitor",ic:"◉",in:"11 raw sources",in_zh:"11 原始源",out:"Validated set · 88%",out_zh:"校验数据 · 88%"}]},
+   {n:"Orchestrator Agent",ic:"✦",own:"platform",in:"User query (NL)",in_zh:"用户提问(NL)",out:"Routed task + plan",out_zh:"路由任务 + 计划"},
+   {n:"Data Quality Monitor",ic:"◉",own:"platform",in:"11 raw sources",in_zh:"11 原始源",out:"Validated set · 88%",out_zh:"校验数据 · 88%"}]},
+ {t:"Macro-Economic Analysis",t_zh:"宏观经济分析",hand:"Transmission frame · r=−0.85",hand_zh:"传导框架 · r=−0.85",ag:[
+   {n:"Macro-Economic Agent",ic:"🌐",own:"custom",in:"Rates · FX peg · demographics",in_zh:"利率 · 汇率挂钩 · 人口",out:"r=−0.85 · +35–50bps",out_zh:"r=−0.85 · +35–50bps"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"SAMA / GASTAT series",in_zh:"SAMA / GASTAT 序列",out:"Correlation panel",out_zh:"相关性面板"}]},
  {t:"Demand Intelligence",t_zh:"需求智能",hand:"Seg-A demand 19,100",hand_zh:"A 段需求 19,100",ag:[
-   {n:"Demand Intelligence Agent",ic:"📈",in:"Validated dataset",in_zh:"校验数据集",out:"Seg-A demand 19,100",out_zh:"A 段需求 19,100"},
-   {n:"Data Querying Agent",ic:"🔎",in:"Segment / beneficiary tables",in_zh:"段位 / 受益人表",out:"B→A migration 2,360",out_zh:"B→A 迁移 2,360"}]},
+   {n:"Demand Intelligence Agent",ic:"📈",own:"custom",in:"Validated dataset",in_zh:"校验数据集",out:"Seg-A demand 19,100",out_zh:"A 段需求 19,100"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Segment / beneficiary tables",in_zh:"段位 / 受益人表",out:"B→A migration 2,360",out_zh:"B→A 迁移 2,360"}]},
  {t:"Supply-Demand Balancing",t_zh:"供需平衡",hand:"Gap 12,400 · coverage 35%",hand_zh:"缺口 12,400 · 覆盖 35%",ag:[
-   {n:"Supply-Demand Balancing Agent",ic:"⚖",in:"Demand + pipeline",in_zh:"需求 + 管线",out:"Gap 12,400 · 35%",out_zh:"缺口 12,400 · 35%"},
-   {n:"Data Querying Agent",ic:"🔎",in:"143 projects",in_zh:"143 个项目",out:"Effective supply 6,700",out_zh:"有效供给 6,700"}]},
+   {n:"Supply-Demand Balancing Agent",ic:"⚖",own:"custom",in:"Demand + pipeline",in_zh:"需求 + 管线",out:"Gap 12,400 · 35%",out_zh:"缺口 12,400 · 35%"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"143 projects",in_zh:"143 个项目",out:"Effective supply 6,700",out_zh:"有效供给 6,700"}]},
  {t:"Conversion & Absorption",t_zh:"转化吸纳",hand:"Residual gap 6,200 + alert",hand_zh:"剩余缺口 6,200 + 预警",ag:[
-   {n:"Conversion & Absorption Agent",ic:"🎯",in:"Pipeline + conv rates",in_zh:"管线 + 转化率",out:"Residual gap 6,200",out_zh:"剩余缺口 6,200"},
-   {n:"Proactive Insights",ic:"💡",in:"Conversion trend",in_zh:"转化趋势",out:"Early-warning",out_zh:"早期预警"}]},
+   {n:"Conversion & Absorption Agent",ic:"🎯",own:"custom",in:"Pipeline + conv rates",in_zh:"管线 + 转化率",out:"Residual gap 6,200",out_zh:"剩余缺口 6,200"},
+   {n:"Proactive Insights Agent",ic:"💡",own:"platform",in:"Conversion trend",in_zh:"转化趋势",out:"Early-warning",out_zh:"早期预警"}]},
  {t:"Policy Simulation",t_zh:"政策模拟",hand:"Ranked toolkit (draft)",hand_zh:"排序工具箱(草稿)",ag:[
-   {n:"Policy Simulation Agent",ic:"⚖",in:"Gap + six measures",in_zh:"缺口 + 六项措施",out:"Toolkit M1+M2+M3",out_zh:"工具箱 M1+M2+M3"},
-   {n:"Data Querying Agent",ic:"🔎",in:"Causal-chain inputs",in_zh:"因果链输入",out:"M6 counter-indication",out_zh:"M6 反指征"}]},
+   {n:"Policy Simulation Agent",ic:"⚖",own:"custom",in:"Gap + six measures",in_zh:"缺口 + 六项措施",out:"Toolkit M1+M2+M3",out_zh:"工具箱 M1+M2+M3"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Causal-chain inputs",in_zh:"因果链输入",out:"M6 counter-indication",out_zh:"M6 反指征"}]},
  {t:"Financial Sustainability",t_zh:"财政可持续",hand:"Fiscal-safe recommendation",hand_zh:"财政安全建议",ag:[
-   {n:"Financial Sustainability Agent",ic:"💰",in:"Debt + Sakani + V2030 + Brent",in_zh:"债务 + Sakani + V2030 + Brent",out:"Net SAR 8B · index 72→67",out_zh:"净 SAR 8B · 指数 72→67"},
-   {n:"Finance Rules Engine",ic:"📐",in:"5% cap envelope",in_zh:"5% 上限信封",out:"Within cap ✓",out_zh:"上限内 ✓"}]},
+   {n:"Financial Sustainability Agent",ic:"💰",own:"custom",in:"Debt + Sakani + V2030 + Brent",in_zh:"债务 + Sakani + V2030 + Brent",out:"Net SAR 8B · index 72→67",out_zh:"净 SAR 8B · 指数 72→67"},
+   {n:"Finance Rules Engine",ic:"📐",own:"platform",in:"5% cap envelope",in_zh:"5% 上限信封",out:"Within cap ✓",out_zh:"上限内 ✓"}]},
 ];
 function FlowDiagram({lang,onClose}){
   const L=(en,zh)=>lang==="zh"?zh:en;
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
+  const [mode,setMode]=useState("story");
   const Conn=({label})=>(<div className="hconn"><span className="vlabel">{label}</span></div>);
-  const agent=(a,j)=>(<div key={j} className="vagent">
-    <div className="va-h"><span className="gdot" title="live"/><b style={{flex:1}}>{a.n}</b></div>
-    <div className="va-io col">
-      <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
-      <span className="io-arrow down">↓</span>
-      <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
-    </div>
-  </div>);
+  const agent=(a,j)=> mode==="story"
+    ? (<div key={j} className="fag"><span className={"fdot "+(a.own==="platform"?"plat":"cust")}/><b>{a.n}</b></div>)
+    : (<div key={j} className="vagent">
+        <div className="va-h"><span className={"fdot "+(a.own==="platform"?"plat":"cust")}/><b style={{flex:1}}>{a.n}</b></div>
+        <div className="va-io col">
+          <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
+          <span className="io-arrow down">↓</span>
+          <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
+        </div>
+      </div>);
   const stageBox=(s,k)=>(<div key={k} className="hcol hstage"><div className="hstage-h">{Z(s,"t")}</div><div className="hstage-b">{s.ag.map(agent)}</div></div>);
   const r1=FLOW_STAGES.slice(0,4), r2=FLOW_STAGES.slice(4);
   return (<Drawer wide title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
-    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:14}}>
-      <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
-      <span><span className="lg sw-gate"/>{L("Human gate","人工门")}</span>
-      <span><span className="lg sw-agent"/>{L("Agent (live)","智能体(存活)")}</span>
-      <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
+    <div className="flow-tabs">
+      <div className="seg"><button className={mode==="story"?"on":""} onClick={()=>setMode("story")}>{L("Use-case storyline","用例故事线")}</button><button className={mode==="flow"?"on":""} onClick={()=>setMode("flow")}>{L("Agent flow","Agent 流")}</button></div>
+    </div>
+    <div className="flow-toolbar">
+      <div className="fown"><span className="fown-l">{L("AGENT OWNERSHIP","Agent 归属")}</span>
+        <span className="fchip-plat">DataAgent · platform</span><span className="fchip-cust">{L("Custom agent · to build","自建 Agent · 待开发")}</span>
+        <span className="muted">👆 {L("click any agent for details","点击任意 Agent 查看详情")}</span></div>
+      <span className="fstatus">● {L("live data · coverage 35% · SAR 12,400-unit gap","实时数据 · 覆盖 35% · 缺口 12,400 套")}</span>
     </div>
     <div className="hscroll">
       <div className="hsnake">
