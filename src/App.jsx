@@ -1600,23 +1600,27 @@ const AGENTS_T=[
    {k:"think",t:"Cross-source consistency — Ejari vs MOJ price delta within 2%",t_zh:"跨源一致性 —— Ejari 与 MOJ 价格偏差 < 2%"},
    {k:"calc",t:"Data confidence = min(source confidences)",t_zh:"数据置信 = min(各源置信)",val:"88%"},
    {k:"out",t:"11/11 passed (Private Mkt recovered) — cleared into analysis",t_zh:"11/11 通过(Private Mkt 已恢复)— 放行进入分析"}]},
- {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",io:{in:"Beneficiary + segment data",out:"Seg-A demand forecast 19,100"},lines:[
-   {k:"think",t:"Hypothesis: rate hike shifts demand down the segment ladder",t_zh:"假设:加息使需求沿段位下移"},
-   {k:"think",t:"+50bps → monthly instalment ↑ ~6% → affordability ↓ for Seg B",t_zh:"加息 +50bps → 月供 ↑ 约 6% → B 段负担能力下降"},
-   {k:"calc",t:"Affected Seg-B pool = 13,100 households",t_zh:"受影响 B 段群体 = 13,100 户",val:"13,100"},
-   {k:"calc",t:"B→A migration = 13,100 × 18% migration propensity",t_zh:"B→A 迁移 = 13,100 × 18% 迁移倾向",val:"≈ 2,360"},
-   {k:"calc",t:"Seg A demand (Y3) = base 16,740 + migration 2,360",t_zh:"Seg A 需求(Y3)= 基线 16,740 + 迁移 2,360",val:"= 19,100"},
-   {k:"think",t:"Migration is a one-way structural shift — won't revert when rates fall",t_zh:"迁移为单向结构性变化 —— 利率回落也难回流"},
-   {k:"out",t:"Structural demand uplift confirmed (not transient)",t_zh:"确认需求结构性抬升(非短期波动)"}]},
- {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",io:{in:"Demand 19,100 + pipeline",out:"Gap 12,400 · coverage 35% · RED"},lines:[
-   {k:"call",t:"Read supply pipeline (143 projects)",t_zh:"读取供给管线(143 项目)",ds:["DS-03","DS-08"]},
-   {k:"think",t:"Paper units overstate delivery — discount by ML conversion model (AUC 0.83)",t_zh:"账面套数高估交付 —— 用 ML 转化模型(AUC 0.83)折算"},
-   {k:"calc",t:"Effective supply = pipeline 12,900 × conversion 52%",t_zh:"有效供给 = 管线 12,900 × 转化率 52%",val:"≈ 6,700"},
-   {k:"calc",t:"Gap = demand 19,100 − effective supply 6,700",t_zh:"缺口 = 需求 19,100 − 有效供给 6,700",val:"= 12,400"},
-   {k:"calc",t:"Coverage = 6,700 ÷ 19,100",t_zh:"覆盖率 = 6,700 ÷ 19,100",val:"= 35%"},
-   {k:"think",t:"Also a product-mix mismatch: 72% of pipeline targets Seg C–E",t_zh:"还存在产品错配:管线 72% 面向 C–E 段"},
-   {k:"think",t:"Gap rule: uncovered 65% > 30% threshold → RED, strategic-level",t_zh:"缺口规则:未覆盖 65% > 30% 阈值 → 红色,触发战略级"},
-   {k:"out",t:"Riyadh Seg A gap 12,400 units · coverage 35% · RED",t_zh:"利雅得 A 段缺口 12,400 套 · 覆盖 35% · 红色"}]},
+ {ag:"Macro-Economic Agent",ag_zh:"宏观经济引擎",ic:"🌐",lyr:"L3",io:{in:"Rates, FX peg, demographics",out:"Transmission frame · r=−0.85"},lines:[
+   {k:"think",t:"Riyal pegged to USD at 3.75 → SAMA largely imports Fed policy; +50bps follows the global tightening cycle, not domestic overheating",t_zh:"里亚尔与美元挂钩 3.75 → SAMA 基本进口美联储政策;+50bps 跟随全球紧缩周期,而非国内过热"},
+   {k:"calc",t:"Mortgage stock SAR 680B × 78% floating-rate = exposed book",t_zh:"按揭存量 SAR 680B × 78% 浮动利率 = 敞口",val:"≈ SAR 530B"},
+   {k:"calc",t:"Pass-through: SAIBOR 3M reacts → mortgage rate uplift",t_zh:"传导:SAIBOR 3M 反应 → 按揭利率上浮",val:"+35–50bps"},
+   {k:"calc",t:"Pearson r (repo rate ↔ housing demand), 2016–2026 panel · ~2-quarter lag",t_zh:"Pearson r(回购利率 ↔ 住房需求),2016–2026 面板 · 约 2 季滞后",val:"−0.85"},
+   {k:"think",t:"Population vs demand r=+0.92 hedges over 3–5y — cannot offset the near-term shock",t_zh:"人口与需求 r=+0.92 在 3–5 年对冲 —— 短期无法抵消本次冲击"},
+   {k:"out",t:"Transmission frame set; rate shock dominates short term",t_zh:"传导框架确立;短期利率冲击主导"}]},
+ {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",io:{in:"Beneficiary + segment data",out:"Asymmetric shock −2% / −9% / −18%"},lines:[
+   {k:"think",t:"The hit is asymmetric across income groups — calibrate elasticity by segment",t_zh:"冲击对各收入群体不对称 —— 按客群校准弹性"},
+   {k:"calc",t:"High income (SAR 25K+): 40% cash buyers, absorbable → demand shock",t_zh:"高收入(SAR 25K+):40% 现金购房,可吸收 → 需求冲击",val:"−2%"},
+   {k:"calc",t:"Middle (SAR 10–25K): 72% mortgage-dependent, +~SAR 250/mo → demand shock",t_zh:"中收入(SAR 10–25K):72% 依赖按揭,月供 +约 SAR 250 → 需求冲击",val:"−9%"},
+   {k:"calc",t:"Most-in-need (<SAR 10K): 85% mortgage, +SAR 180/mo = 4.2% of income → shock",t_zh:"最需要(<SAR 10K):85% 按揭,月供 +SAR 180 占收入 4.2% → 冲击",val:"−18%"},
+   {k:"think",t:"Squeeze effect: the 18% don't stop buying — they downgrade, raising latent most-in-need demand",t_zh:"挤压效应:这 18% 不是不买,而是降级 —— 最需要群体隐性需求反升"},
+   {k:"out",t:"Selective shock; most-in-need bear disproportionate harm",t_zh:"选择性冲击;最需要群体承受不成比例的伤害"}]},
+ {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",io:{in:"Demand + pipeline",out:"Gap 12,400 · 35% · RED"},lines:[
+   {k:"call",t:"Read supply pipeline — YTD 62,400 / full-year target 78,000",t_zh:"读取供给管线 —— YTD 62,400 / 全年目标 78,000",ds:["DS-03","DS-08"]},
+   {k:"calc",t:"Most-in-need existing gap 12,400 · pipeline coverage 35% (RED, §6.2 threshold 50%)",t_zh:"最需要群体现有缺口 12,400 · 管线覆盖 35%(RED,§6.2 阈值 50%)",val:"12,400 · 35%"},
+   {k:"think",t:"As demand falls 11% the nominal gap shrinks — a statistical illusion (fewer can afford)",t_zh:"需求降 11% 使名义缺口缩小 —— 统计幻觉(买得起的人少了)"},
+   {k:"calc",t:"Latent most-in-need demand rises to ~15,200 units",t_zh:"最需要群体隐性需求升至约 15,200 套",val:"+22%"},
+   {k:"calc",t:"Absorption forecast 43% → 38%",t_zh:"吸收率预测 43% → 38%",val:"RED"},
+   {k:"out",t:"Structural demand deficit — RED early-warning tripped",t_zh:"结构性需求赤字 —— 触发 RED 早期预警"}]},
  {ag:"Conversion & Absorption Agent",ag_zh:"转化吸纳引擎",ic:"🎯",lyr:"L3",io:{in:"Pipeline + conversion rates",out:"Early-warning · residual gap 6,200"},lines:[
    {k:"calc",t:"Seg A conversion 52% vs Seg E 78%",t_zh:"Seg A 转化率 52% vs Seg E 78%",val:"−26pp"},
    {k:"think",t:"Root cause: long approval cycles · thin developer margins · cancellation risk",t_zh:"根因:审批周期长 · 开发商利润薄 · 取消风险高"},
@@ -1630,14 +1634,14 @@ const AGENTS_T=[
    {k:"calc",t:"M6 lower down-payment → demand +18%, no new supply",t_zh:"M6 降首付 → 需求 +18% 无新增供给",val:"35%→38% ✕"},
    {k:"think",t:"M6 is counter-productive in a supply-constrained market → reject",t_zh:"M6 在供给受限市场适得其反 → 否决"},
    {k:"out",t:"Recommend M1+M2+M3 combo; reject M6",t_zh:"推荐 M1+M2+M3 组合;反对 M6"}]},
- {ag:"Fiscal Continuity Agent",ag_zh:"财政延续性 Agent",ic:"﷼",lyr:"L3",io:{in:"Policy toolkit + investment / loan envelope",out:"Continuity score · fiscal-safe recommendation"},lines:[
-   {k:"call",t:"Pull budget envelope, investment pipeline, and housing-loan book",t_zh:"拉取预算包、投资管线与住房贷款池",ds:["DS-05","DS-11"]},
-   {k:"think",t:"Check whether the recommended supply toolkit is fundable beyond the first year",t_zh:"检查推荐供给工具箱是否能跨年度持续承受"},
-   {k:"calc",t:"Visible exposure = investment SAR 7.6B + developer subsidy SAR 2.4B",t_zh:"显性敞口 = 投资 SAR 76 亿 + 开发商补贴 SAR 24 亿",val:"SAR 10.0B"},
-   {k:"calc",t:"Loan stress = SAR 18.4B loan book × 50bps × 65% pass-through",t_zh:"贷款压力 = SAR 184 亿贷款池 × 50bps × 65% 传导",val:"SAR 0.60B/yr"},
-   {k:"calc",t:"Continuity score = affordability + conversion + fiscal exposure + data confidence",t_zh:"延续性评分 = 可负担性 + 转化 + 财政敞口 + 数据置信",val:"72/100"},
-   {k:"think",t:"Base case is fundable; pessimistic case needs phased approval and a quarterly cap",t_zh:"基准情景可承受;悲观情景需分阶段批准并设置季度上限"},
-   {k:"out",t:"Fiscal-safe path: approve M1+M2+M3, cap PPP exposure, avoid demand-only loan relief",t_zh:"财政安全路径:批准 M1+M2+M3,限制 PPP 敞口,避免只刺激需求的贷款纾困"}]},
+ {ag:"Fiscal Sustainability Agent",ag_zh:"财政可持续引擎",ic:"﷼",lyr:"L3",io:{in:"Debt, Sakani budget, Vision-2030 pipeline",out:"Net impact SAR 8B · index 72→67"},lines:[
+   {k:"call",t:"Pull sovereign debt, Sakani budget, Vision-2030 pipeline, Brent",t_zh:"拉取主权债务、Sakani 预算、Vision 2030 管线、Brent",ds:["DS-05","DS-11"]},
+   {k:"calc",t:"Public debt SAR 1,150B (27% GDP); +50bps interest on new 1-yr issuance",t_zh:"公债 SAR 1,150B(27% GDP);+50bps 新一年期发行利息",val:"+SAR 5.8B"},
+   {k:"calc",t:"Sakani: weaker demand saves 2.4–3.6B, but most-in-need need extra support",t_zh:"Sakani:需求走弱省 2.4–3.6B,但最需要群体需额外支持",val:"+1.8–2.2B"},
+   {k:"calc",t:"Vision 2030 (SAR 1.3T pipeline) financing cost +3.2–5B; 12% mid-devs at risk",t_zh:"Vision 2030(SAR 1.3T 管线)融资成本 +3.2–5B;12% 中型开发商承压"},
+   {k:"think",t:"Brent at $74.32 — below the $75 breakeven; fiscal space is narrowing",t_zh:"Brent $74.32 —— 低于 $75 盈亏线;财政空间收窄"},
+   {k:"calc",t:"Net fiscal impact (annualized, ±2B); sustainability index 72 → 67",t_zh:"净财政冲击(年化,±2B);可持续指数 72 → 67",val:"≈ SAR 8B"},
+   {k:"out",t:"Manageable within buffers if Brent holds; below $70 → trigger contingency",t_zh:"若 Brent 守住则缓冲内可控;跌破 $70 → 触发应急"}]},
  {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,io:{in:"Draft recommendation",out:"Awaiting human approval"},lines:[
    {k:"think",t:"Severity = RED and gap > 30% → above autonomous scope",t_zh:"严重度 = 红色 且 缺口 > 30% → 超出自治范围"},
    {k:"think",t:"Fiscal exposure > SAR 2B → finance-continuity review required",t_zh:"财政敞口 > SAR 20 亿 → 需要财政延续性复核"},
@@ -1738,118 +1742,100 @@ function ReasoningStatus({ai,L,Z}){
     <div className="rs-cell"><span>{L("Next output","下一项输出")}</span><b>{L("recommendation + API payload + PDF","建议 + API Payload + PDF")}</b></div>
   </div>);
 }
-const TBK='<span class="thinking"><span></span><span></span><span></span></span>';
-const MSG_THREAD=[
- {av:{bg:"#e5e7eb",ic:"💬"},name:"Analyst",name_zh:"分析师",tag:"Question",tag_zh:"提问",delay:600,
-  html:`<p>As an analyst: SAMA unexpectedly hiked <b>+50bps</b>. Using public economic data, standard fiscal/economic methods plus Saudi political-economic realities, and the BRD agents &amp; use-cases — analyze the impact on housing <b>supply &amp; demand</b> and on <b>fiscal sustainability</b>, forecast likely effects, and propose response measures.</p>`,
-  html_zh:`<p>以分析师的视角分析:沙特央行突然加息 <b>50 基点</b>。请依据公开经济数据、通行的经济财政算法 + 沙特本地政治经济实情,并结合 BRD 中的 Agent 与 use case,分析对房地产市场<b>供需两方面</b>的影响、对<b>财政可持续性</b>的影响,预测可能产生的影响,以及应对的措施和方案。</p>`},
- {av:{bg:"#0891b2",ic:"🧠"},name:"Orchestrator",name_zh:"协调器",tag:"thinking",tag_zh:"思考中",delay:1300,
-  html:`<p>Let me understand the core first…</p><p>An unexpected +50bps is a monetary-policy shock. I'll decompose it into <b>macro transmission</b>, <b>housing-segment impact</b>, <b>supply-demand imbalance</b>, <b>fiscal sustainability</b> and <b>feasible policy response</b>. ${TBK}</p><p>This needs several BRD agents — Macro, Demand, Balancing, Fiscal, Policy. I'll wake <b>Macro Agent</b> first to build the rate-transmission frame.</p>`,
-  html_zh:`<p>让我先理解这个问题的核心……</p><p>SAMA 突然加息 50 个基点,属于非预期货币政策冲击。我从几个维度拆解:<b>宏观传导路径</b>、<b>住房市场细分影响</b>、<b>供需失衡变化</b>、<b>财政可持续性</b>,以及<b>可行的政策应对</b>。${TBK}</p><p>这涉及多个 BRD Agent 协作——Macro、Demand、Balancing、Fiscal、Policy。先唤醒 <b>Macro Agent</b> 建立利率传导的基础框架。</p>`},
- {av:{bg:"#2563eb",ic:"🌐"},name:"Macro-Economic Agent",name_zh:"宏观经济 Agent",tag:"Rate transmission",tag_zh:"利率传导",delay:1700,
-  html:`<p>On it. Note Saudi's special feature — the riyal is pegged to USD at 3.75, so SAMA largely imports Fed policy. This +50bps follows the global tightening cycle, but the domestic cycle isn't synced: we have large Vision-2030 investment demand, not overheating inflation.</p><p>Key numbers: mortgage stock ≈ <span class="inline">SAR 680B</span>, of which <span class="inline a">78%</span> floating-rate. The +50bps passes through fast — SAIBOR 3M reacts immediately, mortgage rates rise <span class="inline a">35–50bps</span>.</p><p>On 2016–2026 panel data, the Pearson r between the repo rate and housing demand is <span class="inline r">−0.85</span> — highly significant, with about a <span class="inline a">2-quarter</span> lag.</p><blockquote>Interestingly, population growth vs demand is <span class="inline g">+0.92</span>. So short term the rate shock dominates; over 3–5 years demographics partly offset it — but not fully, the path dependence is strong.</blockquote>`,
-  html_zh:`<p>收到。沙特经济有个特殊之处——里亚尔与美元挂钩在 3.75,SAMA 的货币政策空间基本是"进口"美联储的。这次 +50bps 很大程度是跟随全球紧缩周期,但国内周期并不同步:我们有 Vision 2030 的大规模投资需求,不是过热型通胀。</p><p>几个关键数字:按揭存量约 <span class="inline">SAR 680B</span>,其中 <span class="inline a">78%</span> 是浮动利率。+50bps 传导很直接——SAIBOR 3M 立刻反应,按揭利率上浮约 <span class="inline a">35–50bps</span>。</p><p>用 2016–2026 面板数据,SAMA 回购利率与住房需求量的 Pearson r 为 <span class="inline r">−0.85</span>,统计上非常显著,约有 <span class="inline a">2 个季度</span>滞后。</p><blockquote>但有趣的是,人口增长与住房需求的相关性是 <span class="inline g">+0.92</span>。所以短期利率冲击主导,中长期人口因素部分对冲——但不会完全抵消,这次路径依赖很强。</blockquote>`},
- {av:{bg:"#0891b2",ic:"🧠"},name:"Orchestrator",name_zh:"协调器",tag:"dispatching",tag_zh:"调度中",delay:1100,
-  html:`<p>Good — Macro gave the transmission frame and base params. The r=+0.92 population hedge matters but works over 3–5 years, so it can't offset the near-term shock.</p><p>Now I need <b>Demand Intelligence Agent</b> to refine this — not a blanket "demand falls", but by <b>income segment</b>; mortgage dependence and rate sensitivity differ sharply. ${TBK}</p>`,
-  html_zh:`<p>很好——Macro 给出了传导框架和基础参数。人口对冲 r=+0.92 很重要,但作用周期 3–5 年,短期无法抵消这次冲击。</p><p>现在需要 <b>Demand Intelligence Agent</b> 细化——不是笼统的"需求下降",而是按<b>收入客群分层</b>;不同群体按揭依赖度与利率敏感度差异很大。${TBK}</p>`},
- {av:{bg:"#7c3aed",ic:"🏠"},name:"Demand Intelligence Agent",name_zh:"住房需求 Agent",tag:"Segment analysis",tag_zh:"客群分析",delay:1900,
-  html:`<p>I'll take it. The key is that the hit is <b>asymmetric</b> across income groups.</p><p>High income (SAR 25K+/mo): barely affected — 40% pay cash, and SAR 200–300 extra is absorbable. Demand shock ≈ <span class="inline g">−2%</span>.</p><p>Middle (SAR 10–25K): mortgage dependence <span class="inline a">72%</span>, +~SAR 250/mo, ~5–7% adopt a "wait and see". Demand shock ≈ <span class="inline a">−9%</span>.</p><p>What worries me is the <b>most-in-need</b> group (under SAR 10K): <span class="inline r">85%</span> mortgage-dependent; +SAR 180/mo is <span class="inline r">4.2%</span> of disposable income. Demand shock ≈ <span class="inline r">−18%</span>.</p><blockquote class="w">Structural issue: that 18% don't "stop buying" — they downgrade from low-income to most-in-need housing. They still need homes, just cheaper ones — a <b>squeeze effect</b> that raises latent most-in-need demand.</blockquote>`,
-  html_zh:`<p>我接过来。核心是——加息对不同收入群体的打击是<b>不对称</b>的。</p><p>高收入(月入 SAR 25K 以上):几乎不受影响——40% 现金购房,月供多 SAR 200–300 可吸收。需求冲击约 <span class="inline g">−2%</span>。</p><p>中收入(SAR 10–25K):按揭依赖度 <span class="inline a">72%</span>,月供增加约 SAR 250,约 5–7% 选择"等等看"。需求冲击约 <span class="inline a">−9%</span>。</p><p>真正担心的是<b>最需要群体</b>(月入 SAR 10K 以下):<span class="inline r">85%</span> 依赖按揭,月供增加 SAR 180 占其可支配收入的 <span class="inline r">4.2%</span>。需求冲击约 <span class="inline r">−18%</span>。</p><blockquote class="w">结构性问题:这 18% 不是"不买房了",而是从低收入住宅降级到最需要住宅——他们仍需要住房,只能负担更便宜的类型,产生<b>挤压效应</b>,最需要群体的隐性需求反而增加。</blockquote>`},
- {av:{bg:"#059669",ic:"⚖️"},name:"Supply-Demand Balancing Agent",name_zh:"供需平衡 Agent",tag:"Gap warning",tag_zh:"缺口预警",delay:2000,
-  html:`<p>Hold on — hearing Demand's analysis, this is worse than I expected.</p><p>Current pipeline is YTD <span class="inline">62,400 units</span> (full-year target 78,000). The most-in-need existing gap is <span class="inline r">12,400 units</span>, pipeline coverage only <span class="inline r">35%</span> — already RED (BRD §6.2 threshold is 50%).</p><p>With the 18% downgrade migration: if Riyadh demand drops <span class="inline a">11%</span> (base case), nominal effective demand ≈ 68,400 units and the gap looks smaller — but that's a <b>statistical illusion</b>: it shrank because fewer people can afford to buy.</p><blockquote class="e">Latent most-in-need demand rises to ~15,200 units, <span class="inline r">+22%</span>. These needs are real but <b>unmet</b> at current conditions — a "structural demand deficit". Absorption falls 43% → 38%; my model has tripped a RED alert.</blockquote>`,
-  html_zh:`<p>等一下,听了 Demand 的分析,这比预想严重。</p><p>当前供给管线 YTD <span class="inline">62,400 套</span>(全年目标 78,000)。最需要群体现有缺口 <span class="inline r">12,400 套</span>,管线覆盖率仅 <span class="inline r">35%</span>——已是 RED(BRD §6.2 阈值 50%)。</p><p>加上那 18% 的降级迁移:若利雅得总需求下降 <span class="inline a">11%</span>(基准),名义有效需求约 68,400 套,缺口表面缩小——但这是<b>统计幻觉</b>:缩小是因为"买得起房的人少了"。</p><blockquote class="e">最需要群体隐性需求升至约 15,200 套,<span class="inline r">+22%</span>。这些需求真实但在当前条件下<b>无法实现</b>——即"结构性需求赤字"。吸收率 43% → 38%,模型已触发 RED 预警。</blockquote>`},
- {av:{bg:"#dc2626",ic:"💰"},name:"Fiscal Sustainability Agent",name_zh:"财政可持续 Agent",tag:"Budget analysis",tag_zh:"预算分析",delay:2000,
-  html:`<p>Let me add the fiscal view. First, sovereign debt: public debt is <span class="inline">SAR 1,150B</span> (27% of GDP) — not high. But +50bps adds <span class="inline a">SAR 5.8B</span> interest on new 1-yr issuance — ~15% of Sakani's annual budget.</p><p>Sakani subsidies face a paradox: weaker demand should cut spend (save <span class="inline g">SAR 2.4–3.6B</span>), but the most-in-need need <b>more</b> support or they're priced out — extra <span class="inline a">SAR 1.8–2.2B</span>.</p><p>Third, Vision 2030 (ROSHN/NEOM/Red Sea), SAR 1.3T committed pipeline: financing cost up SAR 3.2–5B; <span class="inline a">12%</span> of mid-size developers may not survive (margins under 5%).</p><blockquote class="w">Net fiscal impact ≈ <span class="inline a">SAR 8B</span>/yr (±2B). Fiscal-sustainability index 72 → 67. Not critical — but with Brent at $74.32 (below the $75 breakeven), fiscal space is narrowing.</blockquote>`,
-  html_zh:`<p>我从财政角度补充。首先主权债务:公债现为 <span class="inline">SAR 1,150B</span>(占 GDP 27%),不算高。但 +50bps 意味着新一年期发行多付 <span class="inline a">SAR 5.8B</span> 利息——约为 Sakani 年预算的 15%。</p><p>Sakani 补贴存在矛盾:需求收缩本应让补贴下降(省 <span class="inline g">SAR 2.4–3.6B</span>),但最需要群体反而需要<b>更多</b>支持,否则被挤出——额外支出 <span class="inline a">SAR 1.8–2.2B</span>。</p><p>第三,Vision 2030(ROSHN/NEOM/红海),SAR 1.3T 已承诺管线:融资成本上升 SAR 3.2–5B;<span class="inline a">12%</span> 中型开发商可能扛不住(利润率低于 5%)。</p><blockquote class="w">综合净财政冲击约 <span class="inline a">SAR 8B</span>/年(±2B)。财政可持续指数 72 → 67。还不危急——但 Brent 在 $74.32(低于 $75 盈亏线),财政空间确在收窄。</blockquote>`},
- {av:{bg:"#0891b2",ic:"🧠"},name:"Orchestrator",name_zh:"协调器",tag:"synthesis",tag_zh:"综合研判",delay:1300,
-  html:`<p>Let me connect the threads. Macro: transmission is real and significant (r=−0.85). Demand: the shock is selective — the most vulnerable take disproportionate harm (−18% vs −2%). Balance: a key paradox — nominal gap shrinks while the structural gap worsens. Fiscal: space remains but is squeezed from both ends (Brent below breakeven + Vision-2030 financing).</p><p>A simple "rate cut to offset" won't work — SAMA follows the global cycle. We need a <b>structural policy toolkit</b>. ${TBK}</p><p>Over to <b>Policy Simulation Agent</b> — simulate feasible combinations with cost-benefit.</p>`,
-  html_zh:`<p>我把几条线串起来。Macro:传导真实且显著(r=−0.85)。Demand:冲击有选择性——最脆弱群体承受不成比例的伤害(−18% vs −2%)。Balance:关键悖论——名义缺口缩小而结构性缺口恶化。Fiscal:财政尚有空间,但两头受压(Brent 低于盈亏线 + Vision 2030 融资上升)。</p><p>这不是"降息对冲"能解决的——SAMA 跟随全球周期。我们需要<b>结构性政策工具箱</b>。${TBK}</p><p>交给 <b>Policy Simulation Agent</b>——基于以上分析模拟可行组合,给出成本-收益评估。</p>`},
- {av:{bg:"#d97706",ic:"🛡️"},name:"Policy Simulation Agent",name_zh:"政策模拟 Agent",tag:"Recommendation",tag_zh:"方案推荐",delay:2200,
-  html:`<p>Systematic simulation. Constraint: fiscal cap <span class="inline a">SAR 3.2B</span> (Fiscal's available space); objective: maximize most-in-need gap closure without hurting the Vision-2030 core pipeline. Monte-Carlo over 6 options:</p><table><thead><tr><th>Option</th><th>Mechanism</th><th>Cost</th><th>Gap closure</th><th>Score</th></tr></thead><tbody><tr><td>M1 Mortgage subsidy</td><td>Subsidize 30% of the rate increment for most-in-need</td><td>SAR 1.8B</td><td>28%</td><td>⭐⭐⭐</td></tr><tr><td>M2 Sakani expansion</td><td>Tilt Sakani quota +15% to most-in-need</td><td>SAR 2.4B</td><td>34%</td><td>⭐⭐⭐⭐</td></tr><tr><td>M3 Developer incentive</td><td>Affordable-housing tax rebate + land</td><td>SAR 1.2B</td><td>22%</td><td>⭐⭐⭐</td></tr><tr style="background:#f0fdf4"><td><b>M4 Combo</b></td><td>M2+M3+5,000-unit PPP fast-track</td><td><b>SAR 3.2B</b></td><td><b>97%</b></td><td><b>⭐⭐⭐⭐⭐</b></td></tr><tr><td>M5 Rental vouchers</td><td>Transitional rent support (downgraders)</td><td>SAR 0.8B</td><td>15%</td><td>⭐⭐⭐</td></tr><tr><td>M6 Austerity</td><td>Cut non-housing spend (offset fiscal)</td><td>−SAR 4.0B</td><td>0%</td><td>⭐⭐</td></tr></tbody></table><blockquote class="s"><b>I recommend Combo #4.</b> (1) 97% closure — highest; (2) SAR 3.2B sits within the fiscal cap; (3) PPP leverages private capital, not pure fiscal spend; (4) 6–12 months to take effect. M5 vouchers can be a low-cost (SAR 0.8B) transitional add-on.</blockquote>`,
-  html_zh:`<p>做系统性政策模拟。约束:财政上限 <span class="inline a">SAR 3.2B</span>(Fiscal 给的可用空间);目标:最需要群体缺口闭合率最大化,且不影响 Vision 2030 核心管线。对 6 套方案做蒙特卡洛:</p><table><thead><tr><th>方案</th><th>机制简述</th><th>成本</th><th>缺口闭合</th><th>评分</th></tr></thead><tbody><tr><td>M1 按揭补贴</td><td>补贴最需要群体 30% 的加息增量</td><td>SAR 1.8B</td><td>28%</td><td>⭐⭐⭐</td></tr><tr><td>M2 Sakani 扩容</td><td>Sakani 配额向最需要群体倾斜 +15%</td><td>SAR 2.4B</td><td>34%</td><td>⭐⭐⭐⭐</td></tr><tr><td>M3 开发商激励</td><td>可负担住房税收返还 + 土地优惠</td><td>SAR 1.2B</td><td>22%</td><td>⭐⭐⭐</td></tr><tr style="background:#f0fdf4"><td><b>M4 组合方案</b></td><td>M2+M3+5,000 套 PPP 快速通道</td><td><b>SAR 3.2B</b></td><td><b>97%</b></td><td><b>⭐⭐⭐⭐⭐</b></td></tr><tr><td>M5 租赁券</td><td>过渡性租赁补贴(降级家庭)</td><td>SAR 0.8B</td><td>15%</td><td>⭐⭐⭐</td></tr><tr><td>M6 财政紧缩</td><td>非住房支出削减(对冲财政压力)</td><td>−SAR 4.0B</td><td>0%</td><td>⭐⭐</td></tr></tbody></table><blockquote class="s"><b>我推荐 Combo #4。</b>(1) 97% 缺口闭合,所有方案最高;(2) SAR 3.2B 恰在财政可承受范围;(3) PPP 撬动私人资本,非纯财政支出;(4) 6–12 个月生效。M5 租赁券可作低成本(SAR 0.8B)过渡补充。</blockquote>`},
- {av:{bg:"#d97706",ic:"⚖"},name:"Governance Gate",name_zh:"治理门",tag:"human-in-the-loop",tag_zh:"人工复核",gate:true,delay:1000,
-  html:`<p>The recommendation is ready, but it is a <b>strategic-scale</b> policy (SAR 3.2B, touches the Vision-2030 pipeline) — above autonomous scope. Holding output as a draft for <b>Planning Manager approval</b>.</p>`,
-  html_zh:`<p>方案已就绪,但属<b>战略级</b>政策建议(SAR 3.2B、触及 Vision 2030 管线)——超出自治范围。产出保持草稿,<b>需 Planning Manager 批准</b>。</p>`},
- {av:{bg:"#0891b2",ic:"🧠"},name:"Orchestrator",name_zh:"协调器",tag:"final output",tag_zh:"最终输出",report:true,delay:1400,
-  html:`<p><b>Core conclusion:</b> this +50bps is a localized shock — negligible for high income, mild for middle, but <b>structural</b> for the most-in-need. Don't read the "shrinking nominal gap"; watch the <b>worsening gap structure</b>.</p><p><b>Fiscal:</b> the SAR 8B net hit is manageable within buffers — provided Brent doesn't keep falling; below $70, trigger contingency immediately.</p><p><b>Policy path:</b> Combo #4 (Sakani + developer + PPP) — affordable, effective, fast to start.</p><p><b>Watchlist:</b> ① Brent $70 line ② absorption 40% RED ③ developer margin 5% floor. Any breach escalates the response.</p><p style="margin-top:14px" class="muted">Full record archived to BRD §7.4 audit trail.</p>`,
-  html_zh:`<p><b>核心结论:</b>这次 +50bps 是局部冲击——高收入几乎无影响,中收入温和,但对最需要群体是<b>结构性</b>的。不要只看"名义缺口缩小",要关注<b>缺口结构的恶化</b>。</p><p><b>财政:</b>SAR 8B 净冲击在缓冲内可控,但前提是 Brent 不再下跌;跌破 $70 须立即触发应急。</p><p><b>政策路径:</b>Combo #4(Sakani + 开发商 + PPP)——成本可控、效果显著、可快速启动。</p><p><b>监控清单:</b>① Brent $70 警戒 ② 吸收率 40% RED ③ 开发商利润率 5% 底线。任一突破即升级响应。</p><p style="margin-top:14px" class="muted">完整记录已存入 BRD §7.4 审计追踪。</p>`},
-];
 function ChatAnalysis(){
   const {t,lang,cov,pushLog,setRoute,addReport,seed,clearSeed}=useStore();
-  const [ai,setAi]=useState({on:false,n:0,gate:false,done:false,playing:false});
+  const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
   const [flow,setFlow]=useState(false);
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
-  const L=(en,zh)=>lang==="zh"?zh:en;
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
-  const H=(m)=>(lang==="zh"&&m.html_zh)?m.html_zh:m.html;
-  const MSGS=MSG_THREAD;
+  const L=(en,zh)=>lang==="zh"?zh:en;
   const orchSt=!ai.on?L("ready","就绪"):ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
   const mafChip=<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
   useEffect(()=>{ if(ai.on&&endRef.current) endRef.current.scrollIntoView({behavior:"smooth",block:"end"}); },[ai]);
   function advance(cur){
-    if(cur.n>=MSGS.length){ setAi({...cur,done:true,playing:false}); return; }
-    const m=MSGS[cur.n]; const next={...cur,n:cur.n+1};
-    if(m.report){ addReport({ref:"DSO-2026-0619-URG-001",nameKey:"repName_brief",cov,conf:88}); pushLog("log_report"); } else pushLog("log_route");
-    if(m.gate){ setAi({...next,gate:true,playing:false}); return; }
-    setAi(next);
-    if(next.n>=MSGS.length){ tRef.current=setTimeout(()=>setAi(p=>({...p,done:true,playing:false})),400); return; }
-    if(cur.playing) tRef.current=setTimeout(()=>advance(next), m.delay||1400);
+    const ag=AGENTS_T[cur.ag];
+    if(cur.line<ag.lines.length-1){
+      const nl=cur.line+1, ln=ag.lines[nl], ds={...cur.ds};
+      if(ln.k==="call"&&ln.ds) ln.ds.forEach(d=>{ds[d]=true;});
+      const next={...cur,line:nl,ds}; setAi(next);
+      if(cur.playing) tRef.current=setTimeout(()=>advance(next), ln.k==="calc"?900:ln.k==="call"?850:680);
+    } else if(ag.gate){ setAi({...cur,gate:true,playing:false}); }
+    else if(cur.ag<AGENTS_T.length-1){ const next={...cur,ag:cur.ag+1,line:-1}; setAi(next); pushLog("log_route"); if(cur.playing) tRef.current=setTimeout(()=>advance(next),500); }
+    else { setAi({...cur,done:true,playing:false}); pushLog("log_report"); addReport({ref:"DSO-2026-0619-URG-001",nameKey:"repName_brief",cov,conf:88}); }
   }
-  function start(){ clearTimeout(tRef.current); pushLog("log_cross"); const cur={on:true,n:0,gate:false,done:false,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
+  function start(){ clearTimeout(tRef.current); pushLog("log_cross"); const cur={on:true,ag:0,line:-1,ds:{},gate:false,done:false,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
   function play(){ const cur={...aiRef.current,playing:true}; setAi(cur); advance(cur); }
   function pause(){ clearTimeout(tRef.current); setAi({...aiRef.current,playing:false}); }
   function stepOne(){ clearTimeout(tRef.current); advance({...aiRef.current,playing:false}); }
-  function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
-  function reset(){ clearTimeout(tRef.current); setAi({on:false,n:0,gate:false,done:false,playing:false}); }
+  function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,ag:aiRef.current.ag+1,line:-1,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
+  function reset(){ clearTimeout(tRef.current); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false}); }
   useEffect(()=>{ if(seed){ start(); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
 
   if(!ai.on){
+    const ex=["⚡ "+L("Rate-hike +50bps impact on Riyadh Seg-A gap","加息 +50bps 对利雅得 A 段缺口的影响"),L("Is the gap a policy or a macro problem?","缺口是政策问题还是宏观问题?"),L("What should we do to close it?","该怎么补这个缺口?")];
     return (<div className="fade">
-      <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — agents think, fetch, compute and hand back at the governance gate","多智能体推理剧场 — 智能体思考、取数、计算,并在治理门交回人工")} cls="ph-end" right={mafChip}/>
-      <div className="card pad" style={{textAlign:"center",padding:"32px 18px"}}>
-        <div className="eyebrow" style={{marginBottom:6}}>{L("Live demo case","现场演示 Case")}</div>
-        <h2 style={{margin:"0 0 8px"}}>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
-        <p className="muted" style={{maxWidth:660,margin:"0 auto 16px",fontSize:13.5}}>{L("Watch the Orchestrator coordinate Macro, Demand, Balancing, Fiscal and Policy agents — reasoning step by step — then hand back to you at the governance gate.","观看协调器调度 宏观 / 需求 / 供需平衡 / 财政 / 政策 多个智能体逐步推理,并在治理门交回给你决策。")}</p>
-        <button className="btn" onClick={start}>▶ {L("Run multi-agent analysis","运行多智能体分析")}</button>
+      <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
+      <div className="ai-brief-grid">
+        <div className="ai-brief-main card pad">
+          <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
+          <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
+          <p>{L("The demo now starts from an AI investigation, not a report export. Watch the Orchestrator call agents, expose the calculation chain, and package the output for CoPilot / AI_H_03.","演示从 AI 调查开始,不是从导出报告开始。观看编排器调用 Agent、展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
+          <div className="ai-brief-actions">
+            <button className="btn" onClick={start}>▶ {L("Run AI reasoning theater","运行 AI 推理剧场")}</button>
+            <button className="btn secondary" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
+          </div>
+          <div className="preset-row">
+            {ex.map((e,i)=><button key={i} className="preset" onClick={start}>{e}</button>)}
+          </div>
+        </div>
+        <div className="ai-brief-side">
+          <FiscalContinuityPanel compact/>
+        </div>
       </div>
       {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
     </div>);
   }
-  return (<div className="fade chat-theater">
-    <PageHeader title={t("nav_chat")} sub={L("L1 data → L3 agents reasoning → L4 governance → L5 output","L1 数据 → L3 智能体推理 → L4 治理门 → L5 产出")} cls="ph-end" right={mafChip}/>
-    <div className="ct-controls">
+  const rail=DS11.map(d=>{const ok=ai.ds[d[0]];return (<div key={d[0]} className={"dsc"+(ok?" ok":"")}><span className="livedot"/><span className="dsname">{d[0]} {d[1]}</span><span className="st">{ok?"✓":"LIVE"}</span></div>);});
+  const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
+  const cards=[];
+  for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
+    const ag=AGENTS_T[i]; const active=(i===ai.ag&&!ai.done);
+    const shown=(i<ai.ag)?ag.lines.length:(ai.line+1);
+    const lns=[];
+    for(let j=0;j<shown;j++){ const ln=ag.lines[j]; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
+      lns.push(<div key={j} className={"tln "+ln.k}><span className={"kind "+ln.k}>{kindLbl(ln.k)}</span><span className="ttx">{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</span></div>); }
+    cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")}>
+      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
+  }
+  return (<div className="fade">
+    <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
+      right={mafChip}/>
+    <ReasoningStatus ai={ai} L={L} Z={Z}/>
+    <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
         : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
       {(!ai.done&&!ai.gate)?<button className="btn ghost sm" onClick={stepOne}>⏭ {L("Step","下一步")}</button>:null}
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
-      <span className="muted" style={{fontSize:12,marginInlineStart:"auto"}}>{Math.min(ai.n,MSGS.length)}/{MSGS.length} · {orchSt}</span>
     </div>
-    <div className="ct-grid">
-      <aside className="ct-left card pad">
-        <div className="rail-h"><span className="livedot"/>{L("Data sources · LIVE","数据源 · 实时")}</div>
-        {DS11.map(d=><div key={d[0]} className="dsc ok"><span className="livedot"/><span className="dsname">{d[0]} {d[1]}</span><span className="st">✓</span></div>)}
-      </aside>
-      <main className="ct-mid">
-        {MSGS.slice(0,ai.n).map((m,i)=>(<div key={i} className="tmsg">
-          <div className="tav" style={{background:m.av.bg}}>{m.av.ic}</div>
-          <div className="tbub"><div className="tnm">{Z(m,"name")}<span className="ttag">{Z(m,"tag")}</span></div>
-            <div className="tbody" dangerouslySetInnerHTML={{__html:H(m)}}/></div>
-        </div>))}
-        {ai.gate&&<div className="gate-card" style={{marginInlineStart:50}}>
-          <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Strategic-scale recommendation — Planning Manager approval required","战略级建议 — 需 Planning Manager 批准")}</b></div>
-          <div className="muted" style={{fontSize:12.5,margin:"8px 0 12px"}}>{L("AI output stays a draft until you approve. HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31.","AI 产出在你批准前仅为草稿。HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31。")}</div>
+    <div className="theater theater-fiscal">
+      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Data sources · LIVE","数据源 · 实时")}</div>{rail}</div>
+      <div className="tstream">
+        {cards}
+        {ai.gate&&<div className="gate-card">
+          <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
+          <div className="muted" style={{fontSize:12.5,margin:"8px 0 12px"}}>{L("AI output is a draft until you approve; it won't be filed or dispatched. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿,不会上报或分发。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
           <div className="row" style={{flexWrap:"wrap",gap:8}}><button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button><button className="btn ghost" onClick={reset}>{L("Return","退回")}</button></div>
         </div>}
-        {ai.done&&<div className="tmsg"><div className="tav" style={{background:"#0f2a1e"}}>📦</div>
-          <div className="tbub"><div className="tnm">{L("Deliverables","交付物")}<span className="ttag">{L("output","产出")}</span></div>
-            <div className="row" style={{flexWrap:"wrap",gap:8,marginTop:4}}><span className="chip">✓ {L("Audit logged · SSOT pushed → AI_H_03 / CoPilot","审计已记录 · SSOT 已推送 → AI_H_03 / CoPilot")}</span>
-              <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div></div></div>}
+        {ai.done&&<div style={{marginTop:6}}>
+          <div className="card pad" style={{marginBottom:14}}><div className="row" style={{justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+            <span className="chip">✓ {L("Complete · audit logged · SSOT pushed","完成 · 审计已记录 · SSOT 已推送")}</span>
+            <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div></div>
+          <AiRec d={AIREC.shock}/>
+        </div>}
         <div ref={endRef} style={{height:1}}/>
-      </main>
-      <aside className="ct-right">
-        <FiscalContinuityPanel compact/>
-      </aside>
+      </div>
+      <FiscalContinuityPanel/>
     </div>
     {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
   </div>);
