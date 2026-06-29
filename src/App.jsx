@@ -1906,29 +1906,23 @@ const FLOW_STAGES=[
 function FlowDiagram({lang,onClose}){
   const L=(en,zh)=>lang==="zh"?zh:en;
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
-  const [mode,setMode]=useState("story");
   const Conn=({label})=>(<div className="hconn"><span className="vlabel">{label}</span></div>);
-  const agent=(a,j)=> mode==="story"
-    ? (<div key={j} className="fag"><span className={"fdot "+(a.own==="platform"?"plat":"cust")}/><b>{a.n}</b></div>)
-    : (<div key={j} className="vagent">
-        <div className="va-h"><span className={"fdot "+(a.own==="platform"?"plat":"cust")}/><b style={{flex:1}}>{a.n}</b></div>
-        <div className="va-io col">
-          <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
-          <span className="io-arrow down">↓</span>
-          <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
-        </div>
-      </div>);
+  const agent=(a,j)=>(<div key={j} className="vagent">
+    <div className="va-h"><span className="gdot" title="live"/><b style={{flex:1}}>{a.n}</b></div>
+    <div className="va-io col">
+      <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
+      <span className="io-arrow down">↓</span>
+      <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
+    </div>
+  </div>);
   const stageBox=(s,k)=>(<div key={k} className="hcol hstage"><div className="hstage-h">{Z(s,"t")}</div><div className="hstage-b">{s.ag.map(agent)}</div></div>);
   const r1=FLOW_STAGES.slice(0,4), r2=FLOW_STAGES.slice(4);
   return (<Drawer wide title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
-    <div className="flow-tabs">
-      <div className="seg"><button className={mode==="story"?"on":""} onClick={()=>setMode("story")}>{L("Use-case storyline","用例故事线")}</button><button className={mode==="flow"?"on":""} onClick={()=>setMode("flow")}>{L("Agent flow","Agent 流")}</button></div>
-    </div>
-    <div className="flow-toolbar">
-      <div className="fown"><span className="fown-l">{L("AGENT OWNERSHIP","Agent 归属")}</span>
-        <span className="fchip-plat">DataAgent · platform</span><span className="fchip-cust">{L("Custom agent · to build","自建 Agent · 待开发")}</span>
-        <span className="muted">👆 {L("click any agent for details","点击任意 Agent 查看详情")}</span></div>
-      <span className="fstatus">● {L("live data · coverage 35% · SAR 12,400-unit gap","实时数据 · 覆盖 35% · 缺口 12,400 套")}</span>
+    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:14}}>
+      <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
+      <span><span className="lg sw-gate"/>{L("Human gate","人工门")}</span>
+      <span><span className="lg sw-agent"/>{L("Agent (live)","智能体(存活)")}</span>
+      <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
     </div>
     <div className="hscroll">
       <div className="hsnake">
