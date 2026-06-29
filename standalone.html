@@ -1001,7 +1001,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:26 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:33 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2675,7 +2675,7 @@ function StoryStepper({states}){
     <span className="stepper-cap" title={cap}>{cap}</span>
   </div>);
 }
-// AI Subsidy Sustainability — first-principles score: budget safety 30 + efficiency 25 + HBR 25 + risk 20
+// AI Financial Sustainability — first-principles score: budget safety 30 + efficiency 25 + HBR 25 + risk 20
 const FISCAL_BUDGET=7.9, CONTRACT_TARGET=510000, CONTRACT_COST=141444;
 const FISCAL_DEFAULTS={burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952};
 function computeFiscalContinuity(lv){
@@ -2718,7 +2718,7 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
   const shown=compact?rows.slice(0,3):rows;
   return (<div className={"fiscal-card"+(compact?" compact":"")+(active?" synced":"")}>
     <div className="fiscal-head">
-      <div><div className="eyebrow">{L("AI subsidy sustainability","AI 补贴可持续性")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div>
+      <div><div className="eyebrow">{L("AI financial sustainability","AI 财政可持续性")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div>
         <h3>{L("Can this allocation survive the Phase-3 budget cycle?","这笔分配能否撑过 Phase 3 预算周期?")}</h3></div>
       <span className={"chip"+chipCls} title={band.l}>{L("Score","评分")} {m.score}/100</span>
     </div>
@@ -2859,7 +2859,7 @@ function ChatAnalysis(){
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
           <div className="muted" style={{fontSize:12.5,margin:"8px 0 10px"}}>{L("AI output is a draft until you approve. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
-          <div className={"gate-fiscal "+(fres.approve?"pass":"fail")}>{L("AI Subsidy Sustainability","AI 补贴可持续性")}: <b>{fres.score}/100</b> · {fres.approve?L("PASS — fiscally fundable, approval enabled","通过 — 财政可承受,可批准"):L("FAIL — exceeds fiscal cap, must escalate","未通过 — 超出财政上限,须上报")} <span className="muted">({L("drag the panel sliders to change this →","拖右侧面板滑块可改变此结果 →")})</span></div>
+          <div className={"gate-fiscal "+(fres.approve?"pass":"fail")}>{L("AI Financial Sustainability","AI 财政可持续性")}: <b>{fres.score}/100</b> · {fres.approve?L("PASS — fiscally fundable, approval enabled","通过 — 财政可承受,可批准"):L("FAIL — exceeds fiscal cap, must escalate","未通过 — 超出财政上限,须上报")} <span className="muted">({L("drag the panel sliders to change this →","拖右侧面板滑块可改变此结果 →")})</span></div>
           <div className="row" style={{flexWrap:"wrap",gap:8}}>
             {fres.approve
               ? <button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button>
