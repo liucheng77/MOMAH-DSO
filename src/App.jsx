@@ -1651,6 +1651,19 @@ const AGENTS_T=[
    {k:"out",t:"Watchlist: ① Brent $70 line ② absorption 40% RED ③ developer margin 5% floor — any breach escalates the response.",t_zh:"监控清单:① Brent $70 警戒线 ② 吸收率 40% RED ③ 开发商利润率 5% 底线——任一突破即升级响应。"},
    {k:"out",t:"Generate briefing (PDF) + early-warning → audit log → SSOT push to AI_H_03 / CoPilot.",t_zh:"生成简报(PDF)+ 早期预警 → 写入审计日志 → SSOT 推送 AI_H_03 / CoPilot。"}]},
 ];
+/* ---- BRD Agent Action List (left rail) — actions only, no type/description ---- */
+const AGENT_ACTIONS=[
+ {key:"orch", name:"Orchestrator Agent",name_zh:"编排 Agent",acts:["think_intent","think_route","think_compose","think_perm","gen_report","push_log"]},
+ {key:"dq",   name:"Data Quality Monitor",name_zh:"数据质量监控",acts:["scan_sources","flag_degraded","emit_alert","report_dq","ticket_dq"]},
+ {key:"macro",name:"Macro-Economic Agent",name_zh:"宏观经济引擎",acts:["think_run","compute_corr","project_gdp","monitor_fiscal","render_macro_chart","analyze_transmission"]},
+ {key:"demand",name:"Demand Intelligence Agent",name_zh:"需求智能引擎",acts:["think_run","compute_elasticity","segment_migration","forecast_demand","render_seg_chart","assess_affordability"]},
+ {key:"sdb",  name:"Supply-Demand Balancing Agent",name_zh:"供需平衡引擎",acts:["think_run","compute_gap","assess_coverage","analyze_rootcause","render_heatmap","project_absorption"]},
+ {key:"conv", name:"Conversion & Absorption Agent",name_zh:"转化吸纳引擎",acts:["think_run","monitor_absorption","forecast_conv","map_pipeline","assess_margin","render_conv_chart"]},
+ {key:"policy",name:"Policy Simulation Agent",name_zh:"政策模拟引擎",acts:["think_run","simulate_measure","rank_combos","recommend","assess_risk","render_policy_chart"]},
+ {key:"fin",  name:"Financial Sustainability Agent",name_zh:"财政可持续引擎",acts:["assess_sovereign_debt","analyze_subsidy","evaluate_v2030","compute_sustainability_index","monitor_oil_breakeven","assess_reserves"]},
+];
+AGENT_ACTIONS.forEach(a=>{ const o=a.acts.map((_,i)=>i); for(let i=o.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[o[i],o[j]]=[o[j],o[i]];} a.order=o; });
+function brdKeyOf(name){ if(/Orchestrator/.test(name))return "orch"; if(/Data Quality/.test(name))return "dq"; if(/Macro/.test(name))return "macro"; if(/Demand Intelligence/.test(name))return "demand"; if(/Supply-Demand Balancing/.test(name))return "sdb"; if(/Conversion/.test(name))return "conv"; if(/Policy Simulation/.test(name))return "policy"; if(/Fiscal|Financial/.test(name))return "fin"; return null; }
 
 // Orchestrator status — fixed-width element in the chat header. Idle: badge + grey nodes + "auto";
 // running: same footprint with nodes lighting up + "x/7 · <engine>". Width stays constant.
@@ -1808,7 +1821,21 @@ function ChatAnalysis(){
       {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
     </div>);
   }
-  const rail=DS11.map(d=>{const ok=ai.ds[d[0]];return (<div key={d[0]} className={"dsc"+(ok?" ok":"")}><span className="livedot"/><span className="dsname">{d[0]} {d[1]}</span><span className="st">{ok?"✓":"LIVE"}</span></div>);});
+  const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
+  const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
+  const rail=AGENT_ACTIONS.map(a=>{
+    const idxs=tmap[a.key]||[];
+    const isActive=idxs.includes(ai.ag)&&!ai.done;
+    const passed=idxs.length>0&&Math.max.apply(null,idxs)<ai.ag;
+    const done=ai.done||passed;
+    const reached=isActive||done;
+    const k=done?a.acts.length:isActive?Math.max(1,Math.ceil(((ai.line+1)/linesLen)*a.acts.length)):0;
+    const ticked=new Set(a.order.slice(0,k));
+    return (<div key={a.key} className={"agrow"+(isActive?" active":done?" done":"")}>
+      <div className="agrow-h"><span className="livedot"/><b>{Z(a,"name")}</b>{done?<span className="agdone">✓</span>:isActive?<span className="agtag">{L("running","运行中")}</span>:null}</div>
+      {reached&&<div className="aglist">{a.acts.map((ac,j)=><div key={j} className={"agact"+(ticked.has(j)?" ok":"")}><span className="agck">{ticked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
+    </div>);
+  });
   const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
   const cards=[];
   for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
@@ -1831,7 +1858,7 @@ function ChatAnalysis(){
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
     <div className="theater theater-fiscal">
-      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Data sources · LIVE","数据源 · 实时")}</div>{rail}</div>
+      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
       <div className="tstream">
         {cards}
         {ai.gate&&<div className="gate-card">
