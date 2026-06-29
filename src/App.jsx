@@ -1688,6 +1688,7 @@ function StoryStepper({states}){
 }
 // AI Subsidy Sustainability — first-principles score: budget safety 30 + efficiency 25 + HBR 25 + risk 20
 const FISCAL_BUDGET=7.9, CONTRACT_TARGET=510000, CONTRACT_COST=141444;
+const FISCAL_DEFAULTS={burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952};
 function computeFiscalContinuity(lv){
   const budgetScore = lv.burn<70?30:lv.burn<85?20:10;
   const effScore = Math.min(25, (lv.eff/1.0)*25);
@@ -1703,10 +1704,11 @@ function computeFiscalContinuity(lv){
   const approve = lv.burn<70 && lv.hbr<40 && lv.leak<7;
   return {budgetScore,effScore:+effScore.toFixed(1),hbrScore:+hbrScore.toFixed(1),riskScore,score,tone,consumed,historical,contractPct,approve};
 }
-function FiscalContinuityPanel({compact=false}){
+function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false}){
   const {lang}=useStore();
   const L=(en,zh)=>lang==="zh"?zh:en;
-  const [lv,setLv]=useState({burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952});
+  const [lvI,setLvI]=useState(FISCAL_DEFAULTS);
+  const lv=lvP||lvI, setLv=setLvP||setLvI;
   const m=useMemo(()=>computeFiscalContinuity(lv),[lv]);
   const set=(k,v)=>setLv(prev=>({...prev,[k]:Number(v)}));
   const COL={good:"var(--green-dark)",warn:"var(--amber)",bad:"var(--danger)"};
@@ -1725,12 +1727,13 @@ function FiscalContinuityPanel({compact=false}){
     {k:"mape",label:L("Forecast accuracy (MAPE)","预测准确度 MAPE"),min:2,max:20,step:.5,val:lv.mape,fmt:v=>v+"%",note:L("target < 8%","目标 < 8%")},
   ];
   const shown=compact?rows.slice(0,3):rows;
-  return (<div className={"fiscal-card"+(compact?" compact":"")}>
+  return (<div className={"fiscal-card"+(compact?" compact":"")+(active?" synced":"")}>
     <div className="fiscal-head">
-      <div><div className="eyebrow">{L("AI subsidy sustainability","AI 补贴可持续性")}</div>
+      <div><div className="eyebrow">{L("AI subsidy sustainability","AI 补贴可持续性")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div>
         <h3>{L("Can this allocation survive the Phase-3 budget cycle?","这笔分配能否撑过 Phase 3 预算周期?")}</h3></div>
       <span className={"chip"+chipCls} title={band.l}>{L("Score","评分")} {m.score}/100</span>
     </div>
+    {active&&<div className="synced-note">{L("From Financial Sustainability Agent: sustainability index 72 → 67 · net fiscal impact ≈ SAR 8B","来自 财政可持续 Agent:可持续指数 72 → 67 · 净财政冲击 ≈ SAR 8B")}</div>}
     <div className="fiscal-metrics">
       <div><span>{L("Budget burn","预算消耗")}</span><b style={{color:COL[burnT]}}>{lv.burn}%</b></div>
       <div><span>{L("Spending eff.","支出效率")}</span><b style={{color:COL[effT]}}>{lv.eff.toFixed(2)}</b></div>
@@ -1771,6 +1774,8 @@ function ChatAnalysis(){
   const {t,lang,cov,pushLog,setRoute,addReport,seed,clearSeed}=useStore();
   const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
   const [flow,setFlow]=useState(false);
+  const [flv,setFlv]=useState(FISCAL_DEFAULTS);
+  const fres=computeFiscalContinuity(flv);
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
@@ -1821,6 +1826,7 @@ function ChatAnalysis(){
       {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
     </div>);
   }
+  const finActive=ai.on&&!ai.done&&!ai.gate&&ai.ag>=0&&AGENTS_T[ai.ag]&&brdKeyOf(AGENTS_T[ai.ag].ag)==="fin";
   const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
   const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
   const rail=AGENT_ACTIONS.map(a=>{
@@ -1863,8 +1869,13 @@ function ChatAnalysis(){
         {cards}
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
-          <div className="muted" style={{fontSize:12.5,margin:"8px 0 12px"}}>{L("AI output is a draft until you approve; it won't be filed or dispatched. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿,不会上报或分发。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
-          <div className="row" style={{flexWrap:"wrap",gap:8}}><button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button><button className="btn ghost" onClick={reset}>{L("Return","退回")}</button></div>
+          <div className="muted" style={{fontSize:12.5,margin:"8px 0 10px"}}>{L("AI output is a draft until you approve. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
+          <div className={"gate-fiscal "+(fres.approve?"pass":"fail")}>{L("AI Subsidy Sustainability","AI 补贴可持续性")}: <b>{fres.score}/100</b> · {fres.approve?L("PASS — fiscally fundable, approval enabled","通过 — 财政可承受,可批准"):L("FAIL — exceeds fiscal cap, must escalate","未通过 — 超出财政上限,须上报")} <span className="muted">({L("drag the panel sliders to change this →","拖右侧面板滑块可改变此结果 →")})</span></div>
+          <div className="row" style={{flexWrap:"wrap",gap:8}}>
+            {fres.approve
+              ? <button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button>
+              : <button className="btn" style={{background:"var(--danger)",color:"#fff"}} onClick={()=>{pushLog("log_route");approve();}}>⤴ {L("Escalate to Minister","上报部长")}</button>}
+            <button className="btn ghost" onClick={reset}>{L("Return","退回")}</button></div>
         </div>}
         {ai.done&&<div style={{marginTop:6}}>
           <div className="card pad" style={{marginBottom:14}}><div className="row" style={{justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
@@ -1874,7 +1885,7 @@ function ChatAnalysis(){
         </div>}
         <div ref={endRef} style={{height:1}}/>
       </div>
-      <FiscalContinuityPanel/>
+      <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
     </div>
     {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
   </div>);
