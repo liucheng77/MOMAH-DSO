@@ -1719,7 +1719,7 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
   const hbrT=lv.hbr<=35?"good":lv.hbr<=38?"warn":"bad";
   const n0=v=>Math.round(v).toLocaleString("en-US");
   const rows=[
-    {k:"burn",label:L("Budget consumed","预算消耗"),min:0,max:100,step:1,val:lv.burn,fmt:v=>v+"%",note:L("threshold 70% / 85%","阈值 70% / 85%")},
+    {k:"burn",label:L("Budget consumption","预算消耗"),min:0,max:100,step:1,val:lv.burn,fmt:v=>v+"%",note:L("threshold 70% / 85%","阈值 70% / 85%")},
     {k:"eff",label:L("Spending efficiency","支出效率"),min:0.4,max:1.4,step:.01,val:lv.eff,fmt:v=>v.toFixed(2),note:L("contracts/SAR · target 1.0","合同/SAR · 目标 1.0")},
     {k:"hbr",label:L("Housing burden ratio","住房负担比 HBR"),min:30,max:45,step:.5,val:lv.hbr,fmt:v=>v+"%",note:L("40→36, target 30","40→36, 目标 30")},
     {k:"contracts",label:L("Contract progress","合同进度"),min:0,max:CONTRACT_TARGET,step:1000,val:lv.contracts,fmt:v=>n0(v),note:m.contractPct+"% · /510,000"},
