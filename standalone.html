@@ -966,7 +966,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 16:54 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 19:49 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2587,13 +2587,11 @@ const AGENTS_T=[
    {k:"think",t:"M5 rental vouchers (0.8B, 15%) are a low-cost transitional add-on; M6 austerity (−4.0B, 0%) adds no supply.",t_zh:"M5 租赁券(0.8B,15%)可作低成本过渡;M6 财政紧缩(−4.0B,0%)不增加供给。"},
    {k:"out",t:"Recommend Combo #4 — 97% closure, within the fiscal cap, PPP leverages private capital, 6–12-month effect; start M5 vouchers immediately.",t_zh:"推荐 Combo #4——97% 闭合、成本在上限内、PPP 撬动私人资本、6–12 个月生效;M5 租赁券可立刻启动作过渡。"}]},
  {ag:"Fiscal Sustainability Agent",ag_zh:"财政可持续引擎",ic:"﷼",lyr:"L3",io:{in:"Debt, Sakani budget, Vision-2030 pipeline",out:"Net impact SAR 8B · index 72→67"},lines:[
-   {k:"call",t:"Pull sovereign debt, Sakani budget, Vision-2030 pipeline, Brent",t_zh:"拉取主权债务、Sakani 预算、Vision 2030 管线、Brent",ds:["DS-05","DS-11"]},
-   {k:"calc",t:"Public debt SAR 1,150B (27% GDP); +50bps interest on new 1-yr issuance",t_zh:"公债 SAR 1,150B(27% GDP);+50bps 新一年期发行利息",val:"+SAR 5.8B"},
-   {k:"calc",t:"Sakani: weaker demand saves 2.4–3.6B, but most-in-need need extra support",t_zh:"Sakani:需求走弱省 2.4–3.6B,但最需要群体需额外支持",val:"+1.8–2.2B"},
-   {k:"calc",t:"Vision 2030 (SAR 1.3T pipeline) financing cost +3.2–5B; 12% mid-devs at risk",t_zh:"Vision 2030(SAR 1.3T 管线)融资成本 +3.2–5B;12% 中型开发商承压"},
-   {k:"think",t:"Brent at $74.32 — below the $75 breakeven; fiscal space is narrowing",t_zh:"Brent $74.32 —— 低于 $75 盈亏线;财政空间收窄"},
-   {k:"calc",t:"Net fiscal impact (annualized, ±2B); sustainability index 72 → 67",t_zh:"净财政冲击(年化,±2B);可持续指数 72 → 67",val:"≈ SAR 8B"},
-   {k:"out",t:"Manageable within buffers if Brent holds; below $70 → trigger contingency",t_zh:"若 Brent 守住则缓冲内可控;跌破 $70 → 触发应急"}]},
+   {k:"think",t:"Let me add the fiscal view. Everyone discussed micro and meso impacts — I need to put this into the fiscal frame.",t_zh:"我来从财政角度补充一下。大家刚才讨论的都是微观和中观层面的影响,但我需要把这个放到财政框架里看。"},
+   {k:"calc",t:"First, sovereign debt: public debt is SAR 1,150B (27% of GDP) — not high. But +50bps means new 1-yr issuance pays ~SAR 5.8B more interest — about 15% of Sakani's annual budget.",t_zh:"首先,主权债务:沙特公债现在是 SAR 1,150B,占 GDP 27%,还不算高。但 +50bps 意味着新的一年期发行要多付约 SAR 5.8B 利息——相当于 Sakani 年预算的 15%。",val:"+SAR 5.8B"},
+   {k:"calc",t:"Second, a Sakani paradox: weaker demand should cut subsidy spend (save 2.4–3.6B), but the most-in-need need MORE support or they're priced out — extra 1.8–2.2B.",t_zh:"其次,Sakani 补贴体系面临矛盾:需求收缩本应让补贴下降(省 SAR 2.4–3.6B),但最需要群体反而需要更多补贴支持,否则被彻底挤出市场——额外支出 SAR 1.8–2.2B。",val:"+1.8–2.2B"},
+   {k:"calc",t:"Third, Vision 2030 (ROSHN/NEOM/Red Sea, SAR 1.3T committed): financing cost up SAR 3.2–5B; though sovereign-backed, ~12% of mid-size developers may not survive (margins under 5%).",t_zh:"第三,Vision 2030(ROSHN、NEOM、红海新城,SAR 1.3T 已承诺管线):融资成本上升 SAR 3.2–5B;虽有主权担保,但约 12% 中型开发商可能扛不住(利润率掉到 5% 以下)。"},
+   {k:"out",t:"All in, net fiscal impact ≈ SAR 8B/yr (±2B); sustainability index 72 → 67. Not critical — but with Brent at $74.32 (below the $75 breakeven), fiscal space is narrowing.",t_zh:"综合来看,我估算财政净冲击大概 SAR 8B(年化,±2B);财政可持续性指数从 72 降到 67。还不算危急——但加上 Brent 在 $74.32(低于 $75 盈亏线),财政空间确实在收窄。",val:"≈ SAR 8B · 72→67"}]},
  {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,io:{in:"Draft recommendation",out:"Awaiting human approval"},lines:[
    {k:"think",t:"Severity = RED and gap > 30% → above autonomous scope",t_zh:"严重度 = 红色 且 缺口 > 30% → 超出自治范围"},
    {k:"think",t:"Fiscal exposure > SAR 2B → finance-continuity review required",t_zh:"财政敞口 > SAR 20 亿 → 需要财政延续性复核"},
