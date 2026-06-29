@@ -287,7 +287,9 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .ai-brief-actions,.preset-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .preset-row{margin-top:14px}
 .ai-brief-side{min-width:0}
-.theater.theater-fiscal{grid-template-columns:212px minmax(0,1fr) 340px}
+.theater.theater-fiscal{grid-template-columns:212px minmax(0,1fr) 340px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 232px)}
+.theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow-y:auto;min-height:0;max-height:100%}
+.theater.theater-fiscal>.fiscal-card{position:static;top:auto}
 .reasoning-status{display:grid;grid-template-columns:1.05fr 1.8fr .65fr 1.1fr;gap:0;margin-bottom:14px;overflow:hidden}
 .rs-cell{padding:11px 14px;border-inline-start:1px solid var(--line);min-width:0}
 .rs-cell:first-child{border-inline-start:none}
@@ -315,7 +317,8 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .output-stack span{color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
 .output-stack b{text-align:end;font-size:11.5px}
 @media(max-width:1200px){
-  .theater.theater-fiscal{grid-template-columns:200px minmax(0,1fr)}
+  .theater.theater-fiscal{grid-template-columns:200px minmax(0,1fr);height:auto}
+  .theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow:visible;max-height:none}
   .theater.theater-fiscal>.fiscal-card{grid-column:1/-1;position:relative;top:auto}
   .reasoning-status{grid-template-columns:1fr 1fr}
 }
@@ -962,7 +965,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 10:07 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 14:09 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2537,12 +2540,11 @@ function downloadBriefing(){
 const DS11=[["DS-01","Sakani"],["DS-02","Wafi"],["DS-03","IDMS"],["DS-04","Ejari"],["DS-05","MoF/Budget"],["DS-06","SEC"],["DS-07","MOJ Price"],["DS-08","GASTAT"],["DS-09","Private Mkt"],["DS-10","Geo/GIS"],["DS-11","Banks/Loans"]];
 const AGENTS_T=[
  {ag:"Orchestrator Agent",ag_zh:"编排 Agent",ic:"✦",lyr:"L3",io:{in:"User query (NL)",out:"Routed task + plan"},lines:[
-   {k:"think",t:"Parse intent: how big is the Riyadh Seg-A gap, and how to close it?",t_zh:"解析意图:利雅得 A 段供需缺口有多大?该怎么补?"},
-   {k:"think",t:"Decompose → (a) size the gap, (b) attribute macro vs policy, (c) rank actions",t_zh:"拆解为三问 →(a)缺口多大,(b)宏观 vs 政策归因,(c)处方排序"},
-   {k:"call",t:"Query model registry · match capability → engine",t_zh:"查询模型注册表 · 能力匹配 → 引擎",ds:[]},
-   {k:"think",t:"Best match: Supply-Demand Balancing (UC-03); coverage = Total Market",t_zh:"最佳匹配:Supply-Demand Balancing (UC-03);覆盖 = 全市场"},
-   {k:"think",t:"Routing confidence 92% ≥ 70% threshold → auto-run, no escalation",t_zh:"路由置信 92% ≥ 70% 阈值 → 自动执行,无需升级"},
-   {k:"out",t:"Routed; co-scheduled Demand Intelligence & Conversion engines",t_zh:"已路由,并预约需求智能 / 转化吸纳引擎协同"}]},
+   {k:"think",t:"Let me understand the core first… an unexpected +50bps is a monetary-policy shock.",t_zh:"让我先理解这个问题的核心……SAMA 突然加息 50 个基点,属于非预期的货币政策冲击。"},
+   {k:"think",t:"I'll decompose it: macro transmission, housing-segment impact, supply-demand imbalance, fiscal sustainability, and feasible policy response.",t_zh:"我从几个维度拆解:宏观传导路径、住房市场细分影响、供需失衡变化、财政可持续性,以及可行的政策应对。"},
+   {k:"call",t:"This needs several BRD agents — Macro, Demand, Balancing, Fiscal, Policy. Query model registry → match capability.",t_zh:"这涉及多个 BRD Agent 协作——Macro、Demand、Balancing、Fiscal、Policy。查询模型注册表 → 能力匹配。",ds:[]},
+   {k:"think",t:"Routing confidence 92% ≥ 70% threshold → auto-run, no escalation.",t_zh:"路由置信 92% ≥ 70% 阈值 → 自动执行,无需升级。"},
+   {k:"out",t:"I'll wake Macro Agent first to build the rate-transmission frame, and parallelize the rest.",t_zh:"先唤醒 Macro Agent 建立利率传导的基础框架,其余并行+串行协同。"}]},
  {ag:"Data Quality Monitor",ag_zh:"数据质量监控",ic:"◉",lyr:"L2",io:{in:"11 raw sources",out:"Validated dataset · conf 88%"},lines:[
    {k:"call",t:"Pull 11 data sources in parallel",t_zh:"并行拉取 11 个数据源",ds:["DS-01","DS-02","DS-03","DS-04","DS-05","DS-06","DS-07","DS-08","DS-09","DS-10","DS-11"]},
    {k:"think",t:"Check completeness — 11/11 above 95% record coverage",t_zh:"完整性检查 —— 11/11 记录覆盖率 > 95%"},
@@ -2551,39 +2553,38 @@ const AGENTS_T=[
    {k:"calc",t:"Data confidence = min(source confidences)",t_zh:"数据置信 = min(各源置信)",val:"88%"},
    {k:"out",t:"11/11 passed (Private Mkt recovered) — cleared into analysis",t_zh:"11/11 通过(Private Mkt 已恢复)— 放行进入分析"}]},
  {ag:"Macro-Economic Agent",ag_zh:"宏观经济引擎",ic:"🌐",lyr:"L3",io:{in:"Rates, FX peg, demographics",out:"Transmission frame · r=−0.85"},lines:[
-   {k:"think",t:"Riyal pegged to USD at 3.75 → SAMA largely imports Fed policy; +50bps follows the global tightening cycle, not domestic overheating",t_zh:"里亚尔与美元挂钩 3.75 → SAMA 基本进口美联储政策;+50bps 跟随全球紧缩周期,而非国内过热"},
-   {k:"calc",t:"Mortgage stock SAR 680B × 78% floating-rate = exposed book",t_zh:"按揭存量 SAR 680B × 78% 浮动利率 = 敞口",val:"≈ SAR 530B"},
-   {k:"calc",t:"Pass-through: SAIBOR 3M reacts → mortgage rate uplift",t_zh:"传导:SAIBOR 3M 反应 → 按揭利率上浮",val:"+35–50bps"},
-   {k:"calc",t:"Pearson r (repo rate ↔ housing demand), 2016–2026 panel · ~2-quarter lag",t_zh:"Pearson r(回购利率 ↔ 住房需求),2016–2026 面板 · 约 2 季滞后",val:"−0.85"},
-   {k:"think",t:"Population vs demand r=+0.92 hedges over 3–5y — cannot offset the near-term shock",t_zh:"人口与需求 r=+0.92 在 3–5 年对冲 —— 短期无法抵消本次冲击"},
-   {k:"out",t:"Transmission frame set; rate shock dominates short term",t_zh:"传导框架确立;短期利率冲击主导"}]},
+   {k:"think",t:"On it. Saudi has a special feature — the riyal is pegged to USD at 3.75, so SAMA's policy space is effectively \"imported\" from the Fed. This +50bps largely follows the global tightening cycle, but the domestic cycle isn't synced — we have large Vision-2030 investment demand, not overheating-driven inflation.",t_zh:"收到。沙特有个特殊之处——里亚尔与美元挂钩在 3.75,SAMA 的货币政策空间实际上是被美联储\"进口\"的。这次 +50bps 很大程度是跟随全球紧缩周期,但国内周期并不同步——我们有 Vision 2030 的大规模投资需求,不是过热型通胀。"},
+   {k:"calc",t:"A few key numbers: mortgage stock ≈ SAR 680B, of which 78% is floating-rate. The +50bps passes through fast — SAIBOR 3M reacts immediately and mortgage rates rise ~35–50bps.",t_zh:"说几个关键数字:按揭存量大概 SAR 680B,其中 78% 是浮动利率。+50bps 传导很直接——SAIBOR 3M 立刻反应,按揭利率上浮约 35–50bps。",val:"+35–50bps"},
+   {k:"calc",t:"On 2016–2026 panel data, the Pearson r between the repo rate and housing demand is −0.85 — highly significant — with about a 2-quarter lag.",t_zh:"用 2016–2026 面板数据,SAMA 回购利率与住房需求量的 Pearson r 是 −0.85,统计上非常显著,约有 2 个季度滞后。",val:"r=−0.85"},
+   {k:"think",t:"Interestingly, population growth vs demand is +0.92 — so short term the rate shock dominates, while over 3–5y demographics partly offset it, but never fully (the path dependence is strong).",t_zh:"但有趣的是,人口增长与住房需求的相关性是 +0.92——短期利率冲击主导,中长期人口因素部分对冲,但不会完全抵消(路径依赖很强)。",val:"+0.92"},
+   {k:"out",t:"Transmission frame set; the rate shock dominates the short term.",t_zh:"传导框架确立;短期利率冲击主导。"}]},
  {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",io:{in:"Beneficiary + segment data",out:"Asymmetric shock −2% / −9% / −18%"},lines:[
-   {k:"think",t:"The hit is asymmetric across income groups — calibrate elasticity by segment",t_zh:"冲击对各收入群体不对称 —— 按客群校准弹性"},
-   {k:"calc",t:"High income (SAR 25K+): 40% cash buyers, absorbable → demand shock",t_zh:"高收入(SAR 25K+):40% 现金购房,可吸收 → 需求冲击",val:"−2%"},
-   {k:"calc",t:"Middle (SAR 10–25K): 72% mortgage-dependent, +~SAR 250/mo → demand shock",t_zh:"中收入(SAR 10–25K):72% 依赖按揭,月供 +约 SAR 250 → 需求冲击",val:"−9%"},
-   {k:"calc",t:"Most-in-need (<SAR 10K): 85% mortgage, +SAR 180/mo = 4.2% of income → shock",t_zh:"最需要(<SAR 10K):85% 按揭,月供 +SAR 180 占收入 4.2% → 冲击",val:"−18%"},
-   {k:"think",t:"Squeeze effect: the 18% don't stop buying — they downgrade, raising latent most-in-need demand",t_zh:"挤压效应:这 18% 不是不买,而是降级 —— 最需要群体隐性需求反升"},
-   {k:"out",t:"Selective shock; most-in-need bear disproportionate harm",t_zh:"选择性冲击;最需要群体承受不成比例的伤害"}]},
+   {k:"think",t:"I'll take it. The core issue is that the hit is asymmetric across income groups — I calibrated the elasticity model on Saudi household-survey data.",t_zh:"好的,我接过来。这次的核心是——加息对不同收入群体的打击是不对称的。我根据沙特住户调查数据校准了弹性模型。"},
+   {k:"calc",t:"High income (SAR 25K+): barely affected — 40% pay cash, and +SAR 200–300/mo is absorbable. Demand shock ≈ −2%, negligible.",t_zh:"高收入(月入 SAR 25K 以上):几乎不受影响——40% 现金购房,即便月供多 SAR 200–300 也可吸收。需求冲击约 −2%,可忽略。",val:"−2%"},
+   {k:"calc",t:"Middle (SAR 10–25K): feeling it — 72% mortgage-dependent, +~SAR 250/mo, ~5–7% \"wait and see\". Demand shock ≈ −9%.",t_zh:"中收入(SAR 10–25K):开始有压力——按揭依赖度 72%,月供 +约 SAR 250,约 5–7% 选择\"等等看\",需求冲击约 −9%。",val:"−9%"},
+   {k:"calc",t:"What worries me is the most-in-need (<SAR 10K): 85% mortgage-dependent; +SAR 180/mo is 4.2% of disposable income. Demand shock ≈ −18%.",t_zh:"真正担心的是最需要群体(月入 SAR 10K 以下):85% 依赖按揭,月供 +SAR 180 占其可支配收入的 4.2%,需求冲击约 −18%。",val:"−18%"},
+   {k:"think",t:"Structural catch: that 18% don't stop buying — they downgrade from low-income to most-in-need housing. A squeeze effect that raises latent most-in-need demand instead.",t_zh:"结构性问题:这 18% 不是\"不买房了\",而是从低收入住宅降级到最需要住宅——挤压效应,反而抬高最需要群体的隐性需求。"},
+   {k:"out",t:"Selective shock; the most-in-need bear disproportionate harm.",t_zh:"选择性冲击;最需要群体承受不成比例的伤害。"}]},
  {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",io:{in:"Demand + pipeline",out:"Gap 12,400 · 35% · RED"},lines:[
-   {k:"call",t:"Read supply pipeline — YTD 62,400 / full-year target 78,000",t_zh:"读取供给管线 —— YTD 62,400 / 全年目标 78,000",ds:["DS-03","DS-08"]},
-   {k:"calc",t:"Most-in-need existing gap 12,400 · pipeline coverage 35% (RED, §6.2 threshold 50%)",t_zh:"最需要群体现有缺口 12,400 · 管线覆盖 35%(RED,§6.2 阈值 50%)",val:"12,400 · 35%"},
-   {k:"think",t:"As demand falls 11% the nominal gap shrinks — a statistical illusion (fewer can afford)",t_zh:"需求降 11% 使名义缺口缩小 —— 统计幻觉(买得起的人少了)"},
-   {k:"calc",t:"Latent most-in-need demand rises to ~15,200 units",t_zh:"最需要群体隐性需求升至约 15,200 套",val:"+22%"},
-   {k:"calc",t:"Absorption forecast 43% → 38%",t_zh:"吸收率预测 43% → 38%",val:"RED"},
-   {k:"out",t:"Structural demand deficit — RED early-warning tripped",t_zh:"结构性需求赤字 —— 触发 RED 早期预警"}]},
+   {k:"think",t:"Hold on — hearing Demand's analysis, this is worse than I expected. Let me compute directly.",t_zh:"等一下,我听到 Demand 的分析了,这比预想严重。让我直接算一下。"},
+   {k:"call",t:"Current pipeline is YTD 62,400 units (full-year target 78,000).",t_zh:"当前供给管线 YTD 62,400 套(全年目标 78,000)。",ds:["DS-03","DS-08"]},
+   {k:"calc",t:"Most-in-need existing gap 12,400, pipeline coverage only 35% — already RED (BRD §6.2 threshold 50%).",t_zh:"最需要群体现有缺口 12,400 套,管线覆盖率仅 35%——这本身已是 RED(BRD §6.2 阈值 50%)。",val:"12,400 · 35%"},
+   {k:"think",t:"If Riyadh demand falls 11%, nominal effective demand ≈ 68,400 and the gap looks smaller — but that's a dangerous statistical illusion: it shrank because fewer can afford to buy.",t_zh:"若利雅得总需求下降 11%,名义有效需求约 68,400 套,表面缺口缩小——但这是危险的统计幻觉:缩小是因为\"买得起房的人少了\"。"},
+   {k:"calc",t:"What to watch: latent most-in-need demand rises to ~15,200 units, +22% over the original.",t_zh:"真正要警惕的:最需要群体隐性需求增加到约 15,200 套,比原来多 +22%。",val:"15,200 · +22%"},
+   {k:"think",t:"Worse, these needs are real but unmet at current conditions — a \"structural demand deficit\". Absorption falls 43% → 38%, tripping my RED alert.",t_zh:"更糟的是这些需求是\"有效的\"但在当前条件下无法实现——结构性需求赤字。吸收率从 43% 跌到 38%,已触发 RED 预警。",val:"43%→38%"},
+   {k:"out",t:"Structural demand deficit — RED early-warning tripped.",t_zh:"结构性需求赤字 —— 触发 RED 早期预警。"}]},
  {ag:"Conversion & Absorption Agent",ag_zh:"转化吸纳引擎",ic:"🎯",lyr:"L3",io:{in:"Pipeline + conversion rates",out:"Early-warning · residual gap 6,200"},lines:[
    {k:"calc",t:"Seg A conversion 52% vs Seg E 78%",t_zh:"Seg A 转化率 52% vs Seg E 78%",val:"−26pp"},
    {k:"think",t:"Root cause: long approval cycles · thin developer margins · cancellation risk",t_zh:"根因:审批周期长 · 开发商利润薄 · 取消风险高"},
    {k:"calc",t:"Even if all 23 Seg-A projects hit 100%: 12,900 − 19,100",t_zh:"即便 23 个 A 段项目 100% 兑现:12,900 − 19,100",val:"gap 6,200"},
    {k:"think",t:"Conclusion: pipeline acceleration alone can't close it",t_zh:"结论:仅靠加速管线无法补足"},
    {k:"out",t:"Must add new supply — triggers early-warning to Planning",t_zh:"必须新增供给 —— 触发早期预警至规划"}]},
- {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"⚖",lyr:"L3",io:{in:"Gap + 6 measures",out:"Ranked toolkit · M1+M2+M3"},lines:[
-   {k:"think",t:"Run causal-chain simulation over six measures (UC-02→04→06)",t_zh:"对六项措施跑因果链模拟(UC-02→04→06)"},
-   {k:"calc",t:"M1 developer subsidy +15% → +3,100/yr · SAR 775/unit",t_zh:"M1 开发商补贴 +15% → +3,100 套/年 · 每套 SAR 775",val:"35%→85%"},
-   {k:"calc",t:"M2 land release −40% → +2,000/yr",t_zh:"M2 土地释放 −40% → +2,000 套/年",val:"+12pp"},
-   {k:"calc",t:"M6 lower down-payment → demand +18%, no new supply",t_zh:"M6 降首付 → 需求 +18% 无新增供给",val:"35%→38% ✕"},
-   {k:"think",t:"M6 is counter-productive in a supply-constrained market → reject",t_zh:"M6 在供给受限市场适得其反 → 否决"},
-   {k:"out",t:"Recommend M1+M2+M3 combo; reject M6",t_zh:"推荐 M1+M2+M3 组合;反对 M6"}]},
+ {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"🛡️",lyr:"L3",io:{in:"Gap + fiscal cap SAR 3.2B",out:"Recommend Combo #4 · 97%"},lines:[
+   {k:"think",t:"Systematic simulation. Constraint: fiscal cap SAR 3.2B (Fiscal's available space); objective: maximize most-in-need gap closure without hurting the Vision-2030 core pipeline.",t_zh:"做系统性政策模拟。约束:财政上限设为 SAR 3.2B(Fiscal 给的可用空间);目标:最需要群体缺口闭合率最大化,且不影响 Vision 2030 核心管线。"},
+   {k:"calc",t:"Monte-Carlo over 6 options — M1 mortgage subsidy (1.8B, 28%), M2 Sakani expansion (2.4B, 34%), M3 developer incentive (1.2B, 22%).",t_zh:"对 6 套方案跑蒙特卡洛——M1 按揭补贴(1.8B,28%)、M2 Sakani 扩容(2.4B,34%)、M3 开发商激励(1.2B,22%)。"},
+   {k:"calc",t:"M4 Combo = M2 + M3 + 5,000-unit PPP fast-track: cost SAR 3.2B, gap closure 97%.",t_zh:"M4 组合 = M2 + M3 + 5,000 套 PPP 快速通道:成本 SAR 3.2B,缺口闭合 97%。",val:"97% · SAR 3.2B"},
+   {k:"think",t:"M5 rental vouchers (0.8B, 15%) are a low-cost transitional add-on; M6 austerity (−4.0B, 0%) adds no supply.",t_zh:"M5 租赁券(0.8B,15%)可作低成本过渡;M6 财政紧缩(−4.0B,0%)不增加供给。"},
+   {k:"out",t:"Recommend Combo #4 — 97% closure, within the fiscal cap, PPP leverages private capital, 6–12-month effect; start M5 vouchers immediately.",t_zh:"推荐 Combo #4——97% 闭合、成本在上限内、PPP 撬动私人资本、6–12 个月生效;M5 租赁券可立刻启动作过渡。"}]},
  {ag:"Fiscal Sustainability Agent",ag_zh:"财政可持续引擎",ic:"﷼",lyr:"L3",io:{in:"Debt, Sakani budget, Vision-2030 pipeline",out:"Net impact SAR 8B · index 72→67"},lines:[
    {k:"call",t:"Pull sovereign debt, Sakani budget, Vision-2030 pipeline, Brent",t_zh:"拉取主权债务、Sakani 预算、Vision 2030 管线、Brent",ds:["DS-05","DS-11"]},
    {k:"calc",t:"Public debt SAR 1,150B (27% GDP); +50bps interest on new 1-yr issuance",t_zh:"公债 SAR 1,150B(27% GDP);+50bps 新一年期发行利息",val:"+SAR 5.8B"},
