@@ -1812,16 +1812,18 @@ function ChatAnalysis(){
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
           <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
           <p>{L("Ask in natural language — the Orchestrator routes to the right engines, exposes the calculation chain, and packages the output for CoPilot / AI_H_03.","用自然语言提问 —— 编排器会路由到对应引擎,展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
-          <div className="ask-row">
-            <span className="ask-ic">✦</span>
-            <input className="ask-input" value={q} placeholder={L("Ask the data — e.g. how big is the Riyadh Seg-A gap, and how to close it?","智能问数 —— 例如:利雅得 A 段供需缺口有多大?该怎么补?")}
-              onChange={e=>setQ(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")start();}}/>
-            <button className="btn" onClick={start}>➤ {L("Ask","提问")}</button>
-          </div>
           <div className="preset-row">
             <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{L("Try","试试")}:</span>
             {ex.map((e,i)=><button key={i} className="preset" onClick={()=>{setQ(e);start();}}>{e}</button>)}
             <button className="btn secondary sm" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
+          </div>
+          <div className="ask-dock">
+            <div className="ask-row">
+              <span className="ask-ic">✦</span>
+              <input className="ask-input" value={q} placeholder={L("Ask the data — e.g. how big is the Riyadh Seg-A gap, and how to close it?","智能问数 —— 例如:利雅得 A 段供需缺口有多大?该怎么补?")}
+                onChange={e=>setQ(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")start();}}/>
+              <button className="btn" onClick={start}>➤ {L("Ask","提问")}</button>
+            </div>
           </div>
         </div>
         <div className="ai-brief-side">

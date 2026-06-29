@@ -333,8 +333,10 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .gate-fiscal{font-size:12.5px;margin:2px 0 12px;padding:9px 11px;border-radius:8px;line-height:1.5}
 .gate-fiscal.pass{background:var(--green-50);color:var(--green-dark)}
 .gate-fiscal.fail{background:#fdecea;color:var(--danger)}
-/* Live demo case · ask box */
-.ask-row{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;background:#fff;margin:14px 0 10px;transition:border-color .15s,box-shadow .15s}
+/* Live demo case · ask box docked at the bottom of the card */
+.ai-brief-main{display:flex;flex-direction:column}
+.ask-dock{margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
+.ask-row{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;background:#fff;transition:border-color .15s,box-shadow .15s}
 .ask-row:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-100)}
 .ask-row .ask-ic{color:#4f46e5;font-size:16px;flex:0 0 auto}
 .ask-row .ask-input{flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:14px;min-width:0}
