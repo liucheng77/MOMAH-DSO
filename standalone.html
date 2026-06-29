@@ -966,7 +966,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 19:49 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 19:52 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2597,10 +2597,13 @@ const AGENTS_T=[
    {k:"think",t:"Fiscal exposure > SAR 2B → finance-continuity review required",t_zh:"财政敞口 > SAR 20 亿 → 需要财政延续性复核"},
    {k:"think",t:"Guardrails: HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31",t_zh:"护栏:HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31"},
    {k:"think",t:"Hold output as draft → requires Planning Manager approval",t_zh:"产出保持草稿 → 需 Planning Manager 批准"}]},
- {ag:"Output · Dispatch",ag_zh:"产出与分发",ic:"✓",lyr:"L5",io:{in:"Approved recommendation",out:"PDF · alert · SSOT push"},lines:[
-   {k:"out",t:"Generate gap briefing (PDF) + early-warning",t_zh:"生成缺口简报(PDF)+ 早期预警"},
-   {k:"out",t:"Write audit log (user / time / reason)",t_zh:"写入审计日志(用户 / 时间 / 原因)"},
-   {k:"out",t:"Push SSOT → AI_H_03 / CoPilot",t_zh:"SSOT 接口推送 → AI_H_03 / CoPilot"}]},
+ {ag:"Orchestrator · Final Output",ag_zh:"协调器 · 最终输出",ic:"✦",lyr:"L5",io:{in:"Approved recommendation",out:"Briefing · alert · SSOT"},lines:[
+   {k:"think",t:"Connecting the threads: Macro showed transmission is real (r=−0.85); Demand showed the shock is selective (−18% vs −2%); Balance revealed the paradox (nominal gap shrinks, structural gap worsens); Fiscal showed space is squeezed from both ends. A rate cut can't fix this — we need a structural toolkit.",t_zh:"把几条线串起来:Macro 显示传导真实(r=−0.85);Demand 显示冲击有选择性(−18% vs −2%);Balance 揭示悖论(名义缺口缩小、结构性缺口恶化);Fiscal 显示财政两头受压。降息无法解决——需要结构性工具箱。"},
+   {k:"out",t:"Core conclusion: a localized shock — negligible for high income, mild for middle, structural for the most-in-need. Don't read the shrinking nominal gap; watch the worsening gap structure.",t_zh:"核心结论:这是局部冲击——高收入几乎无影响,中收入温和,但对最需要群体是结构性的。不要只看名义缺口缩小,要关注缺口结构的恶化。"},
+   {k:"out",t:"Fiscal: the SAR 8B net hit is manageable within buffers — provided Brent doesn't keep falling; below $70, trigger contingency immediately.",t_zh:"财政:SAR 8B 净冲击在缓冲内可控,但前提是 Brent 不再下跌;跌破 $70 须立即触发应急。"},
+   {k:"out",t:"Policy path: Combo #4 (Sakani + developer + PPP) — affordable, effective, fast to start.",t_zh:"政策路径:Combo #4(Sakani + 开发商 + PPP)——成本可控、效果显著、可快速启动。"},
+   {k:"out",t:"Watchlist: ① Brent $70 line ② absorption 40% RED ③ developer margin 5% floor — any breach escalates the response.",t_zh:"监控清单:① Brent $70 警戒线 ② 吸收率 40% RED ③ 开发商利润率 5% 底线——任一突破即升级响应。"},
+   {k:"out",t:"Generate briefing (PDF) + early-warning → audit log → SSOT push to AI_H_03 / CoPilot.",t_zh:"生成简报(PDF)+ 早期预警 → 写入审计日志 → SSOT 推送 AI_H_03 / CoPilot。"}]},
 ];
 
 // Orchestrator status — fixed-width element in the chat header. Idle: badge + grey nodes + "auto";
