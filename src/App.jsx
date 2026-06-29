@@ -1776,6 +1776,7 @@ function ChatAnalysis(){
   const [flow,setFlow]=useState(false);
   const [flv,setFlv]=useState(FISCAL_DEFAULTS);
   const fres=computeFiscalContinuity(flv);
+  const [q,setQ]=useState("");
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
@@ -1810,13 +1811,17 @@ function ChatAnalysis(){
         <div className="ai-brief-main card pad">
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
           <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
-          <p>{L("The demo now starts from an AI investigation, not a report export. Watch the Orchestrator call agents, expose the calculation chain, and package the output for CoPilot / AI_H_03.","演示从 AI 调查开始,不是从导出报告开始。观看编排器调用 Agent、展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
-          <div className="ai-brief-actions">
-            <button className="btn" onClick={start}>▶ {L("Run AI reasoning theater","运行 AI 推理剧场")}</button>
-            <button className="btn secondary" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
+          <p>{L("Ask in natural language — the Orchestrator routes to the right engines, exposes the calculation chain, and packages the output for CoPilot / AI_H_03.","用自然语言提问 —— 编排器会路由到对应引擎,展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
+          <div className="ask-row">
+            <span className="ask-ic">✦</span>
+            <input className="ask-input" value={q} placeholder={L("Ask the data — e.g. how big is the Riyadh Seg-A gap, and how to close it?","智能问数 —— 例如:利雅得 A 段供需缺口有多大?该怎么补?")}
+              onChange={e=>setQ(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")start();}}/>
+            <button className="btn" onClick={start}>➤ {L("Ask","提问")}</button>
           </div>
           <div className="preset-row">
-            {ex.map((e,i)=><button key={i} className="preset" onClick={start}>{e}</button>)}
+            <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{L("Try","试试")}:</span>
+            {ex.map((e,i)=><button key={i} className="preset" onClick={()=>{setQ(e);start();}}>{e}</button>)}
+            <button className="btn secondary sm" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
           </div>
         </div>
         <div className="ai-brief-side">

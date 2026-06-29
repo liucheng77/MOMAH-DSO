@@ -344,6 +344,12 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .gate-fiscal{font-size:12.5px;margin:2px 0 12px;padding:9px 11px;border-radius:8px;line-height:1.5}
 .gate-fiscal.pass{background:var(--green-50);color:var(--green-dark)}
 .gate-fiscal.fail{background:#fdecea;color:var(--danger)}
+/* Live demo case · ask box */
+.ask-row{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;background:#fff;margin:14px 0 10px;transition:border-color .15s,box-shadow .15s}
+.ask-row:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-100)}
+.ask-row .ask-ic{color:#4f46e5;font-size:16px;flex:0 0 auto}
+.ask-row .ask-input{flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:14px;min-width:0}
+.ask-row .btn{flex:0 0 auto}
 .calc-chain{display:grid;gap:7px}
 .calc-chain div{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;border:1px dashed #d8def7;border-radius:8px;padding:8px;background:#f8f9ff;font-size:11.8px;line-height:1.45}
 .calc-chain b{width:22px;height:22px;border-radius:7px;background:#4f46e5;color:#fff;display:grid;place-items:center;font-size:11px}
@@ -1001,7 +1007,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:35 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:38 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2765,6 +2771,7 @@ function ChatAnalysis(){
   const [flow,setFlow]=useState(false);
   const [flv,setFlv]=useState(FISCAL_DEFAULTS);
   const fres=computeFiscalContinuity(flv);
+  const [q,setQ]=useState("");
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
@@ -2799,13 +2806,17 @@ function ChatAnalysis(){
         <div className="ai-brief-main card pad">
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
           <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
-          <p>{L("The demo now starts from an AI investigation, not a report export. Watch the Orchestrator call agents, expose the calculation chain, and package the output for CoPilot / AI_H_03.","演示从 AI 调查开始,不是从导出报告开始。观看编排器调用 Agent、展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
-          <div className="ai-brief-actions">
-            <button className="btn" onClick={start}>▶ {L("Run AI reasoning theater","运行 AI 推理剧场")}</button>
-            <button className="btn secondary" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
+          <p>{L("Ask in natural language — the Orchestrator routes to the right engines, exposes the calculation chain, and packages the output for CoPilot / AI_H_03.","用自然语言提问 —— 编排器会路由到对应引擎,展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
+          <div className="ask-row">
+            <span className="ask-ic">✦</span>
+            <input className="ask-input" value={q} placeholder={L("Ask the data — e.g. how big is the Riyadh Seg-A gap, and how to close it?","智能问数 —— 例如:利雅得 A 段供需缺口有多大?该怎么补?")}
+              onChange={e=>setQ(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")start();}}/>
+            <button className="btn" onClick={start}>➤ {L("Ask","提问")}</button>
           </div>
           <div className="preset-row">
-            {ex.map((e,i)=><button key={i} className="preset" onClick={start}>{e}</button>)}
+            <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{L("Try","试试")}:</span>
+            {ex.map((e,i)=><button key={i} className="preset" onClick={()=>{setQ(e);start();}}>{e}</button>)}
+            <button className="btn secondary sm" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
           </div>
         </div>
         <div className="ai-brief-side">
