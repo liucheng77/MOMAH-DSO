@@ -305,7 +305,7 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .ai-brief-actions,.preset-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .preset-row{margin-top:14px}
 .ai-brief-side{min-width:0}
-.theater.theater-fiscal{grid-template-columns:212px minmax(0,1fr) 340px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 232px)}
+.theater.theater-fiscal{grid-template-columns:340px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 232px)}
 .theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow-y:auto;min-height:0;max-height:100%}
 .theater.theater-fiscal>.fiscal-card{position:static;top:auto}
 .reasoning-status{display:grid;grid-template-columns:1.05fr 1.8fr .65fr 1.1fr;gap:0;margin-bottom:14px;overflow:hidden}

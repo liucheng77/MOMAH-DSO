@@ -316,7 +316,7 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .ai-brief-actions,.preset-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .preset-row{margin-top:14px}
 .ai-brief-side{min-width:0}
-.theater.theater-fiscal{grid-template-columns:212px minmax(0,1fr) 340px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 232px)}
+.theater.theater-fiscal{grid-template-columns:340px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 232px)}
 .theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow-y:auto;min-height:0;max-height:100%}
 .theater.theater-fiscal>.fiscal-card{position:static;top:auto}
 .reasoning-status{display:grid;grid-template-columns:1.05fr 1.8fr .65fr 1.1fr;gap:0;margin-bottom:14px;overflow:hidden}
@@ -1009,7 +1009,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:46 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 20:55 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2868,7 +2868,7 @@ function ChatAnalysis(){
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
     <div className="theater theater-fiscal">
-      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
+      <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
       <div className="tstream">
         {cards}
         {ai.gate&&<div className="gate-card">
@@ -2889,7 +2889,7 @@ function ChatAnalysis(){
         </div>}
         <div ref={endRef} style={{height:1}}/>
       </div>
-      <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
+      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
     </div>
     {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
   </div>);

@@ -1871,7 +1871,7 @@ function ChatAnalysis(){
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
     <div className="theater theater-fiscal">
-      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
+      <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
       <div className="tstream">
         {cards}
         {ai.gate&&<div className="gate-card">
@@ -1892,7 +1892,7 @@ function ChatAnalysis(){
         </div>}
         <div ref={endRef} style={{height:1}}/>
       </div>
-      <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
+      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
     </div>
     {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
   </div>);
