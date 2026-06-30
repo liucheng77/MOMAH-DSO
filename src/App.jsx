@@ -693,6 +693,18 @@ Object.assign(I18N.ar, {
   dev_top:"مطوّرو الفئة A", tiers_short:"المستوى ١ تفاوض الآن · ٢ دعم +١٥٪ · ٣ مراقبة",
   downloadBrief:"تنزيل الموجز (PDF)", genBrief2:"توليد الموجز الوزاري",
   y1impact:"أثر السنة ١ (الأساس)", dominant:"المحرّك المهيمن",
+  f_macro:"سعر الفائدة هو المحرّك المهيمن (السعر R²=٠٫٨١، الطلب R²=٠٫٧٣). الحالة الأساسية: طلب الرياض −٧٫٢٪ في السنة ١.",
+  f_demand:"تنمو الشريحة A بمعدّل +١١٪ سنوياً بينما تتقلّص B–D — هجرة قسرية ١٨٪ من B إلى A (٢١٠٠ أسرة)، وعبء دعم +٢٢٪.",
+  f_gap:"عدم تطابق المنتج مع السوق: الرياض الشريحة A −١٢٤٠٠، الشرقية الشريحة B −٨٧٠٠؛ الشريحتان D–E بفائض.",
+  f_plan:"خط مشاريع الشريحة A يتحوّل بنسبة ٥٢٪ فقط → تغطية فجوة ٣٥٪. وحده «مطوّرو الفئة A + الدعم» يبلغ ٨٥٪.",
+  f_dev:"٣ مطوّرين من الفئة A (الماجد ٩٢، إسكان الرياض ٨٨، وطن ٨٦) ≈ ٤٢٠٠ وحدة/سنة — نحو نصف الفجوة.",
+  f_policy:"السياسة A (دعم المطوّرين) تسدّ الفجوة إلى ٨٥٪؛ السياسة B (خفض الدفعة الأولى) تزيدها سوءاً إلى ٣٨٪.",
+  cf1:"طلب الرياض −١٤٪ (متشائم) / −٧٪ (أساسي) في السنة ١.",
+  cf2:"١٨٪ من أسر الشريحة B تنتقل إلى A — عبء دعم +٢٢٪ (١٫٨ مليار ريال).",
+  cf3:"فجوة الشريحة A بالرياض ١٢٤٠٠ وحدة؛ خط المشاريع يغطّي ٣٥٪ فقط.",
+  cf4:"تحويل الشريحة A ٥٢٪ مقابل ٧٨٪ للشريحة E.",
+  cf5:"٣ مطوّرين من الفئة A يمكنهم سدّ ~٥٠٪ من الفجوة.",
+  cf6:"نوصي بدعم مطوّرين +١٥٪؛ خفض الدفعة الأولى يزيد الفجوة سوءاً.",
 });
 
 /* i18n for the data-quality card + extra figures */
@@ -1652,8 +1664,8 @@ const AGENTS_T=[
    {k:"out",t:"Recommend Combo #4 — 97% closure, within the plan's delivery budget, PPP leverages private capital, 6–12-month effect; start M5 vouchers immediately.",t_zh:"推荐 Combo #4——97% 闭合、成本在方案交付预算内、PPP 撬动私人资本、6–12 个月生效;M5 租赁券可立刻启动作过渡。"}]},
  {ag:"Financial Sustainability (derived)",ag_zh:"财务可持续性(衍生结果)",ic:"♻️",lyr:"derived",io:{in:"Closed gap + matched supply",out:"Self-funding loop note"},lines:[
    {k:"think",t:"Note: financial sustainability isn't a separate goal — it's a natural by-product of closing the supply-demand gap. The lever is supply-demand matching (raise revenue, cut cost).",t_zh:"提示:财务可持续性不是独立目标,而是供需缺口闭合后的**衍生结果**——抓手是供需匹配(开源节流)。"},
-   {k:"out",t:"Revenue side (开源): demand-targeted supply gets absorbed → sales revenue → revenue feeds subsidies → positive cash cycle.",t_zh:"开源:按需求定向补充的供给被去化 → 产生销售收入 → 收入反哺补贴 → 正向资金循环。"},
-   {k:"out",t:"Cost side (节流): unsold supply keeps incurring maintenance; once de-stocked, maintenance & cost transfer to owners → operating cost drops.",t_zh:"节流:未售供给持续产生维护开支;去化后维护责任与成本转移至业主 → 自身运营成本下降。"},
+   {k:"out",t:"Revenue side: demand-targeted supply gets absorbed → sales revenue → revenue feeds subsidies → positive cash cycle.",t_zh:"开源:按需求定向补充的供给被去化 → 产生销售收入 → 收入反哺补贴 → 正向资金循环。"},
+   {k:"out",t:"Cost side: unsold supply keeps incurring maintenance; once de-stocked, maintenance & cost transfer to owners → operating cost drops.",t_zh:"节流:未售供给持续产生维护开支;去化后维护责任与成本转移至业主 → 自身运营成本下降。"},
    {k:"out",t:"So once the gap closes, sustainability improves on its own — a derived result. Fund size / funding gap / gap-filling plans are the DSS system's job, out of DSO scope.",t_zh:"因此缺口一旦闭合,财务可持续性自然改善——属衍生结论。资金体量 / 缺口 / 补缺方案由 DSS 系统负责,不在 DSO 范围。"}]},
  {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,io:{in:"Draft recommendation",out:"Awaiting human approval"},lines:[
    {k:"think",t:"Gap coverage 35% < 50% RED threshold → above autonomous scope",t_zh:"缺口覆盖 35% < 50% 红线阈值 → 超出自治范围"},
@@ -1664,7 +1676,7 @@ const AGENTS_T=[
    {k:"think",t:"Connecting the threads: the core question is how to CLOSE the Seg-A supply-demand gap and what actions to execute. Demand → gap → conversion → supply plan → measures all converge on a closure plan.",t_zh:"把几条线串起来:核心问题是**如何闭合 A 段供需缺口、要执行哪些动作**。需求 → 缺口 → 转化 → 供给计划 → 措施,最终汇成一份缺口闭合方案。"},
    {k:"out",t:"Core conclusion (gap-closure): Seg-A gap = 12,400 units, coverage 35% (RED). Close it via demand-matched supply — 3-yr plan adds 6,200 net-new units across 3 priority clusters; M1+M2+M3 + PPP lift closure 35% → 97%.",t_zh:"核心结论(缺口闭合):A 段缺口 12,400 套、覆盖 35%(红)。以需求匹配的供给闭合——3 年计划净新增 6,200 套、布 3 个优先组团;M1+M2+M3 + PPP 把闭合率从 35% 拉到 97%。"},
    {k:"out",t:"Actions to execute: engage 3 A-grade developers, +15% developer subsidy, release −40% land, 5,000-unit PPP fast-track, expedite permits; do NOT cut down-payment (worsens the gap).",t_zh:"需执行的动作:对接 3 家 A 级开发商、开发商补贴 +15%、土地释放 −40%、5,000 套 PPP 快速通道、加快审批;不要降首付(会恶化缺口)。"},
-   {k:"out",t:"Derived result: once the gap closes, matched supply is absorbed → sales revenue feeds subsidies (开源) and de-stocking cuts maintenance cost (节流) → financial sustainability improves on its own.",t_zh:"衍生结果:缺口闭合后,匹配的供给被去化 → 销售收入反哺补贴(开源)、去化降低维护成本(节流)→ 财务可持续性自然改善。"},
+   {k:"out",t:"Derived result: once the gap closes, matched supply is absorbed → sales revenue feeds subsidies and de-stocking cuts maintenance cost → financial sustainability improves on its own.",t_zh:"衍生结果:缺口闭合后,匹配的供给被去化 → 销售收入反哺补贴(开源)、去化降低维护成本(节流)→ 财务可持续性自然改善。"},
    {k:"out",t:"Core output = data, not a report: gap + closure plan + actions as a structured SSOT payload → pushed to DSS / AI_H_03 / CoPilot (this front-end is just a display layer).",t_zh:"核心产出是**数据**而非报告:缺口 + 闭合方案 + 动作 作为结构化 SSOT payload → 推送 DSS / AI_H_03 / CoPilot(本前端只是展示层)。"}]},
 ];
 /* ---- BRD Agent Action List (left rail) — actions only, no type/description ---- */
@@ -1690,7 +1702,7 @@ const ACTLABEL={
  monitor_absorption:["Absorption","吸纳监测"],forecast_conv:["Conversion forecast","转化预测"],map_pipeline:["Pipeline mapping","管线映射"],assess_margin:["Margin analysis","利润分析"],render_conv_chart:["Visualization","可视化"],
  simulate_measure:["Measure simulation","逐项模拟"],rank_combos:["Combo ranking","组合排序"],recommend:["Recommendation","方案推荐"],assess_risk:["Risk assessment","风险评估"],render_policy_chart:["Visualization","可视化"],
  build_plan:["Build supply plan","构建供给计划"],rank_locations:["Rank locations","选址排序"],design_units:["Flexible-unit design","弹性户型设计"],simulate_share:["Ministry-share sim","部委份额模拟"],render_plan_chart:["Visualization","可视化"],
- link_gap_closure:["Link to gap closure","关联缺口闭合"],note_revenue_loop:["Revenue loop · 开源","收入循环 · 开源"],note_cost_transfer:["Cost transfer · 节流","成本转移 · 节流"],flag_dss_handoff:["Hand off to DSS","移交 DSS"],
+ link_gap_closure:["Link to gap closure","关联缺口闭合"],note_revenue_loop:["Revenue loop","收入循环 · 开源"],note_cost_transfer:["Cost transfer","成本转移 · 节流"],flag_dss_handoff:["Hand off to DSS","移交 DSS"],
 };
 function brdKeyOf(name){ if(/Orchestrator/.test(name))return "orch"; if(/Data Quality/.test(name))return "dq"; if(/Macro/.test(name))return "macro"; if(/Demand Intelligence/.test(name))return "demand"; if(/Supply-Demand Balancing/.test(name))return "sdb"; if(/Strategic Supply Planning/.test(name))return "plan"; if(/Conversion/.test(name))return "conv"; if(/Policy Simulation/.test(name))return "policy"; if(/Fiscal|Financial/.test(name))return "fin"; return null; }
 
