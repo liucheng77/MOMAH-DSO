@@ -1104,7 +1104,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 23:29 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 23:31 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -3000,7 +3000,8 @@ function ChatAnalysis(){
     </div>);
   }
   const curKey=(ai.ag>=0&&AGENTS_T[ai.ag])?brdKeyOf(AGENTS_T[ai.ag].ag):null;
-  const backendStage=curKey==="orch"||curKey==="dq"; // system logic — no analyst input
+  const backendStage=(curKey==="orch"||curKey==="dq")&&!ai.done; // system logic — no analyst input (final output excluded)
+  const askAgain=()=>{ setNote(""); start(); };
   const dqIdx=AGENTS_T.findIndex(a=>brdKeyOf(a.ag)==="dq");
   const dqActive=ai.on&&!ai.done&&ai.ag===dqIdx;
   const dqLines=dqIdx>=0?linesOf(dqIdx).length:1;
@@ -3083,13 +3084,15 @@ function ChatAnalysis(){
         </div>}
         <div ref={endRef} style={{height:1}}/>
       </div>
-      {ai.on&&!ai.done&&!ai.gate&&!(AGENTS_T[ai.ag]&&AGENTS_T[ai.ag].gate)&&<div className={"agent-dock"+(backendStage?" backend":"")}>
-        <span className="dock-ic">{backendStage?"🔒":(ai.awaiting?"✦":"")}</span>
-        <input className="dock-input" value={backendStage?"":note} disabled={backendStage||!ai.awaiting}
-          placeholder={backendStage?L("Backend stage — analyst input not allowed (orchestration & data-quality are system logic)","后台环节 —— 不接受分析师补充(编排 / 数据质量为系统逻辑)"):(ai.awaiting?L("Add a suggestion to re-run this agent…","补充建议,重新生成本 Agent…"):L("Agent is analyzing…","Agent 分析中…"))}
-          onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&ai.awaiting&&!backendStage&&note.trim())regenerate();}}/>
-        <button className="btn secondary sm" onClick={regenerate} disabled={backendStage||!ai.awaiting} title={L("Re-run this agent with your note","结合补充重新生成本 Agent")}>Enter</button>
-        <button className="btn sm" onClick={nextAgent} disabled={!ai.awaiting||ai.ag>=AGENTS_T.length-1}>Next →</button>
+      {ai.on&&!ai.gate&&!(AGENTS_T[ai.ag]&&AGENTS_T[ai.ag].gate)&&<div className={"agent-dock"+(backendStage?" backend":"")}>
+        <span className="dock-ic">{backendStage?"🔒":(ai.done||ai.awaiting?"✦":"")}</span>
+        <input className="dock-input" value={backendStage?"":note} disabled={backendStage||(!ai.awaiting&&!ai.done)}
+          placeholder={backendStage?L("Backend stage — analyst input not allowed (orchestration & data-quality are system logic)","后台环节 —— 不接受分析师补充(编排 / 数据质量为系统逻辑)"):(ai.done?L("Ask a follow-up / new question…","继续提问 / 智能问数…"):(ai.awaiting?L("Add a suggestion to re-run this agent…","补充建议,重新生成本 Agent…"):L("Agent is analyzing…","Agent 分析中…")))}
+          onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key!=="Enter"||backendStage||!note.trim())return; if(ai.done)askAgain(); else if(ai.awaiting)regenerate();}}/>
+        {ai.done
+          ? <button className="btn sm" onClick={askAgain} disabled={!note.trim()} title={L("Run a new analysis with this question","以该问题重新发起分析")}>Enter</button>
+          : <><button className="btn secondary sm" onClick={regenerate} disabled={backendStage||!ai.awaiting} title={L("Re-run this agent with your note","结合补充重新生成本 Agent")}>Enter</button>
+            <button className="btn sm" onClick={nextAgent} disabled={!ai.awaiting||ai.ag>=AGENTS_T.length-1}>Next →</button></>}
       </div>}
       </div>
       <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
