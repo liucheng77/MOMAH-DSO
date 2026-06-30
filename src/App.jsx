@@ -1611,7 +1611,7 @@ const AGENTS_T=[
  {ag:"Orchestrator Agent",ag_zh:"编排 Agent",ic:"✦",lyr:"L3",io:{in:"User query (NL)",out:"Routed task + plan"},lines:[
    {k:"think",t:"Let me understand the core first… an unexpected +50bps is a monetary-policy shock.",t_zh:"让我先理解这个问题的核心……SAMA 突然加息 50 个基点,属于非预期的货币政策冲击。"},
    {k:"think",t:"I'll decompose it: macro transmission, housing-segment impact, the supply-demand gap, the gap-closure plan + actions, with sustainability only as a derived check.",t_zh:"我从几个维度拆解:宏观传导路径、住房市场细分影响、供需缺口、缺口闭合方案与执行动作,可持续性仅作衍生校验。"},
-   {k:"call",t:"This needs several BRD agents — Macro, Demand, Balancing, Fiscal, Policy. Query model registry → match capability.",t_zh:"这涉及多个 BRD Agent 协作——Macro、Demand、Balancing、Fiscal、Policy。查询模型注册表 → 能力匹配。",ds:[]},
+   {k:"call",t:"This needs several specialist engines — Macro, Demand, Supply-Demand Balancing, Strategic Supply Planning, Conversion, Policy. Query the model registry → match capability.",t_zh:"这需要多个专业引擎协作——宏观、需求、供需平衡、战略供给规划、转化吸纳、政策。查询模型注册表 → 能力匹配。",ds:[]},
    {k:"think",t:"Routing confidence 92% ≥ 70% threshold → auto-run, no escalation.",t_zh:"路由置信 92% ≥ 70% 阈值 → 自动执行,无需升级。"},
    {k:"out",t:"I'll wake Macro Agent first to build the rate-transmission frame, and parallelize the rest.",t_zh:"先唤醒 Macro Agent 建立利率传导的基础框架,其余并行+串行协同。"}]},
  {ag:"Data Quality Monitor",ag_zh:"数据质量监控",ic:"◉",lyr:"L2",io:{in:"11 raw sources",out:"Validated dataset · conf 88%"},lines:[
