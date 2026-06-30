@@ -333,7 +333,7 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .ai-brief-actions,.preset-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .preset-row{margin-top:14px}
 .ai-brief-side{min-width:0}
-.theater.theater-fiscal{grid-template-columns:236px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 288px);margin-bottom:20px}
+.theater.theater-fiscal{grid-template-columns:224px minmax(0,1fr) 224px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 288px);margin-bottom:20px}
 .theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tcol{min-height:0;max-height:100%}
 .theater.theater-fiscal>.dsrail{overflow-y:auto;padding-bottom:14px}
 /* middle column: scrolling stream + pinned dock at the bottom */

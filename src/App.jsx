@@ -1823,6 +1823,15 @@ function ChatAnalysis(){
   const [routed,setRouted]=useState(null);
   const [note,setNote]=useState("");
   const [notes,setNotes]=useState({});
+  const [revisions,setRevisions]=useState({});
+  const revisionsRef=useRef({}); revisionsRef.current=revisions;
+  // Build extra reasoning lines that reflect the analyst's note → regenerated content actually changes.
+  const makeRevision=(txt)=>[
+    {k:"think",t:`Re-running with the analyst's input: "${txt}". Re-weighting assumptions accordingly.`,t_zh:`结合分析师补充「${txt}」重跑,据此重新加权前提假设。`},
+    {k:"calc",t:"Updated estimate after incorporating the note",t_zh:"纳入补充后的更新测算",val:"Δ vs prior run"},
+    {k:"out",t:"Revised conclusion: the recommendation shifts to reflect the analyst's input.",t_zh:"修订结论:建议已按分析师补充作相应调整。",val:"revised ✓"}];
+  const linesOf=(i)=>AGENTS_T[i].lines.concat(revisions[i]||[]);
+  const linesOfRef=(i)=>AGENTS_T[i].lines.concat(revisionsRef.current[i]||[]);
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
@@ -1840,9 +1849,9 @@ function ChatAnalysis(){
   const goRoute=(r)=>{ setRouted(r.key); setQ(r.q); start(); };
   // Step-by-step: lines animate within an agent, then PAUSE (awaiting analyst) — no auto-cross to next agent.
   function advance(cur){
-    const ag=AGENTS_T[cur.ag];
-    if(cur.line<ag.lines.length-1){
-      const nl=cur.line+1, ln=ag.lines[nl], ds={...cur.ds};
+    const ag=AGENTS_T[cur.ag]; const lines=linesOfRef(cur.ag);
+    if(cur.line<lines.length-1){
+      const nl=cur.line+1, ln=lines[nl], ds={...cur.ds};
       if(ln.k==="call"&&ln.ds) ln.ds.forEach(d=>{ds[d]=true;});
       const next={...cur,line:nl,ds,awaiting:false}; setAi(next);
       if(cur.playing) tRef.current=setTimeout(()=>advance(next), ln.k==="calc"?900:ln.k==="call"?850:680);
@@ -1850,14 +1859,16 @@ function ChatAnalysis(){
     else if(cur.ag>=AGENTS_T.length-1){ setAi({...cur,done:true,playing:false,awaiting:false}); pushLog("log_report"); addReport({ref:"DSO-2026-0619-URG-001",nameKey:"repName_brief",cov,conf:88}); }
     else { setAi({...cur,playing:false,awaiting:true}); } // agent finished → wait for analyst (regenerate / next / prev)
   }
-  function start(){ clearTimeout(tRef.current); setNotes({}); setNote(""); pushLog("log_cross"); const cur={on:true,ag:0,line:-1,ds:{},gate:false,done:false,playing:true,awaiting:false}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
+  function start(){ clearTimeout(tRef.current); setNotes({}); setNote(""); setRevisions({}); revisionsRef.current={}; pushLog("log_cross"); const cur={on:true,ag:0,line:-1,ds:{},gate:false,done:false,playing:true,awaiting:false}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
   function play(){ const cur={...aiRef.current,playing:true,awaiting:false}; setAi(cur); advance(cur); }
   function pause(){ clearTimeout(tRef.current); setAi({...aiRef.current,playing:false}); }
   function nextAgent(){ clearTimeout(tRef.current); const cur=aiRef.current; if(cur.ag>=AGENTS_T.length-1) return; pushLog("log_route"); setNote(""); const next={...cur,ag:cur.ag+1,line:-1,playing:true,awaiting:false,gate:false}; setAi(next); tRef.current=setTimeout(()=>advance(next),300); }
-  function prevAgent(){ clearTimeout(tRef.current); const cur=aiRef.current; if(cur.ag<=0) return; const pa=cur.ag-1; setNote(""); setAi({...cur,ag:pa,line:AGENTS_T[pa].lines.length-1,playing:false,awaiting:true,gate:false,done:false}); }
-  function regenerate(){ clearTimeout(tRef.current); const cur=aiRef.current; const txt=note.trim(); if(txt) setNotes(n=>({...n,[cur.ag]:txt})); setNote(""); const next={...cur,line:-1,playing:true,awaiting:false,gate:false,done:false}; setAi(next); tRef.current=setTimeout(()=>advance(next),250); }
+  function prevAgent(){ clearTimeout(tRef.current); const cur=aiRef.current; if(cur.ag<=0) return; const pa=cur.ag-1; setNote(""); setAi({...cur,ag:pa,line:linesOfRef(pa).length-1,playing:false,awaiting:true,gate:false,done:false}); }
+  function regenerate(){ clearTimeout(tRef.current); const cur=aiRef.current; const txt=note.trim();
+    if(txt){ setNotes(n=>({...n,[cur.ag]:txt})); const rev={...revisionsRef.current,[cur.ag]:makeRevision(txt)}; revisionsRef.current=rev; setRevisions(rev); }
+    setNote(""); const next={...cur,line:-1,playing:true,awaiting:false,gate:false,done:false}; setAi(next); tRef.current=setTimeout(()=>advance(next),250); }
   function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,ag:aiRef.current.ag+1,line:-1,playing:true,awaiting:false}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
-  function reset(){ clearTimeout(tRef.current); setRouted(null); setNotes({}); setNote(""); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false,awaiting:false}); }
+  function reset(){ clearTimeout(tRef.current); setRouted(null); setNotes({}); setNote(""); setRevisions({}); revisionsRef.current={}; setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false,awaiting:false}); }
   useEffect(()=>{ if(seed){ start(); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
 
   if(!ai.on){
@@ -1890,7 +1901,7 @@ function ChatAnalysis(){
     </div>);
   }
   const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
-  const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
+  const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?linesOf(ai.ag).length:1;
   const actLabel=ac=>{const m=ACTLABEL[ac];return m?(lang==="zh"?m[1]:m[0]):ac.replace(/_/g," ");};
   const actItem=(ac,ok,key)=>(<div key={key} className={"agact"+(ok?" ok":"")}><span className="agck">✓</span><span className="alab">{actLabel(ac)}</span></div>);
   const agentRow=(a)=>{
@@ -1921,9 +1932,10 @@ function ChatAnalysis(){
   for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
     const ag=AGENTS_T[i]; const active=(i===ai.ag&&!ai.done);
     const isRouted=routed&&brdKeyOf(ag.ag)===routed;
-    const shown=(i<ai.ag)?ag.lines.length:(ai.line+1);
+    const agLines=linesOf(i);
+    const shown=(i<ai.ag)?agLines.length:(ai.line+1);
     const lns=[];
-    for(let j=0;j<shown;j++){ const ln=ag.lines[j]; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
+    for(let j=0;j<shown;j++){ const ln=agLines[j]; if(!ln) continue; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
       lns.push(<div key={j} className={"tln "+ln.k}><span className={"kind "+ln.k}>{kindLbl(ln.k)}</span><span className="ttx">{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</span></div>); }
     cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")+(isRouted?" routed":"")}>
       <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}{isRouted?<span className="routed-tag">★ {L("routed","路由命中")}</span>:null}<span className="alyr">{ag.lyr}</span></div>
