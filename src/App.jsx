@@ -1896,7 +1896,6 @@ function ChatAnalysis(){
   const rail=(<div className={"orch-wrap"+(ai.done?" done":orchActive?" active":"")}>
     <div className="agrow-h orch-h"><span className="livedot"/><b>{Z(orch,"name")}</b>
       {ai.done?<span className="agdone">✓</span>:orchActive?<span className="agtag">{L("coordinating","调度中")}</span>:<span className="agtag" style={{background:"#eef1ee",color:"var(--muted)"}}>{L("ready","就绪")}</span>}</div>
-    {orchActive&&<div className="aglist">{orch.acts.map((ac,j)=>actItem(ac,orchTicked.has(j),j))}</div>}
     <div className="orch-children">{AGENT_ACTIONS.slice(1).map(agentRow)}</div>
   </div>);
   const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
