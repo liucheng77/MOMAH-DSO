@@ -1996,9 +1996,8 @@ function ChatAnalysis(){
         <input className="dock-input" value={backendStage?"":note} disabled={backendStage||!ai.awaiting}
           placeholder={backendStage?L("Backend stage — analyst input not allowed (orchestration & data-quality are system logic)","后台环节 —— 不接受分析师补充(编排 / 数据质量为系统逻辑)"):(ai.awaiting?L("Add a suggestion to re-run this agent…","补充建议,重新生成本 Agent…"):L("Agent is analyzing…","Agent 分析中…"))}
           onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&ai.awaiting&&!backendStage&&note.trim())regenerate();}}/>
-        <button className="btn ghost sm" onClick={prevAgent} disabled={!ai.awaiting||ai.ag<=0} title={L("Back to previous agent","返回上一个 Agent")}>← {L("Prev","上一个")}</button>
-        <button className="btn secondary sm" onClick={regenerate} disabled={backendStage||!ai.awaiting} title={L("Re-run this agent with your note","结合补充重新生成本 Agent")}>↻ {L("Regenerate","重新生成")}</button>
-        <button className="btn sm" onClick={nextAgent} disabled={!ai.awaiting||ai.ag>=AGENTS_T.length-1}>{L("Next agent","下一个 Agent")} →</button>
+        <button className="btn secondary sm" onClick={regenerate} disabled={backendStage||!ai.awaiting} title={L("Re-run this agent with your note","结合补充重新生成本 Agent")}>Enter</button>
+        <button className="btn sm" onClick={nextAgent} disabled={!ai.awaiting||ai.ag>=AGENTS_T.length-1}>Next →</button>
       </div>}
       </div>
       <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
