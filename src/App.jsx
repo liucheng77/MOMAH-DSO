@@ -1781,7 +1781,7 @@ function ChatAnalysis(){
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
   const orchSt=!ai.on?L("ready","就绪"):ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
-  const mafChip=<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>;
+  const mafChip=<button className="agent-badge maf-badge" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>{GearIcon}<span>Multi-Agent Flow · {orchSt} ▸</span></button>;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
   useEffect(()=>{ if(ai.on&&streamRef.current){ const el=streamRef.current; el.scrollTo({top:el.scrollHeight,behavior:"smooth"}); } },[ai]);
   const ROUTES=[

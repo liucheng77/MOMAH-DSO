@@ -318,6 +318,8 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 /* multi-agent flow chip */
 .maf-chip{border:1px solid #c7c2f2;background:#eef0fc;color:#4f46e5;font:inherit;font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:.15s}
 .maf-chip:hover{background:#4f46e5;color:#fff;border-color:#4f46e5}
+.maf-badge{cursor:pointer;font-family:inherit;font-size:12px;padding:5px 13px;transition:filter .15s,box-shadow .15s}
+.maf-badge:hover{filter:brightness(1.08);box-shadow:0 3px 12px rgba(79,70,229,.42)}
 .ai-brief-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:stretch;min-height:560px}
 .ai-brief-main{padding:30px 32px!important;background:linear-gradient(135deg,#ffffff 0%,#f7fbff 56%,#eef0fc 100%);border-color:#d9ddf7;position:relative;overflow:hidden}
 .ai-brief-main:before{content:"";position:absolute;inset-inline-end:28px;top:28px;width:96px;height:96px;border-radius:50%;border:1px solid #d9ddf7;background:radial-gradient(circle,#fff 0 34%,#eef0fc 35% 58%,transparent 59%)}
