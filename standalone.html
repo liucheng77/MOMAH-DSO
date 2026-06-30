@@ -1044,7 +1044,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 19:54 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:30 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2141,6 +2141,9 @@ const KI_KPI=[
   {src:"DSO · Conversion", src_zh:"DSO · 转化", real:0, label:"Avg. Project Conversion", label_zh:"平均项目转化率", v:"65.8", unit:"%", chg:"↓ 1.4pp", dir:"down",
     meta:"Seg A 52% · Seg E 78% · rate hike pressures A–B", meta_zh:"A 段 52% · E 段 78% · 加息施压 A–B 段",
     series:[{m:"Dec",v:"69.0%",h:78},{m:"Jan",v:"68.5%",h:72},{m:"Feb",v:"68.0%",h:66},{m:"Mar",v:"67.5%",h:60},{m:"Apr",v:"67.2%",h:56},{m:"May",v:"65.8%",h:46}]},
+  {src:"DSO · Supply-Demand Balancing", src_zh:"DSO · 供需平衡", real:0, label:"Seg-A Gap Coverage", label_zh:"A 段缺口覆盖率", v:"35", unit:"%", chg:"↓ 2pp · RED", dir:"down",
+    meta:"Gap 12,400 units · pipeline covers 35% · RED ≤50%", meta_zh:"缺口 12,400 套 · 管线覆盖 35% · 红线 ≤50%",
+    series:[{m:"Dec",v:"44%",h:78},{m:"Jan",v:"42%",h:72},{m:"Feb",v:"40%",h:66},{m:"Mar",v:"38%",h:58},{m:"Apr",v:"37%",h:54},{m:"May",v:"35%",h:46}]},
   {src:"DSO · Quality Monitor", src_zh:"DSO · 质量监控", real:0, label:"Data Quality Score", label_zh:"数据质量分", v:"94.6", unit:"/100", chg:"↑ 0.5", dir:"up",
     meta:"10/11 sources ≥95% · DS-10 Private 90.1% (recovered)", meta_zh:"10/11 源 ≥95% · DS-10 私有 90.1%(已恢复)",
     series:[{m:"Dec",v:"93.6",h:48},{m:"Jan",v:"93.8",h:54},{m:"Feb",v:"94.0",h:58},{m:"Mar",v:"94.1",h:62},{m:"Apr",v:"94.3",h:68},{m:"May",v:"94.6",h:74}]},
@@ -2296,24 +2299,6 @@ function Hub(){
   return (<div className="fade">
     <PageHeader title={t("nav_hub")+" · "+t("ki_snapshot")} sub={t("ki_sub")}
       right={<span className="ki-legend"><span><span className="dot" style={{background:"var(--green)"}}/>{t("ki_real")}</span><span><span className="dot" style={{background:"#2563eb"}}/>{t("ki_mock")}</span></span>}/>
-    <Section title={t("ai_analysis")}>
-      <AiRec d={AIREC.gap}/>
-      <div className="muted" style={{fontSize:11.5,marginTop:8}}>{lang==="zh"?"完整的缺口闭合方案与执行动作在推理剧场中生成 →":"Full closure plan & actions are produced in the reasoning theater →"} <a href="#" onClick={e=>{e.preventDefault();setRoute("chat");}} style={{color:"#2563eb",fontWeight:600}}>{t("nav_chat")}</a></div>
-    </Section>
-    <div className="cols-2">
-      <Section title={t("ki_scn_title")}>
-        <div className="ki-scn">{KI_SCN.map(s=>(<div key={s.k} className={"ki-scn-box "+s.tone+(scn===s.k?" active":"")} style={{cursor:"pointer"}} onClick={()=>setScn(s.k)}>
-          <div className="p">{s.prob}%</div>
-          <div className="n">{t("sc_"+s.k)}{scn===s.k?(" ← "+t("ki_active")):""}</div>
-          <div className="m">{Z(s,"rate")}</div><div className="m">{s.gdp}</div>
-        </div>))}</div>
-        <div className="scn-bar2">{KI_SCN.map(s=><span key={s.k} className={"seg "+s.tone} style={{width:s.prob+"%"}}/>)}</div>
-        <div className="muted" style={{fontSize:11,marginTop:8}}>{t("ki_scn_note")} · {t("ai_scn_hint")}</div>
-      </Section>
-      <Section title={t("ki_risk_title")}>
-        {KI_RISKS.map((r,i)=>(<div key={i} className={"ki-risk "+r.sev}><b>{Z(r,"t")}</b> — {Z(r,"d")}</div>))}
-      </Section>
-    </div>
     <Section title={t("kpis_title")}>
       <div className="ki-grid">
         {KI_KPI.map((k,i)=>{ const c=dcol(k.dir); return (<div key={i} className={"ki-card pop"+(k.real?"":" mock")} style={{animationDelay:(i*55)+"ms"}}>
@@ -2335,6 +2320,24 @@ function Hub(){
         <tbody>{MOM_HOUSING.map((r,i)=>(<tr key={i}><td>{Z(r,"k")}</td><td className="right-num mono muted">{r.may}</td><td className="right-num mono">{r.jun}</td><td className="right-num mono" style={{color:tcol(r.dt),fontWeight:700}}>{r.d}</td></tr>))}</tbody>
       </table></div>
     </Section>
+    <Section title={t("ai_analysis")}>
+      <AiRec d={AIREC.gap}/>
+      <div className="muted" style={{fontSize:11.5,marginTop:8}}>{lang==="zh"?"完整的缺口闭合方案与执行动作在推理剧场中生成 →":"Full closure plan & actions are produced in the reasoning theater →"} <a href="#" onClick={e=>{e.preventDefault();setRoute("chat");}} style={{color:"#2563eb",fontWeight:600}}>{t("nav_chat")}</a></div>
+    </Section>
+    <div className="cols-2">
+      <Section title={t("ki_scn_title")}>
+        <div className="ki-scn">{KI_SCN.map(s=>(<div key={s.k} className={"ki-scn-box "+s.tone+(scn===s.k?" active":"")} style={{cursor:"pointer"}} onClick={()=>setScn(s.k)}>
+          <div className="p">{s.prob}%</div>
+          <div className="n">{t("sc_"+s.k)}{scn===s.k?(" ← "+t("ki_active")):""}</div>
+          <div className="m">{Z(s,"rate")}</div><div className="m">{s.gdp}</div>
+        </div>))}</div>
+        <div className="scn-bar2">{KI_SCN.map(s=><span key={s.k} className={"seg "+s.tone} style={{width:s.prob+"%"}}/>)}</div>
+        <div className="muted" style={{fontSize:11,marginTop:8}}>{t("ki_scn_note")} · {t("ai_scn_hint")}</div>
+      </Section>
+      <Section title={t("ki_risk_title")}>
+        {KI_RISKS.map((r,i)=>(<div key={i} className={"ki-risk "+r.sev}><b>{Z(r,"t")}</b> — {Z(r,"d")}</div>))}
+      </Section>
+    </div>
     <div className="muted" style={{fontSize:11,textAlign:"center",margin:"4px 0 8px"}}>{t("ki_footer")}</div>
   </div>);
 }
