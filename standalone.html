@@ -1028,7 +1028,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 16:32 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 18:47 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2724,7 +2724,7 @@ function StoryStepper({states}){
 }
 // AI Financial Sustainability — first-principles score: budget safety 30 + efficiency 25 + HBR 25 + risk 20
 const FISCAL_BUDGET=7.9, CONTRACT_TARGET=510000, CONTRACT_COST=141444;
-const FISCAL_DEFAULTS={burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952,scn:"base"};
+const FISCAL_DEFAULTS={burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952,scn:"base",hor:70};
 function computeFiscalContinuity(lv){
   const budgetScore = lv.burn<70?30:lv.burn<85?20:10;
   const effScore = Math.min(25, (lv.eff/1.0)*25);
@@ -2765,6 +2765,11 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
         <small className="fnote">{L("BRD §5 · 3-scenario gap projection","BRD §5 · 三情景缺口投影")}</small>
       </div>
       <label className="fslider">
+        <span><b>{L("Target homeownership","目标住房拥有率")}</b><em style={{color:lv.hor>71?"var(--amber)":"var(--green-dark)"}}>{lv.hor}%</em></span>
+        <input type="range" min={64} max={74} step={.5} value={lv.hor} onChange={e=>set("hor",Number(e.target.value))}/>
+        <small className="fnote">{L("now 66.2% · Vision-2030 target 70% · >71% is aggressive","当前 66.2% · Vision 2030 目标 70% · >71% 偏激进")}</small>
+      </label>
+      <label className="fslider">
         <span><b>{L("Housing burden ratio","住房负担比 HBR")}</b><em style={{color:COL[hbrT]}}>{lv.hbr}%</em></span>
         <input type="range" min={30} max={45} step={.5} value={lv.hbr} onChange={e=>set("hbr",Number(e.target.value))}/>
         <small className="fnote">{L("40 → 36, target 30","40 → 36, 目标 30")}</small>
@@ -2793,7 +2798,7 @@ function ChatAnalysis(){
   const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
   const [flow,setFlow]=useState(false);
   const [flv,setFlv]=useState(FISCAL_DEFAULTS);
-  const gateApprove=flv.scn!=="pess";
+  const gateApprove=flv.scn!=="pess" && flv.hor<=71;
   const [q,setQ]=useState("");
   const [routed,setRouted]=useState(null);
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
@@ -2918,7 +2923,7 @@ function ChatAnalysis(){
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
           <div className="muted" style={{fontSize:12.5,margin:"8px 0 10px"}}>{L("AI output is a draft until you approve. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
-          <div className={"gate-fiscal "+(gateApprove?"pass":"fail")}>{L("Simulation scenario","模拟情景")}: <b>{flv.scn==="opt"?L("Optimistic","乐观"):flv.scn==="pess"?L("Pessimistic","悲观"):L("Base","基准")}</b> · {gateApprove?L("fiscally fundable — approval enabled","财政可承受 — 可批准"):L("pessimistic stress — must escalate","悲观承压 — 须上报")} <span className="muted">({L("switch scenario on the left panel →","在左侧面板切换情景 →")})</span></div>
+          <div className={"gate-fiscal "+(gateApprove?"pass":"fail")}>{L("Scenario","情景")}: <b>{flv.scn==="opt"?L("Optimistic","乐观"):flv.scn==="pess"?L("Pessimistic","悲观"):L("Base","基准")}</b> · {L("target","目标")} <b>{flv.hor}%</b> · {gateApprove?L("fundable — approval enabled","可承受 — 可批准"):(flv.scn==="pess"?L("pessimistic stress — must escalate","悲观承压 — 须上报"):L("target too aggressive (>71%) — must escalate","目标过激进(>71%)— 须上报"))} <span className="muted">({L("set on the left panel →","在左侧面板设置 →")})</span></div>
           <div className="row" style={{flexWrap:"wrap",gap:8}}>
             {gateApprove
               ? <button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button>
