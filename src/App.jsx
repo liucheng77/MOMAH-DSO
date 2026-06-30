@@ -1799,6 +1799,20 @@ function ReasoningStatus({ai,L,Z}){
     <div className="rs-cell"><span>{L("Next output","下一项输出")}</span><b>{L("recommendation + API payload + PDF","建议 + API Payload + PDF")}</b></div>
   </div>);
 }
+function DataSourcePanel({touched}){
+  const {t,lang}=useStore();
+  return (<div className="dsrail card pad">
+    <div className="rail-h"><span className="livedot"/>{lang==="zh"?"数据源 · 实时":lang==="ar"?"المصادر · مباشر":"Data sources · LIVE"}<span className="chip" style={{marginInlineStart:"auto"}}>11</span></div>
+    <div className="dsl">
+      {SOURCES11.map(s=>{ const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
+        return (<div key={s.key} className={"dsl-row"+(touched?" on":"")}>
+          <span className="dot" style={{background:col}}/>
+          <span className="dsl-n">{t("src_"+s.key)}</span>
+          {touched?<span className="dsl-ck">✓</span>:<span className="dsl-f mono">{s.fresh}%</span>}
+        </div>); })}
+    </div>
+  </div>);
+}
 function ChatAnalysis(){
   const {t,lang,cov,pushLog,setRoute,addReport,seed,clearSeed}=useStore();
   const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
@@ -1807,6 +1821,8 @@ function ChatAnalysis(){
   const gateApprove=flv.scn!=="pess" && flv.hor<=71;
   const [q,setQ]=useState("");
   const [routed,setRouted]=useState(null);
+  const [note,setNote]=useState("");
+  const [notes,setNotes]=useState({});
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
@@ -1822,23 +1838,26 @@ function ChatAnalysis(){
   ];
   const routedName=routed?(ROUTES.find(r=>r.key===routed)||{}).lbl:null;
   const goRoute=(r)=>{ setRouted(r.key); setQ(r.q); start(); };
+  // Step-by-step: lines animate within an agent, then PAUSE (awaiting analyst) — no auto-cross to next agent.
   function advance(cur){
     const ag=AGENTS_T[cur.ag];
     if(cur.line<ag.lines.length-1){
       const nl=cur.line+1, ln=ag.lines[nl], ds={...cur.ds};
       if(ln.k==="call"&&ln.ds) ln.ds.forEach(d=>{ds[d]=true;});
-      const next={...cur,line:nl,ds}; setAi(next);
+      const next={...cur,line:nl,ds,awaiting:false}; setAi(next);
       if(cur.playing) tRef.current=setTimeout(()=>advance(next), ln.k==="calc"?900:ln.k==="call"?850:680);
-    } else if(ag.gate){ setAi({...cur,gate:true,playing:false}); }
-    else if(cur.ag<AGENTS_T.length-1){ const next={...cur,ag:cur.ag+1,line:-1}; setAi(next); pushLog("log_route"); if(cur.playing) tRef.current=setTimeout(()=>advance(next),500); }
-    else { setAi({...cur,done:true,playing:false}); pushLog("log_report"); addReport({ref:"DSO-2026-0619-URG-001",nameKey:"repName_brief",cov,conf:88}); }
+    } else if(ag.gate){ setAi({...cur,gate:true,playing:false,awaiting:false}); }
+    else if(cur.ag>=AGENTS_T.length-1){ setAi({...cur,done:true,playing:false,awaiting:false}); pushLog("log_report"); addReport({ref:"DSO-2026-0619-URG-001",nameKey:"repName_brief",cov,conf:88}); }
+    else { setAi({...cur,playing:false,awaiting:true}); } // agent finished → wait for analyst (regenerate / next / prev)
   }
-  function start(){ clearTimeout(tRef.current); pushLog("log_cross"); const cur={on:true,ag:0,line:-1,ds:{},gate:false,done:false,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
-  function play(){ const cur={...aiRef.current,playing:true}; setAi(cur); advance(cur); }
+  function start(){ clearTimeout(tRef.current); setNotes({}); setNote(""); pushLog("log_cross"); const cur={on:true,ag:0,line:-1,ds:{},gate:false,done:false,playing:true,awaiting:false}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
+  function play(){ const cur={...aiRef.current,playing:true,awaiting:false}; setAi(cur); advance(cur); }
   function pause(){ clearTimeout(tRef.current); setAi({...aiRef.current,playing:false}); }
-  function stepOne(){ clearTimeout(tRef.current); advance({...aiRef.current,playing:false}); }
-  function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,ag:aiRef.current.ag+1,line:-1,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
-  function reset(){ clearTimeout(tRef.current); setRouted(null); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false}); }
+  function nextAgent(){ clearTimeout(tRef.current); const cur=aiRef.current; if(cur.ag>=AGENTS_T.length-1) return; pushLog("log_route"); setNote(""); const next={...cur,ag:cur.ag+1,line:-1,playing:true,awaiting:false,gate:false}; setAi(next); tRef.current=setTimeout(()=>advance(next),300); }
+  function prevAgent(){ clearTimeout(tRef.current); const cur=aiRef.current; if(cur.ag<=0) return; const pa=cur.ag-1; setNote(""); setAi({...cur,ag:pa,line:AGENTS_T[pa].lines.length-1,playing:false,awaiting:true,gate:false,done:false}); }
+  function regenerate(){ clearTimeout(tRef.current); const cur=aiRef.current; const txt=note.trim(); if(txt) setNotes(n=>({...n,[cur.ag]:txt})); setNote(""); const next={...cur,line:-1,playing:true,awaiting:false,gate:false,done:false}; setAi(next); tRef.current=setTimeout(()=>advance(next),250); }
+  function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,ag:aiRef.current.ag+1,line:-1,playing:true,awaiting:false}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
+  function reset(){ clearTimeout(tRef.current); setRouted(null); setNotes({}); setNote(""); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false,awaiting:false}); }
   useEffect(()=>{ if(seed){ start(); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
 
   if(!ai.on){
@@ -1846,7 +1865,7 @@ function ChatAnalysis(){
       <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
       <div className="ai-brief-grid">
         <div className="ai-brief-side">
-          <FiscalContinuityPanel compact/>
+          <DataSourcePanel touched={false}/>
         </div>
         <div className="ai-brief-main card pad">
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
@@ -1870,7 +1889,6 @@ function ChatAnalysis(){
       {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
     </div>);
   }
-  const finActive=ai.on&&!ai.done&&!ai.gate&&ai.ag>=0&&AGENTS_T[ai.ag]&&brdKeyOf(AGENTS_T[ai.ag].ag)==="fin";
   const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
   const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
   const actLabel=ac=>{const m=ACTLABEL[ac];return m?(lang==="zh"?m[1]:m[0]):ac.replace(/_/g," ");};
@@ -1908,7 +1926,9 @@ function ChatAnalysis(){
     for(let j=0;j<shown;j++){ const ln=ag.lines[j]; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
       lns.push(<div key={j} className={"tln "+ln.k}><span className={"kind "+ln.k}>{kindLbl(ln.k)}</span><span className="ttx">{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</span></div>); }
     cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")+(isRouted?" routed":"")}>
-      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}{isRouted?<span className="routed-tag">★ {L("routed","路由命中")}</span>:null}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
+      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}{isRouted?<span className="routed-tag">★ {L("routed","路由命中")}</span>:null}<span className="alyr">{ag.lyr}</span></div>
+      {notes[i]?<div className="tln analyst"><span className="kind analyst">{L("Analyst","分析师")}</span><span className="ttx">{notes[i]}</span></div>:null}
+      {lns}</div>);
   }
   return (<div className="fade">
     <PageHeader title={t("nav_chat")} sub={L("Storyline: Ask about the SAMA +50bps shock → size the Seg-A gap → design the closure plan & actions → human gate → push as SSOT data to DSS","Storyline:就 SAMA +50bps 冲击提问 → 量化 A 段供需缺口 → 给出闭合方案与执行动作 → 人工门复核 → 作为 SSOT 数据推送给 DSS")} cls="ph-end"
@@ -1916,18 +1936,18 @@ function ChatAnalysis(){
     <ReasoningStatus ai={ai} L={L} Z={Z}/>
     <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
-        : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
-      {(!ai.done&&!ai.gate)?<button className="btn ghost sm" onClick={stepOne}>⏭ {L("Step","下一步")}</button>:null}
+        : (!ai.done&&!ai.gate&&!ai.awaiting? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
     <div className="theater theater-fiscal">
-      <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
+      <DataSourcePanel touched={ai.ag>=1||ai.done}/>
+      <div className="tcol">
       <div className="tstream" ref={streamRef}>
         {cards}
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
           <div className="muted" style={{fontSize:12.5,margin:"8px 0 10px"}}>{L("AI output is a draft until you approve. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
-          <div className={"gate-fiscal "+(gateApprove?"pass":"fail")}>{L("Gap-closure plan","缺口闭合方案")} · {L("scenario","情景")} <b>{flv.scn==="opt"?L("Optimistic","乐观"):flv.scn==="pess"?L("Pessimistic","悲观"):L("Base","基准")}</b> · {L("target","目标")} <b>{flv.hor}%</b> · {gateApprove?L("plan viable — approval enabled","方案可行 — 可批准"):(flv.scn==="pess"?L("pessimistic stress — must escalate","悲观承压 — 须上报"):L("target too aggressive (>71%) — must escalate","目标过激进(>71%)— 须上报"))} <span className="muted">({L("set on the left panel →","在左侧面板设置 →")})</span></div>
+          <div className="gate-fiscal pass">{L("Gap-closure plan","缺口闭合方案")} · {L("plan viable — approval enabled","方案可行 — 可批准")}</div>
           <div className="row" style={{flexWrap:"wrap",gap:8}}>
             {gateApprove
               ? <button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button>
@@ -1943,6 +1963,16 @@ function ChatAnalysis(){
           <AiRec d={AIREC.shock}/>
         </div>}
         <div ref={endRef} style={{height:1}}/>
+      </div>
+      {ai.on&&!ai.done&&!ai.gate&&!(AGENTS_T[ai.ag]&&AGENTS_T[ai.ag].gate)&&<div className="agent-dock">
+        <span className="dock-ic">{ai.awaiting?"✦":""}</span>
+        <input className="dock-input" value={note} disabled={!ai.awaiting}
+          placeholder={ai.awaiting?L("Add a suggestion to re-run this agent…","补充建议,重新生成本 Agent…"):L("Agent is analyzing…","Agent 分析中…")}
+          onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&ai.awaiting&&note.trim())regenerate();}}/>
+        <button className="btn ghost sm" onClick={prevAgent} disabled={!ai.awaiting||ai.ag<=0} title={L("Back to previous agent","返回上一个 Agent")}>← {L("Prev","上一个")}</button>
+        <button className="btn secondary sm" onClick={regenerate} disabled={!ai.awaiting} title={L("Re-run this agent with your note","结合补充重新生成本 Agent")}>↻ {L("Regenerate","重新生成")}</button>
+        <button className="btn sm" onClick={nextAgent} disabled={!ai.awaiting||ai.ag>=AGENTS_T.length-1}>{L("Next agent","下一个 Agent")} →</button>
+      </div>}
       </div>
       <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
     </div>

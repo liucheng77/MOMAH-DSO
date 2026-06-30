@@ -333,12 +333,35 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .ai-brief-actions,.preset-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .preset-row{margin-top:14px}
 .ai-brief-side{min-width:0}
-.theater.theater-fiscal{grid-template-columns:340px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 288px);margin-bottom:20px}
-.theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow-y:auto;min-height:0;max-height:100%;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:#cdd7d1 transparent}
-.theater.theater-fiscal>.dsrail::-webkit-scrollbar,.theater.theater-fiscal>.tstream::-webkit-scrollbar,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar{width:6px}
-.theater.theater-fiscal>.dsrail::-webkit-scrollbar-thumb,.theater.theater-fiscal>.tstream::-webkit-scrollbar-thumb,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar-thumb{background:#cdd7d1;border-radius:6px}
-.theater.theater-fiscal>.dsrail::-webkit-scrollbar-thumb:hover,.theater.theater-fiscal>.tstream::-webkit-scrollbar-thumb:hover,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar-thumb:hover{background:#aab6af}
-.theater.theater-fiscal>.dsrail::-webkit-scrollbar-track,.theater.theater-fiscal>.tstream::-webkit-scrollbar-track,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar-track{background:transparent}
+.theater.theater-fiscal{grid-template-columns:236px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 288px);margin-bottom:20px}
+.theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tcol{min-height:0;max-height:100%}
+.theater.theater-fiscal>.dsrail{overflow-y:auto;padding-bottom:14px}
+/* middle column: scrolling stream + pinned dock at the bottom */
+.theater.theater-fiscal>.tcol{display:flex;flex-direction:column;gap:0}
+.tcol>.tstream{flex:1 1 auto;overflow-y:auto;min-height:0;padding-bottom:16px}
+.tcol>.agent-dock{flex:0 0 auto}
+.theater.theater-fiscal>.dsrail,.tcol>.tstream{scrollbar-width:thin;scrollbar-color:#cdd7d1 transparent}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar,.tcol>.tstream::-webkit-scrollbar{width:6px}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar-thumb,.tcol>.tstream::-webkit-scrollbar-thumb{background:#cdd7d1;border-radius:6px}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar-thumb:hover,.tcol>.tstream::-webkit-scrollbar-thumb:hover{background:#aab6af}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar-track,.tcol>.tstream::-webkit-scrollbar-track{background:transparent}
+/* data-source list (left) */
+.dsl{display:flex;flex-direction:column;gap:3px}
+.dsl-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:12px;border:1px solid transparent}
+.dsl-row.on{background:var(--green-50);border-color:var(--green-100)}
+.dsl-row .dsl-n{flex:1;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsl-row .dsl-f{font-size:11px;color:var(--muted);font-weight:700}
+.dsl-row .dsl-ck{color:var(--green);font-weight:800}
+/* analyst note bubble in the stream */
+.tln.analyst{align-items:flex-start}
+.tln.analyst .kind.analyst{background:#eef0fc;color:#4f46e5}
+.tln.analyst .ttx{background:#f5f6ff;border:1px solid #e0e3f7;border-radius:8px;padding:5px 9px;color:#3730a3;font-style:italic}
+/* pinned agent dock at the bottom of the middle column */
+.agent-dock{display:flex;align-items:center;gap:8px;padding:10px 12px;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 -2px 10px rgba(16,33,28,.05)}
+.agent-dock .dock-ic{color:#4f46e5;font-weight:800;width:12px;text-align:center}
+.agent-dock .dock-input{flex:1 1 auto;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:13px;background:#fafcfb}
+.agent-dock .dock-input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-50)}
+.agent-dock .dock-input:disabled{background:#f3f5f4;color:var(--muted)}
 .theater.theater-fiscal>.fiscal-card{position:static;top:auto}
 .reasoning-status{display:grid;grid-template-columns:1.05fr 1.8fr .65fr 1.1fr;gap:0;margin-bottom:14px;overflow:hidden}
 .rs-cell{padding:11px 14px;border-inline-start:1px solid var(--line);min-width:0}
@@ -388,9 +411,8 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .output-stack span{color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
 .output-stack b{text-align:end;font-size:11.5px}
 @media(max-width:1200px){
-  .theater.theater-fiscal{grid-template-columns:200px minmax(0,1fr);height:auto}
-  .theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow:visible;max-height:none}
-  .theater.theater-fiscal>.fiscal-card{grid-column:1/-1;position:relative;top:auto}
+  .theater.theater-fiscal{grid-template-columns:1fr;height:auto}
+  .theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tcol,.tcol>.tstream{overflow:visible;max-height:none}
   .reasoning-status{grid-template-columns:1fr 1fr}
 }
 @media(max-width:860px){
