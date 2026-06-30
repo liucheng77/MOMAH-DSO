@@ -1803,14 +1803,16 @@ function DataSourcePanel({lit=0,active=false}){
   const {t,lang}=useStore();
   return (<div className="dsrail card pad">
     <div className="rail-h"><span className="livedot"/>{lang==="zh"?"数据源 · 实时":lang==="ar"?"المصادر · مباشر":"Data sources · LIVE"}<span className={"chip"+(active?" amber":"")} style={{marginInlineStart:"auto"}}>{active?(lit+"/11"):"11"}</span></div>
-    <div className="dsl">
-      {SOURCES11.map((s,i)=>{ const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
-        const on=i<lit, validating=active&&i===lit;
-        return (<div key={s.key} className={"dsl-row"+(on?" on":"")+(validating?" validating":"")}>
-          <span className="dot" style={{background:col}}/>
-          <span className="dsl-n">{t("src_"+s.key)}</span>
-          {on?<span className="dsl-ck">✓</span>:validating?<span className="dsl-f mono">{lang==="zh"?"校验中":"…"}</span>:<span className="dsl-f mono">{s.fresh}%</span>}
-        </div>); })}
+    <div className={"orch-wrap"+(active?" active":"")}>
+      <div className="dsl">
+        {SOURCES11.map((s,i)=>{ const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
+          const on=i<lit, validating=active&&i===lit;
+          return (<div key={s.key} className={"dsl-row"+(on?" on":"")+(validating?" validating":"")}>
+            <span className="dot" style={{background:col}}/>
+            <span className="dsl-n">{t("src_"+s.key)}</span>
+            {on?<span className="dsl-ck">✓</span>:validating?<span className="dsl-f mono">{lang==="zh"?"校验中":"…"}</span>:<span className="dsl-f mono">{s.fresh}%</span>}
+          </div>); })}
+      </div>
     </div>
   </div>);
 }
