@@ -1023,7 +1023,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 14:00 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 14:05 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2007,7 +2007,6 @@ function TopBar(){
       })}
     </nav>
     <div className="right">
-      <CoverageSwitch/>
       <button className="icobtn" title="Search" aria-label="Search">⌕</button>
       <div className="usermenu">
         <button className="icobtn" title={notifLbl} aria-label={notifLbl} onClick={()=>setNotif(n=>!n)}>◔{openAlerts?<span className="badge">{openAlerts}</span>:null}</button>
@@ -2727,7 +2726,7 @@ function computeFiscalContinuity(lv){
   return {budgetScore,effScore:+effScore.toFixed(1),hbrScore:+hbrScore.toFixed(1),riskScore,score,tone,consumed,historical,contractPct,approve};
 }
 function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false}){
-  const {lang,cov}=useStore();
+  const {lang,cov,setCov}=useStore();
   const L=(en,zh)=>lang==="zh"?zh:en;
   const [lvI,setLvI]=useState(FISCAL_DEFAULTS);
   const lv=lvP||lvI, setLv=setLvP||setLvI;
@@ -2742,6 +2741,11 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
     {active&&<div className="synced-note">{L("From Financial Sustainability Agent: sustainability index 72 → 67 · net fiscal impact ≈ SAR 8B","来自 财政可持续 Agent:可持续指数 72 → 67 · 净财政冲击 ≈ SAR 8B")}</div>}
     <div className="fiscal-controls">
       <div className="fcfg">
+        <div className="fcfg-l">{L("Coverage mode","覆盖范围")}</div>
+        <div className="seg2">{[["ministry",L("Ministry","部委")],["private",L("Private","私有")],["total",L("Total","全市场")]].map(c=><button key={c[0]} className={cov===c[0]?"on":""} onClick={()=>setCov(c[0])}>{c[1]}</button>)}</div>
+        <small className="fnote">{L("Ministry 95% / Private 80% / Total","部委 95% / 私有 80% / 全市场")}</small>
+      </div>
+      <div className="fcfg">
         <div className="fcfg-l">{L("Simulation scenario","模拟情景")}</div>
         <div className="seg2">{SCN.map(s=><button key={s[0]} className={lv.scn===s[0]?"on":""} onClick={()=>set("scn",s[0])}>{s[1]}</button>)}</div>
         <small className="fnote">{L("BRD §5 · 3-scenario gap projection","BRD §5 · 三情景缺口投影")}</small>
@@ -2753,7 +2757,6 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
       </label>
     </div>
     {!compact&&<div className="output-stack">
-      <div><span>{L("Coverage","覆盖")}</span><b>{cov==="ministry"?L("Ministry","部委"):cov==="private"?L("Private","私有"):L("Total Market","全市场")}</b></div>
       <div><span>Output</span><b>{L("Ministerial briefing","部长简报")}</b></div>
       <div><span>Dispatch</span><b>CoPilot + AI_H_03 + audit log</b></div>
     </div>}
