@@ -1663,6 +1663,17 @@ const AGENT_ACTIONS=[
  {key:"fin",  name:"Financial Sustainability Agent",name_zh:"财政可持续引擎",acts:["assess_sovereign_debt","analyze_subsidy","evaluate_v2030","compute_sustainability_index","monitor_oil_breakeven","assess_reserves"]},
 ];
 AGENT_ACTIONS.forEach(a=>{ const o=a.acts.map((_,i)=>i); for(let i=o.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[o[i],o[j]]=[o[j],o[i]];} a.order=o; });
+// readable labels for action codes (BRD Type column)
+const ACTLABEL={
+ think_intent:["Intent understanding","意图理解"],think_route:["Engine routing","引擎路由"],think_compose:["Output composition","输出组合"],think_perm:["Permission check","权限校验"],gen_report:["Report generation","报告生成"],push_log:["Audit trail","审计留痕"],
+ scan_sources:["Source scan","数据源扫描"],flag_degraded:["Degradation flag","降级标记"],emit_alert:["Alert trigger","触发预警"],report_dq:["Quality report","质量报告"],ticket_dq:["Ticket creation","创建工单"],
+ think_run:["Run analysis","执行分析"],compute_corr:["Correlation","相关性计算"],project_gdp:["GDP projection","GDP 预测"],monitor_fiscal:["Fiscal monitor","财政监测"],render_macro_chart:["Visualization","可视化"],analyze_transmission:["Transmission","传导分析"],
+ compute_elasticity:["Elasticity","弹性计算"],segment_migration:["Segment migration","段位迁移"],forecast_demand:["Demand forecast","需求预测"],render_seg_chart:["Visualization","可视化"],assess_affordability:["Affordability","可负担性"],
+ compute_gap:["Gap quantification","缺口量化"],assess_coverage:["Coverage","覆盖评估"],analyze_rootcause:["Root-cause","根因分解"],render_heatmap:["Visualization","可视化"],project_absorption:["Absorption","吸纳预测"],
+ monitor_absorption:["Absorption","吸纳监测"],forecast_conv:["Conversion forecast","转化预测"],map_pipeline:["Pipeline mapping","管线映射"],assess_margin:["Margin analysis","利润分析"],render_conv_chart:["Visualization","可视化"],
+ simulate_measure:["Measure simulation","逐项模拟"],rank_combos:["Combo ranking","组合排序"],recommend:["Recommendation","方案推荐"],assess_risk:["Risk assessment","风险评估"],render_policy_chart:["Visualization","可视化"],
+ assess_sovereign_debt:["Sovereign debt","主权债务"],analyze_subsidy:["Subsidy analysis","补贴分析"],evaluate_v2030:["V2030 financing","V2030 融资"],compute_sustainability_index:["Sustainability index","可持续指数"],monitor_oil_breakeven:["Oil breakeven","油价监测"],assess_reserves:["Reserve check","储备评估"],
+};
 function brdKeyOf(name){ if(/Orchestrator/.test(name))return "orch"; if(/Data Quality/.test(name))return "dq"; if(/Macro/.test(name))return "macro"; if(/Demand Intelligence/.test(name))return "demand"; if(/Supply-Demand Balancing/.test(name))return "sdb"; if(/Conversion/.test(name))return "conv"; if(/Policy Simulation/.test(name))return "policy"; if(/Fiscal|Financial/.test(name))return "fin"; return null; }
 
 // Orchestrator status — fixed-width element in the chat header. Idle: badge + grey nodes + "auto";
@@ -1836,6 +1847,8 @@ function ChatAnalysis(){
   const finActive=ai.on&&!ai.done&&!ai.gate&&ai.ag>=0&&AGENTS_T[ai.ag]&&brdKeyOf(AGENTS_T[ai.ag].ag)==="fin";
   const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
   const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
+  const actLabel=ac=>{const m=ACTLABEL[ac];return m?(lang==="zh"?m[1]:m[0]):ac.replace(/_/g," ");};
+  const actItem=(ac,ok,key)=>(<div key={key} className={"agact"+(ok?" ok":"")}><span className="agck">✓</span><span className="alab">{actLabel(ac)}</span></div>);
   const agentRow=(a)=>{
     const idxs=tmap[a.key]||[];
     const isActive=idxs.includes(ai.ag)&&!ai.done;
@@ -1845,7 +1858,7 @@ function ChatAnalysis(){
     const ticked=new Set(a.order.slice(0,k));
     return (<div key={a.key} className={"agrow"+(isActive?" active":done?" done":"")}>
       <div className="agrow-h"><span className="livedot"/><b>{Z(a,"name")}</b>{done?<span className="agdone">✓</span>:isActive?<span className="agtag">{L("running","运行中")}</span>:null}</div>
-      {isActive&&<div className="aglist">{a.acts.map((ac,j)=><div key={j} className={"agact"+(ticked.has(j)?" ok":"")}><span className="agck">{ticked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
+      {isActive&&<div className="aglist">{a.acts.map((ac,j)=>actItem(ac,ticked.has(j),j))}</div>}
     </div>);
   };
   // Orchestrator wraps the specialist agents — it coordinates throughout the run
@@ -1857,7 +1870,7 @@ function ChatAnalysis(){
   const rail=(<div className={"orch-wrap"+(ai.done?" done":orchActive?" active":"")}>
     <div className="agrow-h orch-h"><span className="livedot"/><b>{Z(orch,"name")}</b>
       {ai.done?<span className="agdone">✓</span>:orchActive?<span className="agtag">{L("coordinating","调度中")}</span>:<span className="agtag" style={{background:"#eef1ee",color:"var(--muted)"}}>{L("ready","就绪")}</span>}</div>
-    {orchActive&&<div className="aglist">{orch.acts.map((ac,j)=><div key={j} className={"agact"+(orchTicked.has(j)?" ok":"")}><span className="agck">{orchTicked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
+    {orchActive&&<div className="aglist">{orch.acts.map((ac,j)=>actItem(ac,orchTicked.has(j),j))}</div>}
     <div className="orch-children">{AGENT_ACTIONS.slice(1).map(agentRow)}</div>
   </div>);
   const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
