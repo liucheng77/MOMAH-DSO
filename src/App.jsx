@@ -1893,7 +1893,6 @@ function ChatAnalysis(){
     <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
       right={mafChip}/>
     <ReasoningStatus ai={ai} L={L} Z={Z}/>
-    {routedName&&<div className="route-banner">✦ Orchestrator {L("routed →","路由 →")} <b>{routedName}</b> {L("engine","引擎")}</div>}
     <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
         : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
