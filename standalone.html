@@ -900,28 +900,28 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 
 /* ---- Key Indicators dashboard ---- */
 /* ---- Balady hero / stat band ---- */
-.balady-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+.balady-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
   background:linear-gradient(120deg,var(--green-dark) 0%,var(--green) 70%,var(--green-700) 100%);
-  color:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;overflow:hidden;
-  box-shadow:0 8px 28px rgba(8,93,58,.26)}
-.balady-hero::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--gold),#ffe08a)}
-.balady-hero::after{content:"";position:absolute;right:-40px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(248,198,48,.18),transparent 70%);pointer-events:none}
+  color:#fff;border-radius:var(--radius);padding:12px 18px;margin-bottom:14px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(8,93,58,.2)}
+.balady-hero::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--gold),#ffe08a)}
+.balady-hero::after{content:"";position:absolute;right:-40px;top:-70px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(248,198,48,.16),transparent 70%);pointer-events:none}
 html[dir="rtl"] .balady-hero::after{right:auto;left:-40px}
 .balady-hero.mon{background:linear-gradient(120deg,#0b3b34 0%,var(--green-dark) 60%,var(--green) 100%)}
-.balady-hero .bh-main{min-width:240px}
-.bh-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
-  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;padding:3px 12px;margin-bottom:10px}
-.balady-hero h2{color:#fff;font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
-.balady-hero h2 small{font-size:15px;font-weight:700;opacity:.85}
-.balady-hero p{margin:8px 0 0;font-size:13px;color:rgba(255,255,255,.86);max-width:520px}
-.bh-stats{display:flex;gap:12px}
-.bh-stat{min-width:96px;text-align:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;backdrop-filter:blur(2px)}
-.bh-stat .v{font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.bh-stat .l{font-size:10.5px;font-weight:700;opacity:.82;margin-top:5px}
+.balady-hero .bh-main{min-width:220px}
+.bh-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;padding:2px 10px;margin-bottom:6px}
+.balady-hero h2{color:#fff;font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.15}
+.balady-hero h2 small{font-size:12px;font-weight:700;opacity:.85}
+.balady-hero p{margin:4px 0 0;font-size:12px;color:rgba(255,255,255,.86);max-width:520px}
+.bh-stats{display:flex;gap:8px}
+.bh-stat{min-width:78px;text-align:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:9px;padding:7px 10px;backdrop-filter:blur(2px)}
+.bh-stat .v{font-size:19px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.bh-stat .l{font-size:9.5px;font-weight:700;opacity:.82;margin-top:3px}
 .bh-stat.good{border-color:rgba(168,236,196,.5)}.bh-stat.good .v{color:#bff2d3}
 .bh-stat.amber .v{color:var(--gold)}
 .bh-stat.danger{border-color:rgba(255,176,160,.55)}.bh-stat.danger .v{color:#ffc7bb}
-@media(max-width:720px){.balady-hero h2{font-size:24px}.bh-stat{min-width:80px;padding:10px}}
+@media(max-width:720px){.balady-hero h2{font-size:18px}.bh-stat{min-width:68px;padding:6px 8px}}
 .ki-legend{display:inline-flex;gap:14px;font-size:11.5px;color:var(--muted);font-weight:700}
 .ki-legend span{display:inline-flex;align-items:center;gap:5px}
 .ki-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -1071,7 +1071,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:41 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:42 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
