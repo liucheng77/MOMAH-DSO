@@ -1737,7 +1737,6 @@ function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false})
     <div className="fiscal-head">
       <div><div className="eyebrow">{L("AI Agent theater · parameters","AI 智能体剧场参数配置")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div></div>
     </div>
-    {active&&<div className="synced-note">{L("From Financial Sustainability Agent: sustainability index 72 → 67 · net fiscal impact ≈ SAR 8B","来自 财政可持续 Agent:可持续指数 72 → 67 · 净财政冲击 ≈ SAR 8B")}</div>}
     <div className="fiscal-controls">
       <div className="fcfg">
         <div className="fcfg-l">{L("Coverage mode","覆盖范围")}</div>
