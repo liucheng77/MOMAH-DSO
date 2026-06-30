@@ -1940,7 +1940,6 @@ function ChatAnalysis(){
             <div className="row" style={{justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
               <span className="chip">✓ {L("Gap-closure plan ready · core output = SSOT data payload","缺口闭合方案就绪 · 核心产出 = SSOT 数据 payload")}</span>
               <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div>
-            <div className="payload">{"{ gap_units: 12400, coverage: 0.35, status: \"RED\", plan: { net_new: 6200, clusters: 3, measures:[\"M1\",\"M2\",\"M3\",\"PPP\"], closure: 0.97 }, derived:{ financial_sustainability:\"improving\" } } → DSS / AI_H_03 / CoPilot"}</div>
           </div>
           <AiRec d={AIREC.shock}/>
         </div>}

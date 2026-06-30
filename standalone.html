@@ -152,7 +152,6 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .agact.ok{color:var(--ink)}
 .agact .alab{flex:1;min-width:0}
 /* intent routing */
-.payload{margin-top:10px;background:#0f2a1e;color:#a7f3d0;border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
 .scan-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .ss-box{border:1px solid #e4e9ee;border-radius:10px;padding:12px 10px;text-align:center;background:#f7f9fb}
 .ss-box.ok{border-color:#bfe6cd;background:#f0f9f3}
@@ -1068,7 +1067,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 21:10 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 21:20 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2996,7 +2995,6 @@ function ChatAnalysis(){
             <div className="row" style={{justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
               <span className="chip">✓ {L("Gap-closure plan ready · core output = SSOT data payload","缺口闭合方案就绪 · 核心产出 = SSOT 数据 payload")}</span>
               <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div>
-            <div className="payload">{"{ gap_units: 12400, coverage: 0.35, status: \"RED\", plan: { net_new: 6200, clusters: 3, measures:[\"M1\",\"M2\",\"M3\",\"PPP\"], closure: 0.97 }, derived:{ financial_sustainability:\"improving\" } } → DSS / AI_H_03 / CoPilot"}</div>
           </div>
           <AiRec d={AIREC.shock}/>
         </div>}
