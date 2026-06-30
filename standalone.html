@@ -344,8 +344,12 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .ai-brief-actions,.preset-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .preset-row{margin-top:14px}
 .ai-brief-side{min-width:0}
-.theater.theater-fiscal{grid-template-columns:340px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 268px);margin-bottom:20px}
-.theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow-y:auto;min-height:0;max-height:100%;padding-bottom:14px}
+.theater.theater-fiscal{grid-template-columns:340px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 288px);margin-bottom:20px}
+.theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow-y:auto;min-height:0;max-height:100%;padding-bottom:28px;scrollbar-width:thin;scrollbar-color:#cdd7d1 transparent}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar,.theater.theater-fiscal>.tstream::-webkit-scrollbar,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar{width:6px}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar-thumb,.theater.theater-fiscal>.tstream::-webkit-scrollbar-thumb,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar-thumb{background:#cdd7d1;border-radius:6px}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar-thumb:hover,.theater.theater-fiscal>.tstream::-webkit-scrollbar-thumb:hover,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar-thumb:hover{background:#aab6af}
+.theater.theater-fiscal>.dsrail::-webkit-scrollbar-track,.theater.theater-fiscal>.tstream::-webkit-scrollbar-track,.theater.theater-fiscal>.fiscal-card::-webkit-scrollbar-track{background:transparent}
 .theater.theater-fiscal>.fiscal-card{position:static;top:auto}
 .reasoning-status{display:grid;grid-template-columns:1.05fr 1.8fr .65fr 1.1fr;gap:0;margin-bottom:14px;overflow:hidden}
 .rs-cell{padding:11px 14px;border-inline-start:1px solid var(--line);min-width:0}
@@ -1067,7 +1071,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 21:25 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 21:28 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
