@@ -142,10 +142,15 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .agact .alab{flex:1;min-width:0}
 /* intent routing */
 .payload{margin-top:10px;background:#0f2a1e;color:#a7f3d0;border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
-.scan-result{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-radius:9px;margin-bottom:12px;font-size:12.5px;border:1px solid #d6e4dc;background:#f0f7f3}
-.scan-result.warn{border-color:#f1d9a8;background:#fdf6e9}
-.scan-result.bad{border-color:#f2c9c2;background:#fbeeec}
-.scan-result .sr-chips{display:flex;gap:6px;margin-inline-start:auto;flex-wrap:wrap}
+.scan-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ss-box{border:1px solid #e4e9ee;border-radius:10px;padding:12px 10px;text-align:center;background:#f7f9fb}
+.ss-box.ok{border-color:#bfe6cd;background:#f0f9f3}
+.ss-box.amber{border-color:#f1dca8;background:#fdf7ea}
+.ss-box.red{border-color:#f2ccc4;background:#fbefed}
+.ss-box .ss-n{font-size:24px;font-weight:800;line-height:1.1}
+.ss-box.ok .ss-n{color:#1B8354}.ss-box.amber .ss-n{color:#9a6a00}.ss-box.red .ss-n{color:#b42318}
+.ss-box .ss-l{font-size:11px;color:var(--muted);margin-top:3px}
+.scan-issues{margin-top:14px;font-size:12.5px}
 .ing-badge{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap}
 .ing-badge.ok{background:#e3f4ea;color:#1B8354}
 .ing-badge.amber{background:#fcf0d8;color:#9a6a00}

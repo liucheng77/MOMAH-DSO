@@ -2106,6 +2106,7 @@ function Monitoring(){
   const [scanning,setScanning]=useState(false);
   const [lastScan,setLastScan]=useState(nowStr(lang));
   const [scanRes,setScanRes]=useState(null);
+  const [scanModal,setScanModal]=useState(false);
   // per-source ingestion verdict: ok→received, amber→delayed, red→missing
   const ingestOf=s=> s.status==="red"?"miss":(s.status==="amber"||s.fresh<85)?"delay":"recv";
   function scan(){ if(scanning) return; setScanning(true); setScanRes(null); pushLog("log_scan");
@@ -2115,14 +2116,14 @@ function Monitoring(){
         if(v==="recv")recv++; else if(v==="delay"){delay++;issues.push(t("src_"+s.key));} else {miss++;issues.push(t("src_"+s.key));} });
       const dq=(SOURCES11.reduce((a,s)=>a+s.fresh,0)/SOURCES11.length).toFixed(1);
       setScanRes({per,recv,delay,miss,dq,issues,at:nowStr(lang)});
-      setScanning(false); setLastScan(nowStr(lang)); raiseGapAlert(); pushLog("log_alert");
+      setScanning(false); setLastScan(nowStr(lang)); setScanModal(true); raiseGapAlert(); pushLog("log_alert");
     },1900);
   }
   const open=alerts.filter(a=>!a.ack);
   const ingTone={recv:"ok",delay:"amber",miss:"red"};
   const ingLabel={recv:t("ingRecv"),delay:t("delayed"),miss:t("ingMiss")};
   return (<div className="fade">
-    <PageHeader title={t("nav_monitor")} sub={t("mon_sub")} right={<AgentBadge name={t("eng_demand")}/>}/>
+    <PageHeader title={t("nav_monitor")} sub={t("mon_sub")}/>
     {scanning&&<div className="scan-bar" style={{marginBottom:14}}><span/></div>}
     <div className="banner" style={{marginBottom:14}}>⚠ {t("dq_degraded")} · {t("dq_ticket")} (#DQ-2407)</div>
     <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right">
@@ -2130,15 +2131,6 @@ function Monitoring(){
       <span className="chip">{scanRes?(scanRes.recv+" / 11 ●"):"9 / 11 ●"}</span>
       <button className="btn" onClick={scan} disabled={scanning}>{scanning?t("scanning"):("◉ "+t("runScan"))}</button>
     </span>}>
-      {scanRes&&<div className={"scan-result"+(scanRes.miss?" bad":scanRes.delay?" warn":" ok")}>
-        <b>✓ {t("scanDone")}</b> <span className="muted">· {t("scanNote")}</span>
-        <span className="sr-chips">
-          <span className="chip ok">✓ {scanRes.recv} {t("ingRecv")}</span>
-          <span className="chip amber">⏱ {scanRes.delay} {t("delayed")}</span>
-          <span className="chip danger">✕ {scanRes.miss} {t("ingMiss")}</span>
-        </span>
-        {scanRes.issues.length>0&&<div className="muted" style={{fontSize:11.5,marginTop:6,flexBasis:"100%"}}>{t("delayed")} / {t("ingMiss")}: <b>{scanRes.issues.join(" · ")}</b></div>}
-      </div>}
       <div className="mon-grid">
         {SOURCES11.map(s=>{ const tone=s.status==="ok"?"":s.status==="amber"?"amber":"red";
           const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
@@ -2158,6 +2150,20 @@ function Monitoring(){
       {alerts.length===0? <div className="muted">{t("noAlerts")}</div> :
         alerts.map(a=><AlertCard key={a.id} a={a}/>)}
     </Section>
+    {scanModal&&scanRes&&<Modal title={"✓ "+t("scanDone")} onClose={()=>setScanModal(false)}>
+      <div className="muted" style={{fontSize:12.5,marginBottom:12}}>{t("scanNote")}</div>
+      <div className="scan-stats">
+        <div className="ss-box ok"><div className="ss-n">{scanRes.recv}</div><div className="ss-l">{t("ingRecv")}</div></div>
+        <div className="ss-box amber"><div className="ss-n">{scanRes.delay}</div><div className="ss-l">{t("delayed")}</div></div>
+        <div className="ss-box red"><div className="ss-n">{scanRes.miss}</div><div className="ss-l">{t("ingMiss")}</div></div>
+        <div className="ss-box"><div className="ss-n">{scanRes.dq}</div><div className="ss-l">{t("dq_score")}</div></div>
+      </div>
+      {scanRes.issues.length>0&&<div className="scan-issues">
+        <b>{t("delayed")} / {t("ingMiss")}</b>
+        <div style={{marginTop:6}}>{scanRes.issues.map((x,i)=><span key={i} className="chip amber" style={{marginInlineEnd:6}}>⚠ {x}</span>)}</div>
+      </div>}
+      <div className="muted mono" style={{fontSize:11,marginTop:12,textAlign:"end"}}>{scanRes.at}</div>
+    </Modal>}
   </div>);
 }
 
