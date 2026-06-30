@@ -131,7 +131,13 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .dsc .dsname{flex:1}
 .dsc .st{font-size:9.5px;font-weight:700;color:#1bbf6e}
 /* agent rail (left) */
+.orch-wrap{border:1.5px solid var(--line);border-radius:11px;background:#fafbff;padding:9px;transition:.2s}
+.orch-wrap.active{border-color:#4f46e5;box-shadow:0 2px 12px rgba(79,70,229,.13)}
+.orch-wrap.done{border-color:var(--green-100);background:var(--green-50)}
+.orch-wrap .orch-h b{font-size:12.8px}
+.orch-children{margin-top:9px;padding-inline-start:11px;border-inline-start:2px dashed #cfd6e6}
 .agrow{border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:#fff;overflow:hidden;transition:.2s}
+.orch-children .agrow:last-child{margin-bottom:0}
 .agrow.active{border-color:#4f46e5;box-shadow:0 2px 10px rgba(79,70,229,.12)}
 .agrow.done{border-color:var(--green-100);background:var(--green-50)}
 .agrow-h{display:flex;align-items:center;gap:7px;padding:8px 10px;font-size:12px}
@@ -1009,7 +1015,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-29 21:04 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 13:23 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2833,19 +2839,30 @@ function ChatAnalysis(){
   const finActive=ai.on&&!ai.done&&!ai.gate&&ai.ag>=0&&AGENTS_T[ai.ag]&&brdKeyOf(AGENTS_T[ai.ag].ag)==="fin";
   const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
   const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
-  const rail=AGENT_ACTIONS.map(a=>{
+  const agentRow=(a)=>{
     const idxs=tmap[a.key]||[];
     const isActive=idxs.includes(ai.ag)&&!ai.done;
     const passed=idxs.length>0&&Math.max.apply(null,idxs)<ai.ag;
     const done=ai.done||passed;
-    const reached=isActive;   // only the running agent stays expanded; completed ones collapse
     const k=done?a.acts.length:isActive?Math.max(1,Math.ceil(((ai.line+1)/linesLen)*a.acts.length)):0;
     const ticked=new Set(a.order.slice(0,k));
     return (<div key={a.key} className={"agrow"+(isActive?" active":done?" done":"")}>
       <div className="agrow-h"><span className="livedot"/><b>{Z(a,"name")}</b>{done?<span className="agdone">✓</span>:isActive?<span className="agtag">{L("running","运行中")}</span>:null}</div>
-      {reached&&<div className="aglist">{a.acts.map((ac,j)=><div key={j} className={"agact"+(ticked.has(j)?" ok":"")}><span className="agck">{ticked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
+      {isActive&&<div className="aglist">{a.acts.map((ac,j)=><div key={j} className={"agact"+(ticked.has(j)?" ok":"")}><span className="agck">{ticked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
     </div>);
-  });
+  };
+  // Orchestrator wraps the specialist agents — it coordinates throughout the run
+  const orch=AGENT_ACTIONS[0];
+  const orchActive=ai.on&&!ai.done;
+  const overall=ai.done?1:(ai.on?Math.min(1,(Math.max(0,ai.ag)+(ai.line+1)/linesLen)/AGENTS_T.length):0);
+  const orchK=ai.done?orch.acts.length:orchActive?Math.max(1,Math.round(overall*orch.acts.length)):0;
+  const orchTicked=new Set(orch.order.slice(0,orchK));
+  const rail=(<div className={"orch-wrap"+(ai.done?" done":orchActive?" active":"")}>
+    <div className="agrow-h orch-h"><span className="livedot"/><b>{Z(orch,"name")}</b>
+      {ai.done?<span className="agdone">✓</span>:orchActive?<span className="agtag">{L("coordinating","调度中")}</span>:<span className="agtag" style={{background:"#eef1ee",color:"var(--muted)"}}>{L("ready","就绪")}</span>}</div>
+    {orchActive&&<div className="aglist">{orch.acts.map((ac,j)=><div key={j} className={"agact"+(orchTicked.has(j)?" ok":"")}><span className="agck">{orchTicked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
+    <div className="orch-children">{AGENT_ACTIONS.slice(1).map(agentRow)}</div>
+  </div>);
   const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
   const cards=[];
   for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){

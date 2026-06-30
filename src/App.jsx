@@ -1836,19 +1836,30 @@ function ChatAnalysis(){
   const finActive=ai.on&&!ai.done&&!ai.gate&&ai.ag>=0&&AGENTS_T[ai.ag]&&brdKeyOf(AGENTS_T[ai.ag].ag)==="fin";
   const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
   const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
-  const rail=AGENT_ACTIONS.map(a=>{
+  const agentRow=(a)=>{
     const idxs=tmap[a.key]||[];
     const isActive=idxs.includes(ai.ag)&&!ai.done;
     const passed=idxs.length>0&&Math.max.apply(null,idxs)<ai.ag;
     const done=ai.done||passed;
-    const reached=isActive;   // only the running agent stays expanded; completed ones collapse
     const k=done?a.acts.length:isActive?Math.max(1,Math.ceil(((ai.line+1)/linesLen)*a.acts.length)):0;
     const ticked=new Set(a.order.slice(0,k));
     return (<div key={a.key} className={"agrow"+(isActive?" active":done?" done":"")}>
       <div className="agrow-h"><span className="livedot"/><b>{Z(a,"name")}</b>{done?<span className="agdone">✓</span>:isActive?<span className="agtag">{L("running","运行中")}</span>:null}</div>
-      {reached&&<div className="aglist">{a.acts.map((ac,j)=><div key={j} className={"agact"+(ticked.has(j)?" ok":"")}><span className="agck">{ticked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
+      {isActive&&<div className="aglist">{a.acts.map((ac,j)=><div key={j} className={"agact"+(ticked.has(j)?" ok":"")}><span className="agck">{ticked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
     </div>);
-  });
+  };
+  // Orchestrator wraps the specialist agents — it coordinates throughout the run
+  const orch=AGENT_ACTIONS[0];
+  const orchActive=ai.on&&!ai.done;
+  const overall=ai.done?1:(ai.on?Math.min(1,(Math.max(0,ai.ag)+(ai.line+1)/linesLen)/AGENTS_T.length):0);
+  const orchK=ai.done?orch.acts.length:orchActive?Math.max(1,Math.round(overall*orch.acts.length)):0;
+  const orchTicked=new Set(orch.order.slice(0,orchK));
+  const rail=(<div className={"orch-wrap"+(ai.done?" done":orchActive?" active":"")}>
+    <div className="agrow-h orch-h"><span className="livedot"/><b>{Z(orch,"name")}</b>
+      {ai.done?<span className="agdone">✓</span>:orchActive?<span className="agtag">{L("coordinating","调度中")}</span>:<span className="agtag" style={{background:"#eef1ee",color:"var(--muted)"}}>{L("ready","就绪")}</span>}</div>
+    {orchActive&&<div className="aglist">{orch.acts.map((ac,j)=><div key={j} className={"agact"+(orchTicked.has(j)?" ok":"")}><span className="agck">{orchTicked.has(j)?"✓":"○"}</span>{ac}</div>)}</div>}
+    <div className="orch-children">{AGENT_ACTIONS.slice(1).map(agentRow)}</div>
+  </div>);
   const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
   const cards=[];
   for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
