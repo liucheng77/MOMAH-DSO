@@ -20,12 +20,12 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;height:100%}
 body{
-  font-family:'IBM Plex Sans Arabic','IMBPlexSansArabic',system-ui,-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,Roboto,Arial,sans-serif;
+  font-family:"IBM Plex Sans Arabic","PingFang SC","Microsoft YaHei",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   background:var(--bg); color:var(--ink); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
 }
-html[dir="rtl"] body{font-family:'IBM Plex Sans Arabic','IMBPlexSansArabic',system-ui,-apple-system,Arial,sans-serif}
+html[dir="rtl"] body{font-family:"IBM Plex Sans Arabic",system-ui,Arial,sans-serif}
 #root{height:100%}
-button,input,select,textarea{font-family:'IBM Plex Sans Arabic','IMBPlexSansArabic',inherit}
+button,input,select,textarea{font-family:"IBM Plex Sans Arabic",inherit}
 button{cursor:pointer}
 a{color:inherit}
 h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
@@ -130,33 +130,6 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .dsc{display:flex;align-items:center}
 .dsc .dsname{flex:1}
 .dsc .st{font-size:9.5px;font-weight:700;color:#1bbf6e}
-/* agent rail (left) */
-.orch-wrap{border:1.5px solid var(--line);border-radius:11px;background:#fafbff;padding:9px;transition:.2s}
-.orch-wrap.active{border-color:#4f46e5;box-shadow:0 2px 12px rgba(79,70,229,.13)}
-.orch-wrap.done{border-color:var(--green-100);background:var(--green-50)}
-.orch-wrap .orch-h b{font-size:12.8px}
-.orch-children{margin-top:9px;padding-inline-start:11px;border-inline-start:2px dashed #cfd6e6}
-.agrow{border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:#fff;overflow:hidden;transition:.2s}
-.orch-children .agrow:last-child{margin-bottom:0}
-.agrow.active{border-color:#4f46e5;box-shadow:0 2px 10px rgba(79,70,229,.12)}
-.agrow.done{border-color:var(--green-100);background:var(--green-50)}
-.agrow-h{display:flex;align-items:center;gap:7px;padding:8px 10px;font-size:12px}
-.agrow-h b{flex:1;min-width:0;font-size:11.8px;line-height:1.25}
-.agrow .agtag{font-size:9px;font-weight:700;color:#4f46e5;background:#eef0fc;border-radius:6px;padding:2px 6px}
-.agrow .agdone{color:var(--green-dark);font-weight:800}
-.aglist{padding:8px 4px 4px;display:flex;flex-direction:column;gap:5px;animation:tfade .3s}
-.agrow .aglist{padding:2px 10px 9px 26px}
-.agact{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted)}
-.agact .agck{width:16px;height:16px;border-radius:50%;border:1.5px solid #cdd5e1;background:#fff;display:grid;place-items:center;font-size:9px;line-height:1;color:transparent;flex:0 0 auto;transition:.2s}
-.agact.ok .agck{background:var(--green);border-color:var(--green);color:#fff}
-.agact.ok{color:var(--ink)}
-.agact .alab{flex:1;min-width:0}
-/* intent routing */
-.payload{margin-top:10px;background:#0f2a1e;color:#a7f3d0;border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
-.route-banner{background:#eef0fc;border:1px solid #d6dbf7;color:#3730a3;border-radius:9px;padding:8px 12px;font-size:12.5px;margin-bottom:12px}
-.route-banner b{color:#4f46e5}
-.agentcard.routed{border-color:#4f46e5}
-.agentcard.routed .ah .routed-tag{font-size:9.5px;font-weight:700;color:#4f46e5;background:#eef0fc;border:1px solid #d6dbf7;border-radius:6px;padding:1px 6px;margin-inline-start:7px}
 .dsc.ok .st{color:var(--green-dark)}
 .dsrail .rail-h{display:flex;align-items:center;gap:2px}
 /* flow diagram overlay */
@@ -185,121 +158,13 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .fgate-b{font-size:12px;color:var(--ink);padding:8px 12px 0}
 .fdeliv{flex:0 0 auto;width:200px;background:#eef1ee;border:1px solid var(--line);border-radius:12px;padding:12px 14px;align-self:stretch}
 .fdeliv-h{font-weight:700;font-size:13px;margin-bottom:6px}
-/* vertical flow in side drawer */
-.vflow{display:flex;flex-direction:column}
-.vsrc,.vdeliv{background:#eef1ee;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.vsrc-h{font-weight:700;font-size:13px}
-.src-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.srcchip{font-size:11px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 10px;display:inline-flex;align-items:center;gap:6px}
-.srcchip:before{content:"";width:6px;height:6px;border-radius:50%;background:#1bbf6e;display:inline-block;animation:livePulse 1.6s infinite}
-.vconn{height:40px;display:flex;align-items:center;justify-content:center;position:relative}
-.vconn:before{content:"";position:absolute;top:0;bottom:0;inset-inline-start:50%;transform:translateX(-50%);width:3px;background-image:linear-gradient(#2563eb 55%,transparent 0);background-size:100% 11px;background-repeat:repeat-y;animation:flowdash .55s linear infinite}
-@keyframes flowdash{to{background-position:0 11px}}
-.vconn .vlabel{position:relative;z-index:1;background:#eaf0fb;border:1px solid #d4e0f7;color:#2f57b6;font-size:10.5px;font-weight:600;border-radius:7px;padding:3px 9px}
-.vstage{border:1.5px solid #2563eb;border-radius:12px;overflow:hidden;background:#fff}
-.vstage-h{background:#2563eb;color:#fff;font-weight:700;font-size:13px;padding:9px 13px}
-.vstage-b{padding:8px}
-.vstage.gate{border-color:#e6c878}
-.vstage.gate .vstage-h{background:#fdf4e3;color:#7a5a12}
-.vgate-b{padding:10px 13px;font-size:12.5px}
-.vagent{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fbfdfc}
-.vagent+.vagent{margin-top:8px}
-.va-h{display:flex;align-items:center;gap:8px;font-size:13px}
-.va-h .aic{width:24px;height:24px;border-radius:6px;background:#eef0fc;color:#4f46e5;display:grid;place-items:center;flex:0 0 auto;font-size:13px}
-.va-h .gdot{width:9px;height:9px;border-radius:50%;background:#1bbf6e;flex:0 0 auto;animation:livePulse 1.6s infinite}
-.va-io{display:flex;align-items:stretch;gap:7px;margin-top:9px}
-.va-io .io-box{flex:1;border:1px dashed;border-radius:8px;padding:7px 9px;font-size:11.5px;line-height:1.35}
-.va-io .io-box.in{border-color:#9fb6e8;background:#f3f7fd;color:#23457f}
-.va-io .io-box.out{border-color:#9ad3b4;background:#eef9f2;color:#13593a}
-.va-io .io-l{display:block;font-size:9px;font-weight:700;letter-spacing:.5px;margin-bottom:3px;opacity:.8}
-.va-io .io-arrow{align-self:center;color:#9aa3ab;font-size:14px;flex:0 0 auto}
-.va-io.col{flex-direction:column;align-items:stretch;gap:4px}
-.va-io.col .io-arrow.down{align-self:center;line-height:1}
-/* flow toolbar / ownership band / storyline agent rows (ref: directorate flow) */
-.flow-tabs{display:flex;justify-content:flex-end;margin:-4px 0 12px}
-.flow-tabs .seg{display:inline-flex;background:#eef1ee;border-radius:999px;padding:3px}
-.flow-tabs .seg button{border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);padding:6px 15px;border-radius:999px;cursor:pointer}
-.flow-tabs .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(16,33,28,.12)}
-.flow-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#f6f9ff;border:1px solid #e0e8f6;border-radius:10px;padding:9px 13px;margin-bottom:16px}
-.fown{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11.5px}
-.fown-l{font-weight:800;color:var(--muted);letter-spacing:.04em;font-size:10.5px}
-.fchip-plat{background:#2563eb;color:#fff;border-radius:999px;padding:3px 11px;font-weight:700;font-size:11px}
-.fchip-cust{background:#fff;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:3px 11px;font-weight:600;font-size:11px}
-.fstatus{color:var(--green-dark);font-size:11.5px;font-weight:700;white-space:nowrap}
-.fag{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;margin-bottom:7px;font-size:12.5px}
-.fag b{font-weight:600}
-.fdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
-.fdot.plat{background:#2563eb}
-.fdot.cust{background:#fff;border:1.5px solid #c2c9d4}
-/* horizontal wide agent I/O flow */
-.hscroll{flex:1;min-height:0;overflow:auto}
-.hsnake{display:flex;flex-direction:column;width:max-content;padding-bottom:10px}
-.hrow{display:flex;align-items:stretch}
-/* carriage-return connector: rises from Conversion bottom (right, ~99px in) → across → drops into Policy top (left, ~99px in) */
-.hreturn{position:relative;height:62px}
-.hreturn .hline{position:absolute;inset-inline-start:99px;inset-inline-end:99px;top:50%;transform:translateY(-50%);height:3px;background-image:linear-gradient(90deg,#2563eb 55%,transparent 0);background-size:11px 100%;background-repeat:repeat-x;animation:flowdashX .55s linear infinite}
-.hreturn .elbow{position:absolute;width:3px;background:#2563eb}
-.hreturn .elbow.r{inset-inline-end:99px;top:0;height:50%}
-.hreturn .elbow.l{inset-inline-start:99px;top:50%;height:50%}
-.hreturn .elbow.l:after{content:"▼";position:absolute;inset-inline-start:-5px;bottom:-12px;color:#2563eb;font-size:12px}
-.hreturn .vlabel{position:absolute;inset-inline-start:50%;top:50%;transform:translate(-50%,-50%);z-index:1;background:#eaf0fb;border:1px solid #d4e0f7;color:#2f57b6;font-size:10px;font-weight:600;border-radius:7px;padding:3px 9px;white-space:nowrap}
-/* ===== chat reasoning theater: fixed top/left/right, scrolling middle ===== */
-.chat-theater{display:flex;flex-direction:column}
-.ct-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0 12px}
-.ct-grid{display:grid;grid-template-columns:206px minmax(0,1fr) 312px;gap:16px;height:calc(100vh - var(--topbar-h) - 172px)}
-@media(max-width:1024px){.ct-grid{grid-template-columns:1fr;height:auto}}
-.ct-left,.ct-right{align-self:start;max-height:calc(100vh - var(--topbar-h) - 172px);overflow:auto}
-@media(max-width:1024px){.ct-left,.ct-right{max-height:none}}
-.ct-left{padding:14px !important}
-.ct-left .rail-h{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
-.ct-mid{overflow-y:auto;padding:2px 8px 24px 2px}
-.ct-mid .tmsg{display:flex;gap:12px;margin-bottom:20px;animation:tfade .4s ease}
-.ct-mid .tav{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto;color:#fff}
-.ct-mid .tbub{flex:1;min-width:0;font-size:14px}
-.ct-mid .tnm{font-size:12.5px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px;color:var(--ink)}
-.ct-mid .ttag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;color:var(--muted);background:#eef1ee}
-.tbody p{margin:0;line-height:1.78}.tbody p+p{margin-top:9px}
-.tbody b,.tbody strong{font-weight:700}
-.tbody .inline{display:inline-block;background:#f3f6f4;border-radius:5px;padding:1px 7px;font-weight:600;font-size:13px;margin:0 2px;font-variant-numeric:tabular-nums}
-.tbody .inline.r{color:#dc2626}.tbody .inline.g{color:#059669}.tbody .inline.a{color:#d97706}
-.tbody .thinking{display:inline-flex;gap:4px;margin-inline-start:5px;vertical-align:middle}
-.tbody .thinking span{width:5px;height:5px;border-radius:50%;background:#9ca3af;animation:tp 1.2s infinite}
-.tbody .thinking span:nth-child(2){animation-delay:.2s}.tbody .thinking span:nth-child(3){animation-delay:.4s}
-@keyframes tp{0%,60%,100%{opacity:.3}30%{opacity:1}}
-.tbody table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
-.tbody th{text-align:start;padding:8px 10px;background:#f9fafb;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--line)}
-.tbody td{padding:8px 10px;border-bottom:1px solid #f1f4f2;line-height:1.55}
-.tbody tr:last-child td{border-bottom:none}
-.tbody blockquote{margin:11px 0;padding:10px 14px;border-inline-start:3px solid #2563eb;background:#f7faff;border-radius:0 6px 6px 0;font-size:13px;color:#1e3a5f;line-height:1.7}
-.tbody blockquote.w{border-inline-start-color:#d97706;background:#fffdf5;color:#78350f}
-.tbody blockquote.e{border-inline-start-color:#dc2626;background:#fff6f6;color:#7f1d1d}
-.tbody blockquote.s{border-inline-start-color:#059669;background:#f4fff9;color:#064e3b}
-.hcol{flex:0 0 auto;align-self:stretch}
-.hsrc,.hdeliv{width:150px;background:#eef1ee;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.hstage{width:198px;border:1.5px solid #2563eb;border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
-.hstage-h{background:#2563eb;color:#fff;font-weight:700;font-size:12px;padding:8px 11px;line-height:1.25}
-.hstage-b{padding:7px;display:flex;flex-direction:column;gap:7px}
-.hstage.gate{border-color:#e6c878;width:182px}
-.hstage.gate .hstage-h{background:#fdf4e3;color:#7a5a12}
-.hgate-b{padding:10px 12px;font-size:12px}
-.hstage .vagent{padding:8px}
-.hstage .va-h{font-size:12.5px}
-.hstage .va-io.col .io-box{font-size:10.5px;padding:5px 7px}
-.hstage .va-io.col .io-l{font-size:8.5px}
-.hconn{flex:0 0 auto;width:94px;display:flex;align-items:center;justify-content:center;position:relative;align-self:center}
-.hconn:before{content:"";position:absolute;inset-inline-start:4px;inset-inline-end:10px;top:50%;transform:translateY(-50%);height:3px;background-image:linear-gradient(90deg,#2563eb 55%,transparent 0);background-size:11px 100%;background-repeat:repeat-x;animation:flowdashX .55s linear infinite}
-.hconn:after{content:"▶";position:absolute;inset-inline-end:0;top:50%;transform:translateY(-50%);color:#2563eb;font-size:11px;z-index:2}
-[dir=rtl] .hconn:after{content:"◀"}
-@keyframes flowdashX{to{background-position:11px 0}}
-.hconn .vlabel{position:relative;z-index:1;background:#eaf0fb;border:1px solid #d4e0f7;color:#2f57b6;font-size:9.5px;font-weight:600;border-radius:7px;padding:3px 6px;text-align:center;line-height:1.2;max-width:84px}
 @keyframes tfade{from{opacity:0;transform:translateY(3px)}to{opacity:1}}
 .gate-card{border:1.5px solid #b9770e;background:#fdf4e3;border-radius:12px;padding:16px;margin-bottom:10px}
 .btn.amber{background:#b9770e;color:#fff;border-color:#b9770e}.btn.amber:hover{filter:brightness(1.06)}
 /* side drawer */
-.drawer-ov{position:fixed;inset:0;background:rgba(16,33,28,.46);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:60;display:flex;justify-content:flex-end;animation:ovf .2s}
+.drawer-ov{position:fixed;inset:0;background:rgba(16,33,28,.42);z-index:60;display:flex;justify-content:flex-end;animation:ovf .2s}
 [dir=rtl] .drawer-ov{justify-content:flex-start}
 .drawer-panel{width:min(760px,94vw);background:#fff;height:100vh;display:flex;flex-direction:column;box-shadow:-10px 0 36px rgba(16,33,28,.2);animation:drslide .3s cubic-bezier(.2,.7,.2,1)}
-.drawer-panel.wide{width:min(1500px,99vw)}
 @keyframes drslide{from{transform:translateX(100%)}to{transform:translateX(0)}}
 [dir=rtl] .drawer-panel{animation:drslideR .3s cubic-bezier(.2,.7,.2,1)}
 @keyframes drslideR{from{transform:translateX(-100%)}to{transform:translateX(0)}}
@@ -321,82 +186,6 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 /* multi-agent flow chip */
 .maf-chip{border:1px solid #c7c2f2;background:#eef0fc;color:#4f46e5;font:inherit;font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:.15s}
 .maf-chip:hover{background:#4f46e5;color:#fff;border-color:#4f46e5}
-.ai-brief-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:stretch;min-height:560px}
-.ai-brief-main{padding:30px 32px!important;background:linear-gradient(135deg,#ffffff 0%,#f7fbff 56%,#eef0fc 100%);border-color:#d9ddf7;position:relative;overflow:hidden}
-.ai-brief-main:before{content:"";position:absolute;inset-inline-end:28px;top:28px;width:96px;height:96px;border-radius:50%;border:1px solid #d9ddf7;background:radial-gradient(circle,#fff 0 34%,#eef0fc 35% 58%,transparent 59%)}
-.eyebrow{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4f46e5;margin-bottom:8px}
-.ai-brief-main h2{font-size:30px;line-height:1.12;max-width:720px;margin:0 0 12px}
-.ai-brief-main p{font-size:14px;color:var(--muted);max-width:720px;margin:0 0 18px}
-.ai-brief-actions,.preset-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
-.preset-row{margin-top:14px}
-.ai-brief-side{min-width:0}
-.theater.theater-fiscal{grid-template-columns:340px minmax(0,1fr) 212px;align-items:stretch;height:calc(100vh - var(--topbar-h) - 232px)}
-.theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow-y:auto;min-height:0;max-height:100%}
-.theater.theater-fiscal>.fiscal-card{position:static;top:auto}
-.reasoning-status{display:grid;grid-template-columns:1.05fr 1.8fr .65fr 1.1fr;gap:0;margin-bottom:14px;overflow:hidden}
-.rs-cell{padding:11px 14px;border-inline-start:1px solid var(--line);min-width:0}
-.rs-cell:first-child{border-inline-start:none}
-.rs-cell span{display:block;color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
-.rs-cell b{display:block;font-size:12.5px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rs-cell.live b{color:#4f46e5}
-.fiscal-card{background:#fff;border:1px solid #d9ddf7;border-radius:12px;box-shadow:var(--shadow);padding:15px;position:sticky;top:calc(var(--topbar-h) + 14px);align-self:start}
-.fiscal-card.compact{position:relative;top:auto;height:100%;display:flex;flex-direction:column}
-.fiscal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.fiscal-head h3{font-size:16px;line-height:1.25;margin:0}
-.fiscal-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.fiscal-metrics div{border:1px solid var(--line);border-radius:10px;padding:9px;background:#fbfdfc}
-.fiscal-metrics span{display:block;color:var(--muted);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
-.fiscal-metrics b{display:block;margin-top:4px;font-size:15px;line-height:1.2;color:var(--ink);font-variant-numeric:tabular-nums}
-.fiscal-controls{display:grid;gap:10px;margin-bottom:12px}
-.fslider span{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:5px;font-size:12px}
-.fslider em{font-style:normal;color:#4f46e5;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-.fslider input{width:100%;accent-color:#4f46e5}
-.fslider .fnote{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
-.fcfg{margin-bottom:4px}
-.fcfg-l{font-size:12.5px;font-weight:600;margin-bottom:7px}
-.seg2{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
-.seg2 button{flex:1;border:0;background:transparent;font:inherit;font-size:12px;font-weight:600;color:var(--muted);padding:6px 6px;border-radius:999px;cursor:pointer;white-space:nowrap}
-.seg2 button.on{background:var(--green);color:#fff;box-shadow:0 1px 4px rgba(27,131,84,.28)}
-.fcfg .fnote{display:block;font-size:10.5px;color:var(--muted);margin-top:5px}
-.fiscal-card.synced{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.16)}
-.synced-tag{font-size:10px;font-weight:700;color:#4f46e5;margin-inline-start:8px;background:#eef0fc;border-radius:6px;padding:2px 7px}
-.synced-note{background:#eef0fc;border:1px solid #d8def7;border-radius:8px;padding:7px 10px;font-size:11.5px;color:#3730a3;margin-bottom:12px;line-height:1.5}
-.gate-fiscal{font-size:12.5px;margin:2px 0 12px;padding:9px 11px;border-radius:8px;line-height:1.5}
-.gate-fiscal.pass{background:var(--green-50);color:var(--green-dark)}
-.gate-fiscal.fail{background:#fdecea;color:var(--danger)}
-/* Live demo case · ask box docked at the bottom of the card */
-.ai-brief-main{display:flex;flex-direction:column}
-.ask-dock{margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
-.ask-row{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:8px 8px 8px 14px;background:#fff;transition:border-color .15s,box-shadow .15s}
-.ask-row:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-100)}
-.ask-row .ask-ic{color:#4f46e5;font-size:16px;flex:0 0 auto}
-.ask-row .ask-input{flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:14px;min-width:0}
-.ask-row .btn{flex:0 0 auto}
-.calc-chain{display:grid;gap:7px}
-.calc-chain div{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;border:1px dashed #d8def7;border-radius:8px;padding:8px;background:#f8f9ff;font-size:11.8px;line-height:1.45}
-.calc-chain b{width:22px;height:22px;border-radius:7px;background:#4f46e5;color:#fff;display:grid;place-items:center;font-size:11px}
-.calc-chain strong{color:var(--green-dark);font-weight:800}
-.output-stack{display:grid;gap:6px;margin-top:12px}
-.output-stack div{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:7px;font-size:11.5px}
-.output-stack span{color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
-.output-stack b{text-align:end;font-size:11.5px}
-@media(max-width:1200px){
-  .theater.theater-fiscal{grid-template-columns:200px minmax(0,1fr);height:auto}
-  .theater.theater-fiscal>.dsrail,.theater.theater-fiscal>.tstream,.theater.theater-fiscal>.fiscal-card{overflow:visible;max-height:none}
-  .theater.theater-fiscal>.fiscal-card{grid-column:1/-1;position:relative;top:auto}
-  .reasoning-status{grid-template-columns:1fr 1fr}
-}
-@media(max-width:860px){
-  .ai-brief-grid,.theater.theater-fiscal{grid-template-columns:1fr}
-  .ai-brief-main h2{font-size:24px}
-  .reasoning-status{grid-template-columns:1fr}
-  .rs-cell{border-inline-start:none;border-top:1px solid var(--line)}
-  .rs-cell:first-child{border-top:none}
-}
-@media(max-width:560px){
-  .fiscal-metrics{grid-template-columns:1fr}
-  .ai-brief-main{padding:22px 18px!important}
-}
 /* KPI animation */
 .ki-card.pop{animation:kpipop .5s both}
 @keyframes kpipop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -1029,7 +818,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 19:26 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-28 21:53 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2013,6 +1802,7 @@ function TopBar(){
       })}
     </nav>
     <div className="right">
+      <CoverageSwitch/>
       <button className="icobtn" title="Search" aria-label="Search">⌕</button>
       <div className="usermenu">
         <button className="icobtn" title={notifLbl} aria-label={notifLbl} onClick={()=>setNotif(n=>!n)}>◔{openAlerts?<span className="badge">{openAlerts}</span>:null}</button>
@@ -2600,14 +2390,15 @@ function downloadBriefing(){
   }catch(e){ window.print(); }
 }
 /* ---- Multi-agent reasoning theater data ---- */
-const DS11=[["DS-01","Sakani"],["DS-02","Wafi"],["DS-03","IDMS"],["DS-04","Ejari"],["DS-05","MoF/Budget"],["DS-06","SEC"],["DS-07","MOJ Price"],["DS-08","GASTAT"],["DS-09","Private Mkt"],["DS-10","Geo/GIS"],["DS-11","Banks/Loans"]];
+const DS11=[["DS-01","Sakani"],["DS-02","Wafi"],["DS-03","IDMS"],["DS-04","Ejari"],["DS-05","MoF"],["DS-06","SEC"],["DS-07","MOJ Price"],["DS-08","GASTAT"],["DS-09","Private Mkt"],["DS-10","Geo/GIS"],["DS-11","Bank/Tahseel"]];
 const AGENTS_T=[
  {ag:"Orchestrator Agent",ag_zh:"编排 Agent",ic:"✦",lyr:"L3",io:{in:"User query (NL)",out:"Routed task + plan"},lines:[
-   {k:"think",t:"Let me understand the core first… an unexpected +50bps is a monetary-policy shock.",t_zh:"让我先理解这个问题的核心……SAMA 突然加息 50 个基点,属于非预期的货币政策冲击。"},
-   {k:"think",t:"I'll decompose it: macro transmission, housing-segment impact, the supply-demand gap, the gap-closure plan + actions, with sustainability only as a derived check.",t_zh:"我从几个维度拆解:宏观传导路径、住房市场细分影响、供需缺口、缺口闭合方案与执行动作,可持续性仅作衍生校验。"},
-   {k:"call",t:"This needs several BRD agents — Macro, Demand, Balancing, Fiscal, Policy. Query model registry → match capability.",t_zh:"这涉及多个 BRD Agent 协作——Macro、Demand、Balancing、Fiscal、Policy。查询模型注册表 → 能力匹配。",ds:[]},
-   {k:"think",t:"Routing confidence 92% ≥ 70% threshold → auto-run, no escalation.",t_zh:"路由置信 92% ≥ 70% 阈值 → 自动执行,无需升级。"},
-   {k:"out",t:"I'll wake Macro Agent first to build the rate-transmission frame, and parallelize the rest.",t_zh:"先唤醒 Macro Agent 建立利率传导的基础框架,其余并行+串行协同。"}]},
+   {k:"think",t:"Parse intent: how big is the Riyadh Seg-A gap, and how to close it?",t_zh:"解析意图:利雅得 A 段供需缺口有多大?该怎么补?"},
+   {k:"think",t:"Decompose → (a) size the gap, (b) attribute macro vs policy, (c) rank actions",t_zh:"拆解为三问 →(a)缺口多大,(b)宏观 vs 政策归因,(c)处方排序"},
+   {k:"call",t:"Query model registry · match capability → engine",t_zh:"查询模型注册表 · 能力匹配 → 引擎",ds:[]},
+   {k:"think",t:"Best match: Supply-Demand Balancing (UC-03); coverage = Total Market",t_zh:"最佳匹配:Supply-Demand Balancing (UC-03);覆盖 = 全市场"},
+   {k:"think",t:"Routing confidence 92% ≥ 70% threshold → auto-run, no escalation",t_zh:"路由置信 92% ≥ 70% 阈值 → 自动执行,无需升级"},
+   {k:"out",t:"Routed; co-scheduled Demand Intelligence & Conversion engines",t_zh:"已路由,并预约需求智能 / 转化吸纳引擎协同"}]},
  {ag:"Data Quality Monitor",ag_zh:"数据质量监控",ic:"◉",lyr:"L2",io:{in:"11 raw sources",out:"Validated dataset · conf 88%"},lines:[
    {k:"call",t:"Pull 11 data sources in parallel",t_zh:"并行拉取 11 个数据源",ds:["DS-01","DS-02","DS-03","DS-04","DS-05","DS-06","DS-07","DS-08","DS-09","DS-10","DS-11"]},
    {k:"think",t:"Check completeness — 11/11 above 95% record coverage",t_zh:"完整性检查 —— 11/11 记录覆盖率 > 95%"},
@@ -2615,90 +2406,45 @@ const AGENTS_T=[
    {k:"think",t:"Cross-source consistency — Ejari vs MOJ price delta within 2%",t_zh:"跨源一致性 —— Ejari 与 MOJ 价格偏差 < 2%"},
    {k:"calc",t:"Data confidence = min(source confidences)",t_zh:"数据置信 = min(各源置信)",val:"88%"},
    {k:"out",t:"11/11 passed (Private Mkt recovered) — cleared into analysis",t_zh:"11/11 通过(Private Mkt 已恢复)— 放行进入分析"}]},
- {ag:"Macro-Economic Agent",ag_zh:"宏观经济引擎",ic:"🌐",lyr:"L3",io:{in:"Rates, FX peg, demographics",out:"Transmission frame · r=−0.85"},lines:[
-   {k:"think",t:"On it. Saudi has a special feature — the riyal is pegged to USD at 3.75, so SAMA's policy space is effectively \"imported\" from the Fed. This +50bps largely follows the global tightening cycle, but the domestic cycle isn't synced — we have large Vision-2030 investment demand, not overheating-driven inflation.",t_zh:"收到。沙特有个特殊之处——里亚尔与美元挂钩在 3.75,SAMA 的货币政策空间实际上是被美联储\"进口\"的。这次 +50bps 很大程度是跟随全球紧缩周期,但国内周期并不同步——我们有 Vision 2030 的大规模投资需求,不是过热型通胀。"},
-   {k:"calc",t:"A few key numbers: mortgage stock ≈ SAR 680B, of which 78% is floating-rate. The +50bps passes through fast — SAIBOR 3M reacts immediately and mortgage rates rise ~35–50bps.",t_zh:"说几个关键数字:按揭存量大概 SAR 680B,其中 78% 是浮动利率。+50bps 传导很直接——SAIBOR 3M 立刻反应,按揭利率上浮约 35–50bps。",val:"+35–50bps"},
-   {k:"calc",t:"On 2016–2026 panel data, the Pearson r between the repo rate and housing demand is −0.85 — highly significant — with about a 2-quarter lag.",t_zh:"用 2016–2026 面板数据,SAMA 回购利率与住房需求量的 Pearson r 是 −0.85,统计上非常显著,约有 2 个季度滞后。",val:"r=−0.85"},
-   {k:"think",t:"Interestingly, population growth vs demand is +0.92 — so short term the rate shock dominates, while over 3–5y demographics partly offset it, but never fully (the path dependence is strong).",t_zh:"但有趣的是,人口增长与住房需求的相关性是 +0.92——短期利率冲击主导,中长期人口因素部分对冲,但不会完全抵消(路径依赖很强)。",val:"+0.92"},
-   {k:"out",t:"Transmission frame set; the rate shock dominates the short term.",t_zh:"传导框架确立;短期利率冲击主导。"}]},
- {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",io:{in:"Beneficiary + segment data",out:"Asymmetric shock −2% / −9% / −18%"},lines:[
-   {k:"think",t:"I'll take it. The core issue is that the hit is asymmetric across income groups — I calibrated the elasticity model on Saudi household-survey data.",t_zh:"好的,我接过来。这次的核心是——加息对不同收入群体的打击是不对称的。我根据沙特住户调查数据校准了弹性模型。"},
-   {k:"calc",t:"High income (SAR 25K+): barely affected — 40% pay cash, and +SAR 200–300/mo is absorbable. Demand shock ≈ −2%, negligible.",t_zh:"高收入(月入 SAR 25K 以上):几乎不受影响——40% 现金购房,即便月供多 SAR 200–300 也可吸收。需求冲击约 −2%,可忽略。",val:"−2%"},
-   {k:"calc",t:"Middle (SAR 10–25K): feeling it — 72% mortgage-dependent, +~SAR 250/mo, ~5–7% \"wait and see\". Demand shock ≈ −9%.",t_zh:"中收入(SAR 10–25K):开始有压力——按揭依赖度 72%,月供 +约 SAR 250,约 5–7% 选择\"等等看\",需求冲击约 −9%。",val:"−9%"},
-   {k:"calc",t:"What worries me is the most-in-need (<SAR 10K): 85% mortgage-dependent; +SAR 180/mo is 4.2% of disposable income. Demand shock ≈ −18%.",t_zh:"真正担心的是最需要群体(月入 SAR 10K 以下):85% 依赖按揭,月供 +SAR 180 占其可支配收入的 4.2%,需求冲击约 −18%。",val:"−18%"},
-   {k:"think",t:"Structural catch: that 18% don't stop buying — they downgrade from low-income to most-in-need housing. A squeeze effect that raises latent most-in-need demand instead.",t_zh:"结构性问题:这 18% 不是\"不买房了\",而是从低收入住宅降级到最需要住宅——挤压效应,反而抬高最需要群体的隐性需求。"},
-   {k:"out",t:"Selective shock; the most-in-need bear disproportionate harm.",t_zh:"选择性冲击;最需要群体承受不成比例的伤害。"}]},
- {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",io:{in:"Demand + pipeline",out:"Gap 12,400 · 35% · RED"},lines:[
-   {k:"think",t:"Hold on — hearing Demand's analysis, this is worse than I expected. Let me compute directly.",t_zh:"等一下,我听到 Demand 的分析了,这比预想严重。让我直接算一下。"},
-   {k:"call",t:"Current pipeline is YTD 62,400 units (full-year target 78,000).",t_zh:"当前供给管线 YTD 62,400 套(全年目标 78,000)。",ds:["DS-03","DS-08"]},
-   {k:"calc",t:"Most-in-need existing gap 12,400, pipeline coverage only 35% — already RED (BRD §6.2 threshold 50%).",t_zh:"最需要群体现有缺口 12,400 套,管线覆盖率仅 35%——这本身已是 RED(BRD §6.2 阈值 50%)。",val:"12,400 · 35%"},
-   {k:"think",t:"If Riyadh demand falls 11%, nominal effective demand ≈ 68,400 and the gap looks smaller — but that's a dangerous statistical illusion: it shrank because fewer can afford to buy.",t_zh:"若利雅得总需求下降 11%,名义有效需求约 68,400 套,表面缺口缩小——但这是危险的统计幻觉:缩小是因为\"买得起房的人少了\"。"},
-   {k:"calc",t:"What to watch: latent most-in-need demand rises to ~15,200 units, +22% over the original.",t_zh:"真正要警惕的:最需要群体隐性需求增加到约 15,200 套,比原来多 +22%。",val:"15,200 · +22%"},
-   {k:"think",t:"Worse, these needs are real but unmet at current conditions — a \"structural demand deficit\". Absorption falls 43% → 38%, tripping my RED alert.",t_zh:"更糟的是这些需求是\"有效的\"但在当前条件下无法实现——结构性需求赤字。吸收率从 43% 跌到 38%,已触发 RED 预警。",val:"43%→38%"},
-   {k:"out",t:"Structural demand deficit — RED early-warning tripped.",t_zh:"结构性需求赤字 —— 触发 RED 早期预警。"}]},
+ {ag:"Demand Intelligence Agent",ag_zh:"需求智能引擎",ic:"📈",lyr:"L3",io:{in:"Beneficiary + segment data",out:"Seg-A demand forecast 19,100"},lines:[
+   {k:"think",t:"Hypothesis: rate hike shifts demand down the segment ladder",t_zh:"假设:加息使需求沿段位下移"},
+   {k:"think",t:"+50bps → monthly instalment ↑ ~6% → affordability ↓ for Seg B",t_zh:"加息 +50bps → 月供 ↑ 约 6% → B 段负担能力下降"},
+   {k:"calc",t:"Affected Seg-B pool = 13,100 households",t_zh:"受影响 B 段群体 = 13,100 户",val:"13,100"},
+   {k:"calc",t:"B→A migration = 13,100 × 18% migration propensity",t_zh:"B→A 迁移 = 13,100 × 18% 迁移倾向",val:"≈ 2,360"},
+   {k:"calc",t:"Seg A demand (Y3) = base 16,740 + migration 2,360",t_zh:"Seg A 需求(Y3)= 基线 16,740 + 迁移 2,360",val:"= 19,100"},
+   {k:"think",t:"Migration is a one-way structural shift — won't revert when rates fall",t_zh:"迁移为单向结构性变化 —— 利率回落也难回流"},
+   {k:"out",t:"Structural demand uplift confirmed (not transient)",t_zh:"确认需求结构性抬升(非短期波动)"}]},
+ {ag:"Supply-Demand Balancing Agent",ag_zh:"供需平衡引擎",ic:"⚖",lyr:"L3",io:{in:"Demand 19,100 + pipeline",out:"Gap 12,400 · coverage 35% · RED"},lines:[
+   {k:"call",t:"Read supply pipeline (143 projects)",t_zh:"读取供给管线(143 项目)",ds:["DS-03","DS-08"]},
+   {k:"think",t:"Paper units overstate delivery — discount by ML conversion model (AUC 0.83)",t_zh:"账面套数高估交付 —— 用 ML 转化模型(AUC 0.83)折算"},
+   {k:"calc",t:"Effective supply = pipeline 12,900 × conversion 52%",t_zh:"有效供给 = 管线 12,900 × 转化率 52%",val:"≈ 6,700"},
+   {k:"calc",t:"Gap = demand 19,100 − effective supply 6,700",t_zh:"缺口 = 需求 19,100 − 有效供给 6,700",val:"= 12,400"},
+   {k:"calc",t:"Coverage = 6,700 ÷ 19,100",t_zh:"覆盖率 = 6,700 ÷ 19,100",val:"= 35%"},
+   {k:"think",t:"Also a product-mix mismatch: 72% of pipeline targets Seg C–E",t_zh:"还存在产品错配:管线 72% 面向 C–E 段"},
+   {k:"think",t:"Gap rule: uncovered 65% > 30% threshold → RED, strategic-level",t_zh:"缺口规则:未覆盖 65% > 30% 阈值 → 红色,触发战略级"},
+   {k:"out",t:"Riyadh Seg A gap 12,400 units · coverage 35% · RED",t_zh:"利雅得 A 段缺口 12,400 套 · 覆盖 35% · 红色"}]},
  {ag:"Conversion & Absorption Agent",ag_zh:"转化吸纳引擎",ic:"🎯",lyr:"L3",io:{in:"Pipeline + conversion rates",out:"Early-warning · residual gap 6,200"},lines:[
    {k:"calc",t:"Seg A conversion 52% vs Seg E 78%",t_zh:"Seg A 转化率 52% vs Seg E 78%",val:"−26pp"},
    {k:"think",t:"Root cause: long approval cycles · thin developer margins · cancellation risk",t_zh:"根因:审批周期长 · 开发商利润薄 · 取消风险高"},
    {k:"calc",t:"Even if all 23 Seg-A projects hit 100%: 12,900 − 19,100",t_zh:"即便 23 个 A 段项目 100% 兑现:12,900 − 19,100",val:"gap 6,200"},
    {k:"think",t:"Conclusion: pipeline acceleration alone can't close it",t_zh:"结论:仅靠加速管线无法补足"},
    {k:"out",t:"Must add new supply — triggers early-warning to Planning",t_zh:"必须新增供给 —— 触发早期预警至规划"}]},
- {ag:"Strategic Supply Planning Agent",ag_zh:"战略供给规划引擎",ic:"🏗️",lyr:"L3",io:{in:"Gap + pipeline + land bank",out:"Demand-driven supply plan"},lines:[
-   {k:"think",t:"The gap won't close on its own — design a demand-driven supply plan, then rank where to build first.",t_zh:"缺口不会自己消失——做一份需求驱动的供给计划,再排出先建哪里。"},
-   {k:"calc",t:"Required net-new Seg-A supply (Y3) = residual gap after pipeline",t_zh:"所需净新增 A 段供给(第3年)= 管线兑现后的剩余缺口",val:"≈ 6,200 units"},
-   {k:"call",t:"Rank locations by absorption × land readiness (Riyadh sub-municipalities)",t_zh:"按吸纳率 × 土地就绪度排序选址(利雅得各市辖区)",ds:["DS-08","DS-10"]},
-   {k:"calc",t:"Top sites: North Riyadh 2,400 · East 1,900 · South-West 1,900",t_zh:"优先选址:利雅得北 2,400 · 东 1,900 · 西南 1,900",val:"= 6,200"},
-   {k:"think",t:"Design cross-segment flexible units so A/B stock can flex with demand",t_zh:"设计跨段位弹性户型,使 A/B 库存可随需求灵活调整"},
-   {k:"calc",t:"Simulate Ministry share vs PPP/private split",t_zh:"模拟部委份额 vs PPP/私有 分担",val:"Ministry 55% · PPP 45%"},
-   {k:"out",t:"3-year supply plan: 6,200 net-new units, 3 priority clusters, Ministry 55%",t_zh:"3 年供给计划:净新增 6,200 套、3 个优先组团、部委承担 55%"}]},
- {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"🛡️",lyr:"L3",io:{in:"Gap + 6-measure toolkit",out:"Recommend Combo #4 · 97%"},lines:[
-   {k:"think",t:"Systematic simulation. Objective: maximize Seg-A gap closure with feasible, demand-matched supply; constraint is the closure plan's own delivery budget envelope.",t_zh:"做系统性政策模拟。目标:以可落地、需求匹配的供给最大化 A 段缺口闭合;约束是闭合方案自身的交付预算包。"},
-   {k:"calc",t:"Monte-Carlo over 6 options — M1 mortgage subsidy (1.8B, 28%), M2 Sakani expansion (2.4B, 34%), M3 developer incentive (1.2B, 22%).",t_zh:"对 6 套方案跑蒙特卡洛——M1 按揭补贴(1.8B,28%)、M2 Sakani 扩容(2.4B,34%)、M3 开发商激励(1.2B,22%)。"},
-   {k:"calc",t:"M4 Combo = M2 + M3 + 5,000-unit PPP fast-track: cost SAR 3.2B, gap closure 97%.",t_zh:"M4 组合 = M2 + M3 + 5,000 套 PPP 快速通道:成本 SAR 3.2B,缺口闭合 97%。",val:"97% · SAR 3.2B"},
-   {k:"think",t:"M5 rental vouchers (0.8B, 15%) are a low-cost transitional add-on; M6 austerity (−4.0B, 0%) adds no supply.",t_zh:"M5 租赁券(0.8B,15%)可作低成本过渡;M6 财政紧缩(−4.0B,0%)不增加供给。"},
-   {k:"out",t:"Recommend Combo #4 — 97% closure, within the plan's delivery budget, PPP leverages private capital, 6–12-month effect; start M5 vouchers immediately.",t_zh:"推荐 Combo #4——97% 闭合、成本在方案交付预算内、PPP 撬动私人资本、6–12 个月生效;M5 租赁券可立刻启动作过渡。"}]},
- {ag:"Financial Sustainability (derived)",ag_zh:"财务可持续性(衍生结果)",ic:"♻️",lyr:"derived",io:{in:"Closed gap + matched supply",out:"Self-funding loop note"},lines:[
-   {k:"think",t:"Note: financial sustainability isn't a separate goal — it's a natural by-product of closing the supply-demand gap. The lever is supply-demand matching (raise revenue, cut cost).",t_zh:"提示:财务可持续性不是独立目标,而是供需缺口闭合后的**衍生结果**——抓手是供需匹配(开源节流)。"},
-   {k:"out",t:"Revenue side (开源): demand-targeted supply gets absorbed → sales revenue → revenue feeds subsidies → positive cash cycle.",t_zh:"开源:按需求定向补充的供给被去化 → 产生销售收入 → 收入反哺补贴 → 正向资金循环。"},
-   {k:"out",t:"Cost side (节流): unsold supply keeps incurring maintenance; once de-stocked, maintenance & cost transfer to owners → operating cost drops.",t_zh:"节流:未售供给持续产生维护开支;去化后维护责任与成本转移至业主 → 自身运营成本下降。"},
-   {k:"out",t:"So once the gap closes, sustainability improves on its own — a derived result. Fund size / funding gap / gap-filling plans are the DSS system's job, out of DSO scope.",t_zh:"因此缺口一旦闭合,财务可持续性自然改善——属衍生结论。资金体量 / 缺口 / 补缺方案由 DSS 系统负责,不在 DSO 范围。"}]},
+ {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"⚖",lyr:"L3",io:{in:"Gap + 6 measures",out:"Ranked toolkit · M1+M2+M3"},lines:[
+   {k:"think",t:"Run causal-chain simulation over six measures (UC-02→04→06)",t_zh:"对六项措施跑因果链模拟(UC-02→04→06)"},
+   {k:"calc",t:"M1 developer subsidy +15% → +3,100/yr · SAR 775/unit",t_zh:"M1 开发商补贴 +15% → +3,100 套/年 · 每套 SAR 775",val:"35%→85%"},
+   {k:"calc",t:"M2 land release −40% → +2,000/yr",t_zh:"M2 土地释放 −40% → +2,000 套/年",val:"+12pp"},
+   {k:"calc",t:"M6 lower down-payment → demand +18%, no new supply",t_zh:"M6 降首付 → 需求 +18% 无新增供给",val:"35%→38% ✕"},
+   {k:"think",t:"M6 is counter-productive in a supply-constrained market → reject",t_zh:"M6 在供给受限市场适得其反 → 否决"},
+   {k:"out",t:"Recommend M1+M2+M3 combo; reject M6",t_zh:"推荐 M1+M2+M3 组合;反对 M6"}]},
  {ag:"Governance Gate · Human-in-the-Loop",ag_zh:"治理门 · 人工复核",ic:"!",lyr:"L4",gate:true,io:{in:"Draft recommendation",out:"Awaiting human approval"},lines:[
-   {k:"think",t:"Gap coverage 35% < 50% RED threshold → above autonomous scope",t_zh:"缺口覆盖 35% < 50% 红线阈值 → 超出自治范围"},
-   {k:"think",t:"The gap-closure plan (supply additions + actions) needs sign-off before dispatch",t_zh:"供需缺口闭合方案(新增供给 + 执行动作)在分发前需签核"},
+   {k:"think",t:"Severity = RED and gap > 30% → above autonomous scope",t_zh:"严重度 = 红色 且 缺口 > 30% → 超出自治范围"},
    {k:"think",t:"Guardrails: HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31",t_zh:"护栏:HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31"},
    {k:"think",t:"Hold output as draft → requires Planning Manager approval",t_zh:"产出保持草稿 → 需 Planning Manager 批准"}]},
- {ag:"Orchestrator · Final Output",ag_zh:"协调器 · 最终输出",ic:"✦",lyr:"L5",io:{in:"Approved recommendation",out:"Briefing · alert · SSOT"},lines:[
-   {k:"think",t:"Connecting the threads: the core question is how to CLOSE the Seg-A supply-demand gap and what actions to execute. Demand → gap → conversion → supply plan → measures all converge on a closure plan.",t_zh:"把几条线串起来:核心问题是**如何闭合 A 段供需缺口、要执行哪些动作**。需求 → 缺口 → 转化 → 供给计划 → 措施,最终汇成一份缺口闭合方案。"},
-   {k:"out",t:"Core conclusion (gap-closure): Seg-A gap = 12,400 units, coverage 35% (RED). Close it via demand-matched supply — 3-yr plan adds 6,200 net-new units across 3 priority clusters; M1+M2+M3 + PPP lift closure 35% → 97%.",t_zh:"核心结论(缺口闭合):A 段缺口 12,400 套、覆盖 35%(红)。以需求匹配的供给闭合——3 年计划净新增 6,200 套、布 3 个优先组团;M1+M2+M3 + PPP 把闭合率从 35% 拉到 97%。"},
-   {k:"out",t:"Actions to execute: engage 3 A-grade developers, +15% developer subsidy, release −40% land, 5,000-unit PPP fast-track, expedite permits; do NOT cut down-payment (worsens the gap).",t_zh:"需执行的动作:对接 3 家 A 级开发商、开发商补贴 +15%、土地释放 −40%、5,000 套 PPP 快速通道、加快审批;不要降首付(会恶化缺口)。"},
-   {k:"out",t:"Derived result: once the gap closes, matched supply is absorbed → sales revenue feeds subsidies (开源) and de-stocking cuts maintenance cost (节流) → financial sustainability improves on its own.",t_zh:"衍生结果:缺口闭合后,匹配的供给被去化 → 销售收入反哺补贴(开源)、去化降低维护成本(节流)→ 财务可持续性自然改善。"},
-   {k:"out",t:"Core output = data, not a report: gap + closure plan + actions as a structured SSOT payload → pushed to DSS / AI_H_03 / CoPilot (this front-end is just a display layer).",t_zh:"核心产出是**数据**而非报告:缺口 + 闭合方案 + 动作 作为结构化 SSOT payload → 推送 DSS / AI_H_03 / CoPilot(本前端只是展示层)。"}]},
+ {ag:"Output · Dispatch",ag_zh:"产出与分发",ic:"✓",lyr:"L5",io:{in:"Approved recommendation",out:"PDF · alert · SSOT push"},lines:[
+   {k:"out",t:"Generate gap briefing (PDF) + early-warning",t_zh:"生成缺口简报(PDF)+ 早期预警"},
+   {k:"out",t:"Write audit log (user / time / reason)",t_zh:"写入审计日志(用户 / 时间 / 原因)"},
+   {k:"out",t:"Push SSOT → AI_H_03 / CoPilot",t_zh:"SSOT 接口推送 → AI_H_03 / CoPilot"}]},
 ];
-/* ---- BRD Agent Action List (left rail) — actions only, no type/description ---- */
-const AGENT_ACTIONS=[
- {key:"orch", name:"Orchestrator Agent",name_zh:"编排 Agent",acts:["think_intent","think_route","think_compose","think_perm","gen_report","push_log"]},
- {key:"dq",   name:"Data Quality Monitor",name_zh:"数据质量监控",acts:["scan_sources","flag_degraded","emit_alert","report_dq","ticket_dq"]},
- {key:"macro",name:"Macro-Economic Agent",name_zh:"宏观经济引擎",acts:["think_run","compute_corr","project_gdp","monitor_fiscal","render_macro_chart","analyze_transmission"]},
- {key:"demand",name:"Demand Intelligence Agent",name_zh:"需求智能引擎",acts:["think_run","compute_elasticity","segment_migration","forecast_demand","render_seg_chart","assess_affordability"]},
- {key:"sdb",  name:"Supply-Demand Balancing Agent",name_zh:"供需平衡引擎",acts:["think_run","compute_gap","assess_coverage","analyze_rootcause","render_heatmap","project_absorption"]},
- {key:"conv", name:"Conversion & Absorption Agent",name_zh:"转化吸纳引擎",acts:["think_run","monitor_absorption","forecast_conv","map_pipeline","assess_margin","render_conv_chart"]},
- {key:"plan", name:"Strategic Supply Planning Agent",name_zh:"战略供给规划引擎",acts:["think_run","build_plan","rank_locations","design_units","simulate_share","render_plan_chart"]},
- {key:"policy",name:"Policy Simulation Agent",name_zh:"政策模拟引擎",acts:["think_run","simulate_measure","rank_combos","recommend","assess_risk","render_policy_chart"]},
- {key:"fin",  name:"Financial Sustainability (derived)",name_zh:"财务可持续性(衍生)",acts:["link_gap_closure","note_revenue_loop","note_cost_transfer","flag_dss_handoff"]},
-];
-AGENT_ACTIONS.forEach(a=>{ const o=a.acts.map((_,i)=>i); for(let i=o.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[o[i],o[j]]=[o[j],o[i]];} a.order=o; });
-// readable labels for action codes (BRD Type column)
-const ACTLABEL={
- think_intent:["Intent understanding","意图理解"],think_route:["Engine routing","引擎路由"],think_compose:["Output composition","输出组合"],think_perm:["Permission check","权限校验"],gen_report:["Report generation","报告生成"],push_log:["Audit trail","审计留痕"],
- scan_sources:["Source scan","数据源扫描"],flag_degraded:["Degradation flag","降级标记"],emit_alert:["Alert trigger","触发预警"],report_dq:["Quality report","质量报告"],ticket_dq:["Ticket creation","创建工单"],
- think_run:["Run analysis","执行分析"],compute_corr:["Correlation","相关性计算"],project_gdp:["GDP projection","GDP 预测"],monitor_fiscal:["Fiscal monitor","财政监测"],render_macro_chart:["Visualization","可视化"],analyze_transmission:["Transmission","传导分析"],
- compute_elasticity:["Elasticity","弹性计算"],segment_migration:["Segment migration","段位迁移"],forecast_demand:["Demand forecast","需求预测"],render_seg_chart:["Visualization","可视化"],assess_affordability:["Affordability","可负担性"],
- compute_gap:["Gap quantification","缺口量化"],assess_coverage:["Coverage","覆盖评估"],analyze_rootcause:["Root-cause","根因分解"],render_heatmap:["Visualization","可视化"],project_absorption:["Absorption","吸纳预测"],
- monitor_absorption:["Absorption","吸纳监测"],forecast_conv:["Conversion forecast","转化预测"],map_pipeline:["Pipeline mapping","管线映射"],assess_margin:["Margin analysis","利润分析"],render_conv_chart:["Visualization","可视化"],
- simulate_measure:["Measure simulation","逐项模拟"],rank_combos:["Combo ranking","组合排序"],recommend:["Recommendation","方案推荐"],assess_risk:["Risk assessment","风险评估"],render_policy_chart:["Visualization","可视化"],
- build_plan:["Build supply plan","构建供给计划"],rank_locations:["Rank locations","选址排序"],design_units:["Flexible-unit design","弹性户型设计"],simulate_share:["Ministry-share sim","部委份额模拟"],render_plan_chart:["Visualization","可视化"],
- link_gap_closure:["Link to gap closure","关联缺口闭合"],note_revenue_loop:["Revenue loop · 开源","收入循环 · 开源"],note_cost_transfer:["Cost transfer · 节流","成本转移 · 节流"],flag_dss_handoff:["Hand off to DSS","移交 DSS"],
-};
-function brdKeyOf(name){ if(/Orchestrator/.test(name))return "orch"; if(/Data Quality/.test(name))return "dq"; if(/Macro/.test(name))return "macro"; if(/Demand Intelligence/.test(name))return "demand"; if(/Supply-Demand Balancing/.test(name))return "sdb"; if(/Strategic Supply Planning/.test(name))return "plan"; if(/Conversion/.test(name))return "conv"; if(/Policy Simulation/.test(name))return "policy"; if(/Fiscal|Financial/.test(name))return "fin"; return null; }
 
 // Orchestrator status — fixed-width element in the chat header. Idle: badge + grey nodes + "auto";
 // running: same footprint with nodes lighting up + "x/7 · <engine>". Width stays constant.
@@ -2721,101 +2467,15 @@ function StoryStepper({states}){
     <span className="stepper-cap" title={cap}>{cap}</span>
   </div>);
 }
-// AI Agent-theater parameter panel — drives scenario/coverage/target inputs for the gap-closure run.
-// (Financial sustainability is a DERIVED by-product of closing the gap, not a primary score.)
-const FISCAL_BUDGET=7.9, CONTRACT_TARGET=510000, CONTRACT_COST=141444;
-const FISCAL_DEFAULTS={burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952,scn:"base",hor:70};
-function computeFiscalContinuity(lv){
-  const budgetScore = lv.burn<70?30:lv.burn<85?20:10;
-  const effScore = Math.min(25, (lv.eff/1.0)*25);
-  const hbrProgress = (40-lv.hbr)/(40-30);                 // 40→30 = 100% progress
-  const hbrScore = Math.min(25, Math.max(0,hbrProgress)*25);
-  const leakScore = lv.leak<7?10:5, fcScore = lv.mape<8?10:5;
-  const riskScore = leakScore+fcScore;
-  const score = Math.round(budgetScore+effScore+hbrScore+riskScore);
-  const tone = score>=70?"good":score>=50?"warn":"bad";
-  const consumed = +(FISCAL_BUDGET*lv.burn/100).toFixed(1);          // SAR B consumed
-  const historical = +(lv.contracts*CONTRACT_COST/1e9).toFixed(1);  // SAR B historical exposure
-  const contractPct = Math.round(lv.contracts/CONTRACT_TARGET*100);
-  const approve = lv.burn<70 && lv.hbr<40 && lv.leak<7;
-  return {budgetScore,effScore:+effScore.toFixed(1),hbrScore:+hbrScore.toFixed(1),riskScore,score,tone,consumed,historical,contractPct,approve};
-}
-function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false}){
-  const {lang,cov,setCov}=useStore();
-  const L=(en,zh)=>lang==="zh"?zh:en;
-  const [lvI,setLvI]=useState(FISCAL_DEFAULTS);
-  const lv=lvP||lvI, setLv=setLvP||setLvI;
-  const set=(k,v)=>setLv(prev=>({...prev,[k]:v}));
-  const COL={good:"var(--green-dark)",warn:"var(--amber)",bad:"var(--danger)"};
-  const hbrT=lv.hbr<=35?"good":lv.hbr<=38?"warn":"bad";
-  const SCN=[["opt",L("Optimistic","乐观")],["base",L("Base","基准")],["pess",L("Pessimistic","悲观")]];
-  return (<div className={"fiscal-card"+(compact?" compact":"")+(active?" synced":"")}>
-    <div className="fiscal-head">
-      <div><div className="eyebrow">{L("AI Agent theater · parameters","AI 智能体剧场参数配置")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div></div>
-    </div>
-    <div className="fiscal-controls">
-      <div className="fcfg">
-        <div className="fcfg-l">{L("Coverage mode","覆盖范围")}</div>
-        <div className="seg2">{[["ministry",L("Ministry","部委")],["private",L("Private","私有")],["total",L("Total","全市场")]].map(c=><button key={c[0]} className={cov===c[0]?"on":""} onClick={()=>setCov(c[0])}>{c[1]}</button>)}</div>
-        <small className="fnote">{L("Ministry 95% / Private 80% / Total","部委 95% / 私有 80% / 全市场")}</small>
-      </div>
-      <div className="fcfg">
-        <div className="fcfg-l">{L("Simulation scenario","模拟情景")}</div>
-        <div className="seg2">{SCN.map(s=><button key={s[0]} className={lv.scn===s[0]?"on":""} onClick={()=>set("scn",s[0])}>{s[1]}</button>)}</div>
-        <small className="fnote">{L("BRD §5 · 3-scenario gap projection","BRD §5 · 三情景缺口投影")}</small>
-      </div>
-      <label className="fslider">
-        <span><b>{L("Target homeownership","目标住房拥有率")}</b><em style={{color:lv.hor>71?"var(--amber)":"var(--green-dark)"}}>{lv.hor}%</em></span>
-        <input type="range" min={64} max={74} step={.5} value={lv.hor} onChange={e=>set("hor",Number(e.target.value))}/>
-        <small className="fnote">{L("now 66.2% · Vision-2030 target 70% · >71% is aggressive","当前 66.2% · Vision 2030 目标 70% · >71% 偏激进")}</small>
-      </label>
-      <label className="fslider">
-        <span><b>{L("Housing burden ratio","住房负担比 HBR")}</b><em style={{color:COL[hbrT]}}>{lv.hbr}%</em></span>
-        <input type="range" min={30} max={45} step={.5} value={lv.hbr} onChange={e=>set("hbr",Number(e.target.value))}/>
-        <small className="fnote">{L("40 → 36, target 30","40 → 36, 目标 30")}</small>
-      </label>
-    </div>
-    {!compact&&<div className="output-stack">
-      <div><span>Output</span><b>{L("Ministerial briefing","部长简报")}</b></div>
-      <div><span>Dispatch</span><b>CoPilot + AI_H_03 + audit log</b></div>
-    </div>}
-  </div>);
-}
-function ReasoningStatus({ai,L,Z}){
-  const active = ai.ag>=0 && ai.ag<AGENTS_T.length ? AGENTS_T[ai.ag] : null;
-  const line = active && ai.line>=0 ? active.lines[ai.line] : null;
-  const sourceCount = Object.keys(ai.ds||{}).length;
-  const status = ai.done?L("Output package ready","产出包已就绪"):ai.gate?L("Waiting for human gate","等待人工治理门"):active?Z(active,"ag"):L("Ready","就绪");
-  return (<div className="reasoning-status card">
-    <div className="rs-cell live"><span className="livedot"/><span>{L("Active AI work","当前 AI 动作")}</span><b>{status}</b></div>
-    <div className="rs-cell"><span>{L("Current step","当前步骤")}</span><b>{line?Z(line,"t"):L("Preparing routing plan","准备路由计划")}</b></div>
-    <div className="rs-cell"><span>{L("Sources touched","已触达数据源")}</span><b>{sourceCount}/11</b></div>
-    <div className="rs-cell"><span>{L("Next output","下一项输出")}</span><b>{L("recommendation + API payload + PDF","建议 + API Payload + PDF")}</b></div>
-  </div>);
-}
 function ChatAnalysis(){
   const {t,lang,cov,pushLog,setRoute,addReport,seed,clearSeed}=useStore();
   const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
   const [flow,setFlow]=useState(false);
-  const [flv,setFlv]=useState(FISCAL_DEFAULTS);
-  const gateApprove=flv.scn!=="pess" && flv.hor<=71;
-  const [q,setQ]=useState("");
-  const [routed,setRouted]=useState(null);
-  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
+  const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
-  const orchSt=!ai.on?L("ready","就绪"):ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
-  const mafChip=<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
-  useEffect(()=>{ if(ai.on&&streamRef.current){ const el=streamRef.current; el.scrollTo({top:el.scrollHeight,behavior:"smooth"}); } },[ai]);
-  const ROUTES=[
-    {key:"orch", lbl:L("Analytical inquiry","分析性查询"), q:L("Full rate-hike analysis — gap + fiscal decision","加息全链分析 —— 缺口 + 财政决策")},
-    {key:"demand", lbl:L("Demand intelligence","需求情报"), q:L("How does +50bps shift demand by income segment?","加息 +50bps 如何按收入段位改变需求?")},
-    {key:"sdb", lbl:L("Supply-demand balancing","供需平衡"), q:L("How big is the Riyadh Seg-A gap and its coverage?","利雅得 A 段缺口多大、覆盖多少?")},
-    {key:"plan", lbl:L("Strategic planning","战略规划"), q:L("What supply plan closes the gap — sites & Ministry share?","用什么供给计划补缺口 —— 选址与部委份额?")},
-  ];
-  const routedName=routed?(ROUTES.find(r=>r.key===routed)||{}).lbl:null;
-  const goRoute=(r)=>{ setRouted(r.key); setQ(r.q); start(); };
+  useEffect(()=>{ if(ai.on&&endRef.current) endRef.current.scrollIntoView({behavior:"smooth",block:"end"}); },[ai]);
   function advance(cur){
     const ag=AGENTS_T[cur.ag];
     if(cur.line<ag.lines.length-1){
@@ -2832,191 +2492,119 @@ function ChatAnalysis(){
   function pause(){ clearTimeout(tRef.current); setAi({...aiRef.current,playing:false}); }
   function stepOne(){ clearTimeout(tRef.current); advance({...aiRef.current,playing:false}); }
   function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,ag:aiRef.current.ag+1,line:-1,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
-  function reset(){ clearTimeout(tRef.current); setRouted(null); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false}); }
+  function reset(){ clearTimeout(tRef.current); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false}); }
   useEffect(()=>{ if(seed){ start(); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
 
   if(!ai.on){
+    const ex=["⚡ "+L("Rate-hike +50bps impact on Riyadh Seg-A gap","加息 +50bps 对利雅得 A 段缺口的影响"),L("Is the gap a policy or a macro problem?","缺口是政策问题还是宏观问题?"),L("What should we do to close it?","该怎么补这个缺口?")];
     return (<div className="fade">
-      <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
-      <div className="ai-brief-grid">
-        <div className="ai-brief-side">
-          <FiscalContinuityPanel compact/>
-        </div>
-        <div className="ai-brief-main card pad">
-          <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
-          <h2>{L("SAMA +50bps shock → Seg-A supply-demand gap → gap-closure plan","SAMA +50bps 冲击 → A 段供需缺口 → 缺口闭合方案")}</h2>
-          <p>{L("Ask in natural language — the Orchestrator routes to the right engines, exposes the calculation chain, and packages the output for CoPilot / AI_H_03.","用自然语言提问 —— 编排器会路由到对应引擎,展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
-          <div className="preset-row">
-            <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{L("Core use cases","核心用例")}:</span>
-            {ROUTES.map(r=><button key={r.key} className="preset" title={r.q} onClick={()=>goRoute(r)}>{r.lbl}</button>)}
-            <button className="btn secondary sm" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
-          </div>
-          <div className="ask-dock">
-            <div className="ask-row">
-              <span className="ask-ic">✦</span>
-              <input className="ask-input" value={q} placeholder={L("Ask the data — e.g. how big is the Riyadh Seg-A gap, and how to close it?","智能问数 —— 例如:利雅得 A 段供需缺口有多大?该怎么补?")}
-                onChange={e=>setQ(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")start();}}/>
-              <button className="btn" onClick={start}>➤ {L("Ask","提问")}</button>
-            </div>
-          </div>
+      <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end"/>
+      <div className="card pad" style={{textAlign:"center",padding:"34px 18px"}}>
+        <div className="muted" style={{marginBottom:14,fontSize:13}}>✦ {L("Ask in natural language — the Orchestrator routes to the right engines and shows its full reasoning.","用自然语言提问 —— 编排 Agent 路由到对应引擎,并展示完整推理过程。")}</div>
+        <button className="btn" onClick={start}>▶ {L("Run multi-agent analysis","运行多智能体分析")}</button>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginTop:16}}>
+          {ex.map((e,i)=><button key={i} className="preset" onClick={start}>{e}</button>)}
         </div>
       </div>
-      {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
     </div>);
   }
-  const finActive=ai.on&&!ai.done&&!ai.gate&&ai.ag>=0&&AGENTS_T[ai.ag]&&brdKeyOf(AGENTS_T[ai.ag].ag)==="fin";
-  const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
-  const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?AGENTS_T[ai.ag].lines.length:1;
-  const actLabel=ac=>{const m=ACTLABEL[ac];return m?(lang==="zh"?m[1]:m[0]):ac.replace(/_/g," ");};
-  const actItem=(ac,ok,key)=>(<div key={key} className={"agact"+(ok?" ok":"")}><span className="agck">✓</span><span className="alab">{actLabel(ac)}</span></div>);
-  const agentRow=(a)=>{
-    const idxs=tmap[a.key]||[];
-    const isActive=idxs.includes(ai.ag)&&!ai.done;
-    const passed=idxs.length>0&&Math.max.apply(null,idxs)<ai.ag;
-    const done=ai.done||passed;
-    const k=done?a.acts.length:isActive?Math.max(1,Math.ceil(((ai.line+1)/linesLen)*a.acts.length)):0;
-    const ticked=new Set(a.order.slice(0,k));
-    return (<div key={a.key} className={"agrow"+(isActive?" active":done?" done":"")}>
-      <div className="agrow-h"><span className="livedot"/><b>{Z(a,"name")}</b>{done?<span className="agdone">✓</span>:isActive?<span className="agtag">{L("running","运行中")}</span>:null}</div>
-      {isActive&&<div className="aglist">{a.acts.map((ac,j)=>actItem(ac,ticked.has(j),j))}</div>}
-    </div>);
-  };
-  // Orchestrator wraps the specialist agents — it coordinates throughout the run
-  const orch=AGENT_ACTIONS[0];
-  const orchActive=ai.on&&!ai.done;
-  const overall=ai.done?1:(ai.on?Math.min(1,(Math.max(0,ai.ag)+(ai.line+1)/linesLen)/AGENTS_T.length):0);
-  const orchK=ai.done?orch.acts.length:orchActive?Math.max(1,Math.round(overall*orch.acts.length)):0;
-  const orchTicked=new Set(orch.order.slice(0,orchK));
-  const rail=(<div className={"orch-wrap"+(ai.done?" done":orchActive?" active":"")}>
-    <div className="agrow-h orch-h"><span className="livedot"/><b>{Z(orch,"name")}</b>
-      {ai.done?<span className="agdone">✓</span>:orchActive?<span className="agtag">{L("coordinating","调度中")}</span>:<span className="agtag" style={{background:"#eef1ee",color:"var(--muted)"}}>{L("ready","就绪")}</span>}</div>
-    {orchActive&&<div className="aglist">{orch.acts.map((ac,j)=>actItem(ac,orchTicked.has(j),j))}</div>}
-    <div className="orch-children">{AGENT_ACTIONS.slice(1).map(agentRow)}</div>
-  </div>);
+  const rail=DS11.map(d=>{const ok=ai.ds[d[0]];return (<div key={d[0]} className={"dsc"+(ok?" ok":"")}><span className="livedot"/><span className="dsname">{d[0]} {d[1]}</span><span className="st">{ok?"✓":"LIVE"}</span></div>);});
   const kindLbl=k=>k==="think"?L("Thinking","思考"):k==="call"?L("Fetch","取数"):k==="calc"?L("Compute","计算"):L("Output","产出");
   const cards=[];
   for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
     const ag=AGENTS_T[i]; const active=(i===ai.ag&&!ai.done);
-    const isRouted=routed&&brdKeyOf(ag.ag)===routed;
     const shown=(i<ai.ag)?ag.lines.length:(ai.line+1);
     const lns=[];
     for(let j=0;j<shown;j++){ const ln=ag.lines[j]; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
       lns.push(<div key={j} className={"tln "+ln.k}><span className={"kind "+ln.k}>{kindLbl(ln.k)}</span><span className="ttx">{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</span></div>); }
-    cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")+(isRouted?" routed":"")}>
-      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}{isRouted?<span className="routed-tag">★ {L("routed","路由命中")}</span>:null}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
+    cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")}>
+      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
   }
+  const orchSt=ai.done?L("done","已完成"):ai.gate?L("awaiting approval","待批准"):L("running","运行中");
   return (<div className="fade">
     <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
-      right={mafChip}/>
-    <ReasoningStatus ai={ai} L={L} Z={Z}/>
+      right={<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>}/>
     <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
         : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}
       {(!ai.done&&!ai.gate)?<button className="btn ghost sm" onClick={stepOne}>⏭ {L("Step","下一步")}</button>:null}
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
-    <div className="theater theater-fiscal">
-      <FiscalContinuityPanel lv={flv} setLv={setFlv} active={finActive}/>
-      <div className="tstream" ref={streamRef}>
+    <div className="theater">
+      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Data sources · LIVE","数据源 · 实时")}</div>{rail}</div>
+      <div className="tstream">
         {cards}
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
-          <div className="muted" style={{fontSize:12.5,margin:"8px 0 10px"}}>{L("AI output is a draft until you approve. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
-          <div className={"gate-fiscal "+(gateApprove?"pass":"fail")}>{L("Gap-closure plan","缺口闭合方案")} · {L("scenario","情景")} <b>{flv.scn==="opt"?L("Optimistic","乐观"):flv.scn==="pess"?L("Pessimistic","悲观"):L("Base","基准")}</b> · {L("target","目标")} <b>{flv.hor}%</b> · {gateApprove?L("plan viable — approval enabled","方案可行 — 可批准"):(flv.scn==="pess"?L("pessimistic stress — must escalate","悲观承压 — 须上报"):L("target too aggressive (>71%) — must escalate","目标过激进(>71%)— 须上报"))} <span className="muted">({L("set on the left panel →","在左侧面板设置 →")})</span></div>
-          <div className="row" style={{flexWrap:"wrap",gap:8}}>
-            {gateApprove
-              ? <button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button>
-              : <button className="btn" style={{background:"var(--danger)",color:"#fff"}} onClick={()=>{pushLog("log_route");approve();}}>⤴ {L("Escalate to Minister","上报部长")}</button>}
-            <button className="btn ghost" onClick={reset}>{L("Return","退回")}</button></div>
+          <div className="muted" style={{fontSize:12.5,margin:"8px 0 12px"}}>{L("AI output is a draft until you approve; it won't be filed or dispatched. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿,不会上报或分发。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
+          <div className="row" style={{flexWrap:"wrap",gap:8}}><button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button><button className="btn ghost" onClick={reset}>{L("Return","退回")}</button></div>
         </div>}
         {ai.done&&<div style={{marginTop:6}}>
-          <div className="card pad" style={{marginBottom:14}}>
-            <div className="row" style={{justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
-              <span className="chip">✓ {L("Gap-closure plan ready · core output = SSOT data payload","缺口闭合方案就绪 · 核心产出 = SSOT 数据 payload")}</span>
-              <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div>
-            <div className="payload">{"{ gap_units: 12400, coverage: 0.35, status: \"RED\", plan: { net_new: 6200, clusters: 3, measures:[\"M1\",\"M2\",\"M3\",\"PPP\"], closure: 0.97 }, derived:{ financial_sustainability:\"improving\" } } → DSS / AI_H_03 / CoPilot"}</div>
-          </div>
+          <div className="card pad" style={{marginBottom:14}}><div className="row" style={{justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+            <span className="chip">✓ {L("Complete · audit logged · SSOT pushed","完成 · 审计已记录 · SSOT 已推送")}</span>
+            <button className="btn" onClick={downloadBriefing}>⬇ {t("download")} PDF</button></div></div>
           <AiRec d={AIREC.shock}/>
         </div>}
         <div ref={endRef} style={{height:1}}/>
       </div>
-      <div className="dsrail card pad"><div className="rail-h"><span className="livedot"/>{L("Agent · LIVE","Agent · 实时")}</div>{rail}</div>
     </div>
     {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
   </div>);
 }
 const FLOW_SRC=["SAP / Asas","Etimad","Esnad","Sakani","Wafi","Ejari","MOJ Price","GASTAT","Private Mkt","Geo / GIS","Bank stmts"];
 const FLOW_STAGES=[
- {t:"Intake & Data Quality",t_zh:"接入与数据质量",hand:"Validated dataset",hand_zh:"校验数据集",ag:[
-   {n:"Orchestrator Agent",ic:"✦",own:"platform",in:"User query",in_zh:"用户提问",out:"Routing plan",out_zh:"路由计划"},
-   {n:"Data Quality Monitor",ic:"◉",own:"platform",in:"Raw data sources",in_zh:"原始数据源",out:"Validated dataset",out_zh:"校验数据集"}]},
- {t:"Macro-Economic Analysis",t_zh:"宏观经济分析",hand:"Transmission parameters",hand_zh:"传导参数",ag:[
-   {n:"Macro-Economic Agent",ic:"🌐",own:"custom",in:"Rates · FX · demographics",in_zh:"利率 · 汇率 · 人口",out:"Transmission parameters",out_zh:"传导参数"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Macro time-series",in_zh:"宏观时序",out:"Correlation panel",out_zh:"相关性面板"}]},
- {t:"Demand Intelligence",t_zh:"需求智能",hand:"Demand forecast",hand_zh:"需求预测",ag:[
-   {n:"Demand Intelligence Agent",ic:"📈",own:"custom",in:"Validated dataset",in_zh:"校验数据集",out:"Segment demand forecast",out_zh:"分段需求预测"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Segment / beneficiary tables",in_zh:"段位 / 受益人表",out:"Migration estimate",out_zh:"迁移估计"}]},
- {t:"Supply-Demand Balancing",t_zh:"供需平衡",hand:"Supply-demand gap",hand_zh:"供需缺口",ag:[
-   {n:"Supply-Demand Balancing Agent",ic:"⚖",own:"custom",in:"Demand forecast + pipeline",in_zh:"需求预测 + 管线",out:"Supply-demand gap",out_zh:"供需缺口"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Project pipeline",in_zh:"项目管线",out:"Effective supply",out_zh:"有效供给"}]},
- {t:"Conversion & Absorption",t_zh:"转化吸纳",hand:"Residual gap + early-warning",hand_zh:"剩余缺口 + 预警",ag:[
-   {n:"Conversion & Absorption Agent",ic:"🎯",own:"custom",in:"Pipeline + conversion rates",in_zh:"管线 + 转化率",out:"Residual gap",out_zh:"剩余缺口"},
-   {n:"Proactive Insights Agent",ic:"💡",own:"platform",in:"Conversion trend",in_zh:"转化趋势",out:"Early-warning signal",out_zh:"早期预警信号"}]},
- {t:"Policy Simulation",t_zh:"政策模拟",hand:"Ranked policy toolkit",hand_zh:"排序政策工具箱",ag:[
-   {n:"Policy Simulation Agent",ic:"⚖",own:"custom",in:"Gap + measure set",in_zh:"缺口 + 措施集",out:"Ranked policy toolkit",out_zh:"排序政策工具箱"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Causal-chain inputs",in_zh:"因果链输入",out:"Counter-indication flag",out_zh:"反指征标记"}]},
- {t:"Financial Sustainability",t_zh:"财政可持续",hand:"Fiscal-safe recommendation",hand_zh:"财政安全建议",ag:[
-   {n:"Financial Sustainability Agent",ic:"💰",own:"custom",in:"Toolkit + budget envelope",in_zh:"工具箱 + 预算信封",out:"Sustainability assessment",out_zh:"可持续性评估"},
-   {n:"Finance Rules Engine",ic:"📐",own:"platform",in:"Fiscal-cap rules",in_zh:"财政上限规则",out:"Cap-compliance check",out_zh:"上限合规校验"}]},
+ {t:"Intake & Data Quality",t_zh:"接入与数据质量",ag:["Orchestrator Agent","Data Quality Monitor","Proactive Insights"],in:"Raw demand, supply & macro feeds",in_zh:"原始 需求 / 供给 / 宏观 数据"},
+ {t:"Demand Intelligence",t_zh:"需求智能",ag:["Demand Intelligence Agent","Data Querying Agent"],in:"Unified dataset + DQ flags · 88%",in_zh:"统一数据 + 质量标记 · 88%"},
+ {t:"Supply-Demand Balancing",t_zh:"供需平衡",ag:["Supply-Demand Balancing Agent","Data Querying Agent"],in:"Seg-A demand 19,100 + migration",in_zh:"A 段需求 19,100 + 迁移"},
+ {t:"Conversion & Absorption",t_zh:"转化吸纳",ag:["Conversion & Absorption Agent","Proactive Insights"],in:"Gap 12,400 · coverage 35%",in_zh:"缺口 12,400 · 覆盖 35%"},
+ {t:"Policy Simulation",t_zh:"政策模拟",ag:["Policy Simulation Agent","Data Querying Agent"],in:"Residual gap + macro/policy attribution",in_zh:"剩余缺口 + 宏观/政策归因"},
 ];
 function FlowDiagram({lang,onClose}){
   const L=(en,zh)=>lang==="zh"?zh:en;
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
-  const Conn=({label})=>(<div className="hconn"><span className="vlabel">{label}</span></div>);
-  const agent=(a,j)=>(<div key={j} className="vagent">
-    <div className="va-h"><span className="gdot" title="live"/><b style={{flex:1}}>{a.n}</b></div>
-    <div className="va-io col">
-      <div className="io-box in"><span className="io-l">{L("INPUT","输入")}</span>{Z(a,"in")}</div>
-      <span className="io-arrow down">↓</span>
-      <div className="io-box out"><span className="io-l">{L("OUTPUT","输出")}</span>{Z(a,"out")}</div>
-    </div>
-  </div>);
-  const stageBox=(s,k)=>(<div key={k} className="hcol hstage"><div className="hstage-h">{Z(s,"t")}</div><div className="hstage-b">{s.ag.map(agent)}</div></div>);
-  const r1=FLOW_STAGES.slice(0,4), r2=FLOW_STAGES.slice(4);
-  return (<Drawer wide title={L("Demand & Supply Optimizer — Agent I/O flow","Demand & Supply Optimizer — Agent I/O 流")} onClose={onClose}>
-    <div className="flow-legend" style={{padding:"0 0 12px",borderBottom:"1px solid var(--line)",marginBottom:14}}>
-      <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
-      <span><span className="lg sw-gate"/>{L("Human gate","人工门")}</span>
-      <span><span className="lg sw-agent"/>{L("Agent (live)","智能体(存活)")}</span>
-      <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
-    </div>
-    <div className="hscroll">
-      <div className="hsnake">
-        <div className="hrow">
-          <div className="hcol hsrc">
-            <div className="vsrc-h">📥 {L("Data Sources","数据源")}</div>
-            <div className="src-chips">{FLOW_SRC.map((s,i)=><span key={i} className="srcchip">{s}</span>)}</div>
+  const conn=(label)=>(<div className="fconn"><span className="flabel">{label}</span><span className="farrow">→</span></div>);
+  return (<div className="flow-ov" onClick={onClose}>
+    <div className="flow-panel" onClick={e=>e.stopPropagation()}>
+      <div className="flow-head">
+        <div><h3>{L("Demand & Supply Optimizer — Use-case storyline & agent I/O flow","Demand & Supply Optimizer — 用例故事线与 Agent I/O 流")}</h3>
+          <div className="muted" style={{fontSize:12}}>{L("Sources → UC chain (agents & I/O) → mandatory human gate → deliverables","数据源 → 用例链(智能体与 I/O)→ 强制人工门 → 交付物")}</div></div>
+        <button className="modal-x" onClick={onClose} aria-label="close">✕</button>
+      </div>
+      <div className="flow-legend">
+        <span><span className="lg sw-flow"/>{L("Main flow","主流程")}</span>
+        <span><span className="lg sw-gate"/>{L("Mandatory human gate","强制人工门")}</span>
+        <span><span className="lg sw-agent"/>{L("Agent chip","智能体")}</span>
+        <span><span className="lg sw-src"/>{L("Sources / deliverables","源 / 交付物")}</span>
+      </div>
+      <div className="flow-body">
+        <div className="flow-row">
+          <div className="fsrc">
+            <div className="fsrc-h">{L("Data Sources","数据源")}</div>
+            {FLOW_SRC.map((s,i)=><div key={i} className="fsrc-i">· {s}</div>)}
           </div>
-          <Conn label={L("Raw feeds","原始数据")}/>
-          {r1.map((s,i)=>(<React.Fragment key={i}>{stageBox(s,i)}{i<r1.length-1&&<Conn label={Z(s,"hand")}/>}</React.Fragment>))}
-        </div>
-        <div className="hreturn"><span className="elbow r"/><span className="hline"/><span className="vlabel">↩ {Z(r1[r1.length-1],"hand")}</span><span className="elbow l"/></div>
-        <div className="hrow">
-          {r2.map((s,i)=>(<React.Fragment key={i}>{stageBox(s,i)}<Conn label={Z(s,"hand")}/></React.Fragment>))}
-          <div className="hcol hstage gate">
-            <div className="hstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
-            <div className="hgate-b">{L("Validate & approve · authorize export","校验与批准 · 授权导出")}
-              <div className="muted" style={{fontSize:11,marginTop:5}}>HUMAN-REVIEWED 04:48<br/>LEGAL CLEARED 05:31</div></div>
+          {conn(L("Raw feeds","原始数据"))}
+          {FLOW_STAGES.map((s,i)=>(<React.Fragment key={i}>
+            {i>0&&conn(Z(s,"in"))}
+            <div className="fstage">
+              <div className="fstage-h">{Z(s,"t")}</div>
+              {s.ag.map((a,j)=><div key={j} className="fchip"><span className="gdot"/>{a}</div>)}
+            </div>
+          </React.Fragment>))}
+          {conn(L("Ranked toolkit · M1+M2+M3","排序工具箱 · M1+M2+M3"))}
+          <div className="fstage gate">
+            <div className="fstage-h">⚖ {L("Human Review · Mandatory Gate","人工复核 · 强制门")}</div>
+            <div className="fgate-b">{L("Validate & approve · draft recommendation · authorize export","校验与批准 · 草稿建议 · 授权导出")}</div>
+            <div className="fgate-b muted" style={{fontSize:11}}>HUMAN-REVIEWED 04:48 · LEGAL CLEARED 05:31</div>
           </div>
-          <Conn label={L("Approved recommendation","已批准建议")}/>
-          <div className="hcol hdeliv">
-            <div className="vsrc-h">📦 {L("Deliverables","交付物")}</div>
-            <div className="muted" style={{fontSize:12,marginTop:6}}>{L("Fiscal note · gap briefing (PDF) · API payload · SSOT push → AI_H_03 / CoPilot","财政说明 · 缺口简报(PDF)· API Payload · SSOT 推送 → AI_H_03 / CoPilot")}</div>
+          {conn(L("Approved recommendation","已批准建议"))}
+          <div className="fdeliv">
+            <div className="fdeliv-h">📦 {L("Deliverables","交付物")}</div>
+            <div className="muted" style={{fontSize:12}}>{L("Gap briefing (PDF) · early-warning · SSOT push → AI_H_03 / CoPilot","缺口简报(PDF)· 早期预警 · SSOT 推送 → AI_H_03 / CoPilot")}</div>
           </div>
         </div>
       </div>
     </div>
-  </Drawer>);
+  </div>);
 }
 function Msg({m,onGenReport,onRoute,onRun}){
   const {t,cov}=useStore();
@@ -3241,9 +2829,9 @@ function Modal({title,onClose,children,wide}){
       <div className="modal-body">{children}</div>
     </div></div>);
 }
-function Drawer({title,onClose,children,foot,wide}){
+function Drawer({title,onClose,children,foot}){
   return (<div className="drawer-ov" onClick={onClose}>
-    <div className={"drawer-panel"+(wide?" wide":"")} onClick={e=>e.stopPropagation()}>
+    <div className="drawer-panel" onClick={e=>e.stopPropagation()}>
       <div className="drawer-head"><h3>{title}</h3><button className="modal-x" onClick={onClose} aria-label="close">✕</button></div>
       <div className="drawer-body">{children}</div>
       {foot&&<div className="drawer-foot">{foot}</div>}
