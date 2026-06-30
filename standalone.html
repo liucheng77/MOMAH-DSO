@@ -378,7 +378,7 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .tln.analyst .kind.analyst{background:#eef0fc;color:#4f46e5}
 .tln.analyst .ttx{background:#f5f6ff;border:1px solid #e0e3f7;border-radius:8px;padding:5px 9px;color:#3730a3;font-style:italic}
 /* pinned agent dock at the bottom of the middle column */
-.agent-dock{display:flex;align-items:center;gap:8px;padding:10px 12px;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 -2px 10px rgba(16,33,28,.05)}
+.agent-dock{display:flex;align-items:center;gap:8px;padding:10px 12px;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 -3px 14px rgba(16,33,28,.08);position:sticky;bottom:0;z-index:3}
 .agent-dock .dock-ic{color:#4f46e5;font-weight:800;width:12px;text-align:center}
 .agent-dock .dock-input{flex:1 1 auto;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:13px;background:#fafcfb}
 .agent-dock .dock-input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-50)}
@@ -1103,7 +1103,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 23:23 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 23:28 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
