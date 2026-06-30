@@ -1799,16 +1799,17 @@ function ReasoningStatus({ai,L,Z}){
     <div className="rs-cell"><span>{L("Next output","下一项输出")}</span><b>{L("recommendation + API payload + PDF","建议 + API Payload + PDF")}</b></div>
   </div>);
 }
-function DataSourcePanel({touched}){
+function DataSourcePanel({lit=0,active=false}){
   const {t,lang}=useStore();
   return (<div className="dsrail card pad">
-    <div className="rail-h"><span className="livedot"/>{lang==="zh"?"数据源 · 实时":lang==="ar"?"المصادر · مباشر":"Data sources · LIVE"}<span className="chip" style={{marginInlineStart:"auto"}}>11</span></div>
+    <div className="rail-h"><span className="livedot"/>{lang==="zh"?"数据源 · 实时":lang==="ar"?"المصادر · مباشر":"Data sources · LIVE"}<span className={"chip"+(active?" amber":"")} style={{marginInlineStart:"auto"}}>{active?(lit+"/11"):"11"}</span></div>
     <div className="dsl">
-      {SOURCES11.map(s=>{ const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
-        return (<div key={s.key} className={"dsl-row"+(touched?" on":"")}>
+      {SOURCES11.map((s,i)=>{ const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
+        const on=i<lit, validating=active&&i===lit;
+        return (<div key={s.key} className={"dsl-row"+(on?" on":"")+(validating?" validating":"")}>
           <span className="dot" style={{background:col}}/>
           <span className="dsl-n">{t("src_"+s.key)}</span>
-          {touched?<span className="dsl-ck">✓</span>:<span className="dsl-f mono">{s.fresh}%</span>}
+          {on?<span className="dsl-ck">✓</span>:validating?<span className="dsl-f mono">{lang==="zh"?"校验中":"…"}</span>:<span className="dsl-f mono">{s.fresh}%</span>}
         </div>); })}
     </div>
   </div>);
@@ -1876,7 +1877,7 @@ function ChatAnalysis(){
       <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
       <div className="ai-brief-grid">
         <div className="ai-brief-side">
-          <DataSourcePanel touched={false}/>
+          <DataSourcePanel lit={0} active={false}/>
         </div>
         <div className="ai-brief-main card pad">
           <div className="eyebrow">{L("Live demo case","现场演示 Case")}</div>
@@ -1900,6 +1901,14 @@ function ChatAnalysis(){
       {flow&&<FlowDiagram lang={lang} onClose={()=>setFlow(false)}/>}
     </div>);
   }
+  const curKey=(ai.ag>=0&&AGENTS_T[ai.ag])?brdKeyOf(AGENTS_T[ai.ag].ag):null;
+  const backendStage=curKey==="orch"||curKey==="dq"; // system logic — no analyst input
+  const dqIdx=AGENTS_T.findIndex(a=>brdKeyOf(a.ag)==="dq");
+  const dqActive=ai.on&&!ai.done&&ai.ag===dqIdx;
+  const dqLines=dqIdx>=0?linesOf(dqIdx).length:1;
+  let srcLit=0;
+  if(ai.done||ai.ag>dqIdx) srcLit=11;
+  else if(ai.ag===dqIdx) srcLit=Math.max(0,Math.min(11,Math.round(((ai.line+1)/dqLines)*11)));
   const tmap={}; AGENTS_T.forEach((a,i)=>{const k=brdKeyOf(a.ag); if(k)(tmap[k]=tmap[k]||[]).push(i);});
   const linesLen=(ai.ag>=0&&AGENTS_T[ai.ag])?linesOf(ai.ag).length:1;
   const actLabel=ac=>{const m=ACTLABEL[ac];return m?(lang==="zh"?m[1]:m[0]):ac.replace(/_/g," ");};
@@ -1952,7 +1961,7 @@ function ChatAnalysis(){
       <button className="btn ghost sm" onClick={reset}>↻ {L("Replay","重放")}</button>
     </div>
     <div className="theater theater-fiscal">
-      <DataSourcePanel touched={ai.ag>=1||ai.done}/>
+      <DataSourcePanel lit={srcLit} active={dqActive}/>
       <div className="tcol">
       <div className="tstream" ref={streamRef}>
         {cards}
@@ -1976,13 +1985,13 @@ function ChatAnalysis(){
         </div>}
         <div ref={endRef} style={{height:1}}/>
       </div>
-      {ai.on&&!ai.done&&!ai.gate&&!(AGENTS_T[ai.ag]&&AGENTS_T[ai.ag].gate)&&<div className="agent-dock">
-        <span className="dock-ic">{ai.awaiting?"✦":""}</span>
-        <input className="dock-input" value={note} disabled={!ai.awaiting}
-          placeholder={ai.awaiting?L("Add a suggestion to re-run this agent…","补充建议,重新生成本 Agent…"):L("Agent is analyzing…","Agent 分析中…")}
-          onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&ai.awaiting&&note.trim())regenerate();}}/>
+      {ai.on&&!ai.done&&!ai.gate&&!(AGENTS_T[ai.ag]&&AGENTS_T[ai.ag].gate)&&<div className={"agent-dock"+(backendStage?" backend":"")}>
+        <span className="dock-ic">{backendStage?"🔒":(ai.awaiting?"✦":"")}</span>
+        <input className="dock-input" value={backendStage?"":note} disabled={backendStage||!ai.awaiting}
+          placeholder={backendStage?L("Backend stage — analyst input not allowed (orchestration & data-quality are system logic)","后台环节 —— 不接受分析师补充(编排 / 数据质量为系统逻辑)"):(ai.awaiting?L("Add a suggestion to re-run this agent…","补充建议,重新生成本 Agent…"):L("Agent is analyzing…","Agent 分析中…"))}
+          onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&ai.awaiting&&!backendStage&&note.trim())regenerate();}}/>
         <button className="btn ghost sm" onClick={prevAgent} disabled={!ai.awaiting||ai.ag<=0} title={L("Back to previous agent","返回上一个 Agent")}>← {L("Prev","上一个")}</button>
-        <button className="btn secondary sm" onClick={regenerate} disabled={!ai.awaiting} title={L("Re-run this agent with your note","结合补充重新生成本 Agent")}>↻ {L("Regenerate","重新生成")}</button>
+        <button className="btn secondary sm" onClick={regenerate} disabled={backendStage||!ai.awaiting} title={L("Re-run this agent with your note","结合补充重新生成本 Agent")}>↻ {L("Regenerate","重新生成")}</button>
         <button className="btn sm" onClick={nextAgent} disabled={!ai.awaiting||ai.ag>=AGENTS_T.length-1}>{L("Next agent","下一个 Agent")} →</button>
       </div>}
       </div>

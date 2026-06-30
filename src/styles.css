@@ -352,6 +352,14 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .dsl-row .dsl-n{flex:1;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dsl-row .dsl-f{font-size:11px;color:var(--muted);font-weight:700}
 .dsl-row .dsl-ck{color:var(--green);font-weight:800}
+.dsl-row.on{transition:background .3s,border-color .3s}
+.dsl-row.validating{background:var(--amber-50);border-color:var(--amber);animation:dqpulse .85s ease-in-out infinite}
+.dsl-row.validating .dsl-f{color:#9a6a00;font-weight:700}
+@keyframes dqpulse{0%,100%{box-shadow:0 0 0 0 rgba(226,151,0,.0)}50%{box-shadow:0 0 0 3px rgba(226,151,0,.18)}}
+/* backend (no-input) dock state */
+.agent-dock.backend{background:#f6f7f9;border-color:#e1e5ea}
+.agent-dock.backend .dock-ic{color:var(--muted)}
+.agent-dock.backend .dock-input::placeholder{color:#8a96a0;font-style:italic}
 /* analyst note bubble in the stream */
 .tln.analyst{align-items:flex-start}
 .tln.analyst .kind.analyst{background:#eef0fc;color:#4f46e5}
