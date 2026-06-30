@@ -142,6 +142,14 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .agact .alab{flex:1;min-width:0}
 /* intent routing */
 .payload{margin-top:10px;background:#0f2a1e;color:#a7f3d0;border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.scan-result{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-radius:9px;margin-bottom:12px;font-size:12.5px;border:1px solid #d6e4dc;background:#f0f7f3}
+.scan-result.warn{border-color:#f1d9a8;background:#fdf6e9}
+.scan-result.bad{border-color:#f2c9c2;background:#fbeeec}
+.scan-result .sr-chips{display:flex;gap:6px;margin-inline-start:auto;flex-wrap:wrap}
+.ing-badge{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap}
+.ing-badge.ok{background:#e3f4ea;color:#1B8354}
+.ing-badge.amber{background:#fcf0d8;color:#9a6a00}
+.ing-badge.red{background:#fbe3df;color:#b42318}
 .route-banner{background:#eef0fc;border:1px solid #d6dbf7;color:#3730a3;border-radius:9px;padding:8px 12px;font-size:12.5px;margin-bottom:12px}
 .route-banner b{color:#4f46e5}
 .agentcard.routed{border-color:#4f46e5}

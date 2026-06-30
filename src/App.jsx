@@ -131,6 +131,7 @@ const I18N = {
     // J2 monitoring
     mon_sub:"Data Quality Monitor & Periodic Reports agents — automatic",
     runScan:"Run scan now", scanning:"Scanning 11 sources…", lastScan:"Last scheduled scan",
+    scanDone:"Scan complete", ingRecv:"received", ingMiss:"missing", scanNote:"Checked all 11 sources for data delivery", ingStatus:"Ingestion",
     freshness:"Freshness", within:"within SLA", delayed:"delayed", srcHealth:"Source health (11)",
     kpiThresh:"KPI thresholds", alerts:"Alerts", noAlerts:"No open alerts — all KPIs within thresholds.",
     sev_red:"Critical", sev_amber:"Warning", sev_info:"Info",
@@ -235,6 +236,7 @@ I18N.ar = {
   chart_demandT:"مؤشر الطلب (الرياض · المتطلّبون)", chart_gapT:"فجوة العرض والطلب حسب المنطقة (٪)",
   mon_sub:"وكيلا مراقبة جودة البيانات والتقارير الدورية — آلي",
   runScan:"تشغيل فحص الآن", scanning:"جارٍ فحص ١١ مصدراً…", lastScan:"آخر فحص مجدول",
+  scanDone:"اكتمل الفحص", ingRecv:"مُستلَم", ingMiss:"مفقود", scanNote:"تم فحص جميع المصادر الـ١١ للتحقق من تسليم البيانات", ingStatus:"الإدخال",
   freshness:"الحداثة", within:"ضمن SLA", delayed:"متأخر", srcHealth:"حالة المصادر (١١)",
   kpiThresh:"عتبات المؤشرات", alerts:"التنبيهات", noAlerts:"لا تنبيهات مفتوحة — كل المؤشرات ضمن الحدود.",
   sev_red:"حرج", sev_amber:"تحذير", sev_info:"معلومة",
@@ -334,6 +336,7 @@ I18N.zh = {
   chart_demandT:"需求指数（利雅得 · 改善型）", chart_gapT:"各区供需缺口（%）",
   mon_sub:"数据质量监控与周期报告 Agent — 自动",
   runScan:"立即扫描", scanning:"正在扫描 11 个源…", lastScan:"上次定时扫描",
+  scanDone:"扫描完成", ingRecv:"已录入", ingMiss:"缺失", scanNote:"已检查全部 11 个数据源的数据上报情况", ingStatus:"数据录入",
   freshness:"新鲜度", within:"SLA 内", delayed:"延迟", srcHealth:"数据源健康（11）",
   kpiThresh:"KPI 阈值", alerts:"预警", noAlerts:"无未处理预警 — 所有 KPI 在阈值内。",
   sev_red:"严重", sev_amber:"警告", sev_info:"提示",
@@ -2102,26 +2105,52 @@ function Monitoring(){
   const {t,alerts,ackAlert,raiseGapAlert,askOrchestrator,pushLog,lang}=useStore();
   const [scanning,setScanning]=useState(false);
   const [lastScan,setLastScan]=useState(nowStr(lang));
-  function scan(){ if(scanning) return; setScanning(true); pushLog("log_scan");
-    setTimeout(()=>{ setScanning(false); setLastScan(nowStr(lang)); raiseGapAlert(); pushLog("log_alert"); },1900);
+  const [scanRes,setScanRes]=useState(null);
+  // per-source ingestion verdict: ok→received, amber→delayed, red→missing
+  const ingestOf=s=> s.status==="red"?"miss":(s.status==="amber"||s.fresh<85)?"delay":"recv";
+  function scan(){ if(scanning) return; setScanning(true); setScanRes(null); pushLog("log_scan");
+    setTimeout(()=>{
+      const per={}; let recv=0,delay=0,miss=0; const issues=[];
+      SOURCES11.forEach(s=>{ const v=ingestOf(s); per[s.key]=v;
+        if(v==="recv")recv++; else if(v==="delay"){delay++;issues.push(t("src_"+s.key));} else {miss++;issues.push(t("src_"+s.key));} });
+      const dq=(SOURCES11.reduce((a,s)=>a+s.fresh,0)/SOURCES11.length).toFixed(1);
+      setScanRes({per,recv,delay,miss,dq,issues,at:nowStr(lang)});
+      setScanning(false); setLastScan(nowStr(lang)); raiseGapAlert(); pushLog("log_alert");
+    },1900);
   }
   const open=alerts.filter(a=>!a.ack);
+  const ingTone={recv:"ok",delay:"amber",miss:"red"};
+  const ingLabel={recv:t("ingRecv"),delay:t("delayed"),miss:t("ingMiss")};
   return (<div className="fade">
-    <PageHeader title={t("nav_monitor")} sub={t("mon_sub")} right={<span className="sect-right">
-      <AgentBadge name={t("eng_demand")}/>
-      <button className="btn" onClick={scan} disabled={scanning}>{scanning?t("scanning"):("◉ "+t("runScan"))}</button>
-    </span>}/>
+    <PageHeader title={t("nav_monitor")} sub={t("mon_sub")} right={<AgentBadge name={t("eng_demand")}/>}/>
     {scanning&&<div className="scan-bar" style={{marginBottom:14}}><span/></div>}
     <div className="banner" style={{marginBottom:14}}>⚠ {t("dq_degraded")} · {t("dq_ticket")} (#DQ-2407)</div>
-    <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right"><span className="chip">{t("dq_score")}: 94.2/100</span><span className="chip">9 / 11 ●</span></span>}>
+    <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right">
+      <span className="chip">{t("dq_score")}: {scanRes?scanRes.dq:"94.2"}/100</span>
+      <span className="chip">{scanRes?(scanRes.recv+" / 11 ●"):"9 / 11 ●"}</span>
+      <button className="btn" onClick={scan} disabled={scanning}>{scanning?t("scanning"):("◉ "+t("runScan"))}</button>
+    </span>}>
+      {scanRes&&<div className={"scan-result"+(scanRes.miss?" bad":scanRes.delay?" warn":" ok")}>
+        <b>✓ {t("scanDone")}</b> <span className="muted">· {t("scanNote")}</span>
+        <span className="sr-chips">
+          <span className="chip ok">✓ {scanRes.recv} {t("ingRecv")}</span>
+          <span className="chip amber">⏱ {scanRes.delay} {t("delayed")}</span>
+          <span className="chip danger">✕ {scanRes.miss} {t("ingMiss")}</span>
+        </span>
+        {scanRes.issues.length>0&&<div className="muted" style={{fontSize:11.5,marginTop:6,flexBasis:"100%"}}>{t("delayed")} / {t("ingMiss")}: <b>{scanRes.issues.join(" · ")}</b></div>}
+      </div>}
       <div className="mon-grid">
         {SOURCES11.map(s=>{ const tone=s.status==="ok"?"":s.status==="amber"?"amber":"red";
           const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
+          const ing=scanRes?scanRes.per[s.key]:null;
           return (<div key={s.key} className={"mon "+tone}>
             <div className="mh"><span className="mname">{t("src_"+s.key)}</span><span className="dot" style={{background:col}}/></div>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:11.5,marginBottom:4}}><span className="muted">{t("freshness")}</span><span className="mono">{s.fresh}%</span></div>
             <Progress v={s.fresh/100} color={col}/>
-            <div className="muted" style={{fontSize:11,marginTop:6}}>{s.sla} · {s.status==="ok"?t("within"):t("delayed")}</div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:6}}>
+              <span className="muted" style={{fontSize:11}}>{s.sla} · {s.status==="ok"?t("within"):t("delayed")}</span>
+              {ing&&<span className={"ing-badge "+ingTone[ing]}>{ing==="recv"?"✓":ing==="delay"?"⏱":"✕"} {ingLabel[ing]}</span>}
+            </div>
           </div>); })}
       </div>
     </Section>
