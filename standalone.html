@@ -153,7 +153,7 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .agact .alab{flex:1;min-width:0}
 /* intent routing */
 .payload{margin-top:10px;background:#0f2a1e;color:#a7f3d0;border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
-.scan-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.scan-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .ss-box{border:1px solid #e4e9ee;border-radius:10px;padding:12px 10px;text-align:center;background:#f7f9fb}
 .ss-box.ok{border-color:#bfe6cd;background:#f0f9f3}
 .ss-box.amber{border-color:#f1dca8;background:#fdf7ea}
@@ -1068,7 +1068,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:44 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:47 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -3201,20 +3201,19 @@ function Monitoring(){
     <div className="balady-hero mon">
       <div className="bh-main">
         <span className="bh-tag">{t("mh_tag")}</span>
-        <h2>{scanRes?scanRes.dq:"94.2"} <small>/100</small> · {scanRes?scanRes.recv:9}/11 {t("mh_healthy")}</h2>
+        <h2>{scanRes?scanRes.recv:10}/11 {t("mh_healthy")}</h2>
         <p>{t("mh_sub")}</p>
       </div>
       <div className="bh-stats">
-        <div className="bh-stat"><div className="v">{scanRes?scanRes.dq:"94.2"}</div><div className="l">{t("dq_score")}</div></div>
-        <div className="bh-stat good"><div className="v">{scanRes?scanRes.recv:9}</div><div className="l">{t("mh_healthy")}</div></div>
+        <div className="bh-stat good"><div className="v">{scanRes?scanRes.recv:10}</div><div className="l">{t("mh_healthy")}</div></div>
         <div className="bh-stat amber"><div className="v">{scanRes?scanRes.delay:1}</div><div className="l">{t("delayed")}</div></div>
+        <div className="bh-stat danger"><div className="v">{scanRes?scanRes.miss:0}</div><div className="l">{t("ingMiss")}</div></div>
       </div>
     </div>
     {scanning&&<div className="scan-bar" style={{marginBottom:14}}><span/></div>}
     <div className="banner" style={{marginBottom:14}}>⚠ {t("dq_degraded")} · {t("dq_ticket")} (#DQ-2407)</div>
     <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right">
-      <span className="chip">{t("dq_score")}: {scanRes?scanRes.dq:"94.2"}/100</span>
-      <span className="chip">{scanRes?(scanRes.recv+" / 11 ●"):"9 / 11 ●"}</span>
+      <span className="chip">{scanRes?(scanRes.recv+" / 11 ●"):"10 / 11 ●"}</span>
       <button className="btn" onClick={scan} disabled={scanning}>{scanning?t("scanning"):("◉ "+t("runScan"))}</button>
     </span>}>
       <div className="mon-grid">
@@ -3242,7 +3241,6 @@ function Monitoring(){
         <div className="ss-box ok"><div className="ss-n">{scanRes.recv}</div><div className="ss-l">{t("ingRecv")}</div></div>
         <div className="ss-box amber"><div className="ss-n">{scanRes.delay}</div><div className="ss-l">{t("delayed")}</div></div>
         <div className="ss-box red"><div className="ss-n">{scanRes.miss}</div><div className="ss-l">{t("ingMiss")}</div></div>
-        <div className="ss-box"><div className="ss-n">{scanRes.dq}</div><div className="ss-l">{t("dq_score")}</div></div>
       </div>
       {scanRes.issues.length>0&&<div className="scan-issues">
         <b>{t("delayed")} / {t("ingMiss")}</b>

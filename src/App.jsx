@@ -2145,20 +2145,19 @@ function Monitoring(){
     <div className="balady-hero mon">
       <div className="bh-main">
         <span className="bh-tag">{t("mh_tag")}</span>
-        <h2>{scanRes?scanRes.dq:"94.2"} <small>/100</small> · {scanRes?scanRes.recv:9}/11 {t("mh_healthy")}</h2>
+        <h2>{scanRes?scanRes.recv:10}/11 {t("mh_healthy")}</h2>
         <p>{t("mh_sub")}</p>
       </div>
       <div className="bh-stats">
-        <div className="bh-stat"><div className="v">{scanRes?scanRes.dq:"94.2"}</div><div className="l">{t("dq_score")}</div></div>
-        <div className="bh-stat good"><div className="v">{scanRes?scanRes.recv:9}</div><div className="l">{t("mh_healthy")}</div></div>
+        <div className="bh-stat good"><div className="v">{scanRes?scanRes.recv:10}</div><div className="l">{t("mh_healthy")}</div></div>
         <div className="bh-stat amber"><div className="v">{scanRes?scanRes.delay:1}</div><div className="l">{t("delayed")}</div></div>
+        <div className="bh-stat danger"><div className="v">{scanRes?scanRes.miss:0}</div><div className="l">{t("ingMiss")}</div></div>
       </div>
     </div>
     {scanning&&<div className="scan-bar" style={{marginBottom:14}}><span/></div>}
     <div className="banner" style={{marginBottom:14}}>⚠ {t("dq_degraded")} · {t("dq_ticket")} (#DQ-2407)</div>
     <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right">
-      <span className="chip">{t("dq_score")}: {scanRes?scanRes.dq:"94.2"}/100</span>
-      <span className="chip">{scanRes?(scanRes.recv+" / 11 ●"):"9 / 11 ●"}</span>
+      <span className="chip">{scanRes?(scanRes.recv+" / 11 ●"):"10 / 11 ●"}</span>
       <button className="btn" onClick={scan} disabled={scanning}>{scanning?t("scanning"):("◉ "+t("runScan"))}</button>
     </span>}>
       <div className="mon-grid">
@@ -2186,7 +2185,6 @@ function Monitoring(){
         <div className="ss-box ok"><div className="ss-n">{scanRes.recv}</div><div className="ss-l">{t("ingRecv")}</div></div>
         <div className="ss-box amber"><div className="ss-n">{scanRes.delay}</div><div className="ss-l">{t("delayed")}</div></div>
         <div className="ss-box red"><div className="ss-n">{scanRes.miss}</div><div className="ss-l">{t("ingMiss")}</div></div>
-        <div className="ss-box"><div className="ss-n">{scanRes.dq}</div><div className="ss-l">{t("dq_score")}</div></div>
       </div>
       {scanRes.issues.length>0&&<div className="scan-issues">
         <b>{t("delayed")} / {t("ingMiss")}</b>
