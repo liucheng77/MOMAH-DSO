@@ -1029,7 +1029,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 19:42 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 19:43 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2278,6 +2278,24 @@ function Hub(){
   return (<div className="fade">
     <PageHeader title={t("nav_hub")+" · "+t("ki_snapshot")} sub={t("ki_sub")}
       right={<span className="ki-legend"><span><span className="dot" style={{background:"var(--green)"}}/>{t("ki_real")}</span><span><span className="dot" style={{background:"#2563eb"}}/>{t("ki_mock")}</span></span>}/>
+    <Section title={t("ai_analysis")}>
+      <AiRec d={AIREC.gap}/>
+      <div className="muted" style={{fontSize:11.5,marginTop:8}}>{lang==="zh"?"完整的缺口闭合方案与执行动作在推理剧场中生成 →":"Full closure plan & actions are produced in the reasoning theater →"} <a href="#" onClick={e=>{e.preventDefault();setRoute("chat");}} style={{color:"#2563eb",fontWeight:600}}>{t("nav_chat")}</a></div>
+    </Section>
+    <div className="cols-2">
+      <Section title={t("ki_scn_title")}>
+        <div className="ki-scn">{KI_SCN.map(s=>(<div key={s.k} className={"ki-scn-box "+s.tone+(scn===s.k?" active":"")} style={{cursor:"pointer"}} onClick={()=>setScn(s.k)}>
+          <div className="p">{s.prob}%</div>
+          <div className="n">{t("sc_"+s.k)}{scn===s.k?(" ← "+t("ki_active")):""}</div>
+          <div className="m">{Z(s,"rate")}</div><div className="m">{s.gdp}</div>
+        </div>))}</div>
+        <div className="scn-bar2">{KI_SCN.map(s=><span key={s.k} className={"seg "+s.tone} style={{width:s.prob+"%"}}/>)}</div>
+        <div className="muted" style={{fontSize:11,marginTop:8}}>{t("ki_scn_note")} · {t("ai_scn_hint")}</div>
+      </Section>
+      <Section title={t("ki_risk_title")}>
+        {KI_RISKS.map((r,i)=>(<div key={i} className={"ki-risk "+r.sev}><b>{Z(r,"t")}</b> — {Z(r,"d")}</div>))}
+      </Section>
+    </div>
     <Section title={t("kpis_title")}>
       <div className="ki-grid">
         {KI_KPI.map((k,i)=>{ const c=dcol(k.dir); return (<div key={i} className={"ki-card pop"+(k.real?"":" mock")} style={{animationDelay:(i*55)+"ms"}}>
@@ -2299,24 +2317,6 @@ function Hub(){
         <tbody>{MOM_HOUSING.map((r,i)=>(<tr key={i}><td>{Z(r,"k")}</td><td className="right-num mono muted">{r.may}</td><td className="right-num mono">{r.jun}</td><td className="right-num mono" style={{color:tcol(r.dt),fontWeight:700}}>{r.d}</td></tr>))}</tbody>
       </table></div>
     </Section>
-    <Section title={t("ai_analysis")}>
-      <AiRec d={AIREC.gap}/>
-      <div className="muted" style={{fontSize:11.5,marginTop:8}}>{lang==="zh"?"完整的缺口闭合方案与执行动作在推理剧场中生成 →":"Full closure plan & actions are produced in the reasoning theater →"} <a href="#" onClick={e=>{e.preventDefault();setRoute("chat");}} style={{color:"#2563eb",fontWeight:600}}>{t("nav_chat")}</a></div>
-    </Section>
-    <div className="cols-2">
-      <Section title={t("ki_scn_title")}>
-        <div className="ki-scn">{KI_SCN.map(s=>(<div key={s.k} className={"ki-scn-box "+s.tone+(scn===s.k?" active":"")} style={{cursor:"pointer"}} onClick={()=>setScn(s.k)}>
-          <div className="p">{s.prob}%</div>
-          <div className="n">{t("sc_"+s.k)}{scn===s.k?(" ← "+t("ki_active")):""}</div>
-          <div className="m">{Z(s,"rate")}</div><div className="m">{s.gdp}</div>
-        </div>))}</div>
-        <div className="scn-bar2">{KI_SCN.map(s=><span key={s.k} className={"seg "+s.tone} style={{width:s.prob+"%"}}/>)}</div>
-        <div className="muted" style={{fontSize:11,marginTop:8}}>{t("ki_scn_note")} · {t("ai_scn_hint")}</div>
-      </Section>
-      <Section title={t("ki_risk_title")}>
-        {KI_RISKS.map((r,i)=>(<div key={i} className={"ki-risk "+r.sev}><b>{Z(r,"t")}</b> — {Z(r,"d")}</div>))}
-      </Section>
-    </div>
     <div className="muted" style={{fontSize:11,textAlign:"center",margin:"4px 0 8px"}}>{t("ki_footer")}</div>
   </div>);
 }
