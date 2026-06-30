@@ -1889,7 +1889,7 @@ function ChatAnalysis(){
       <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}{isRouted?<span className="routed-tag">★ {L("routed","路由命中")}</span>:null}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
   }
   return (<div className="fade">
-    <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
+    <PageHeader title={t("nav_chat")} sub={L("Ask about the SAMA +50bps shock → size the Seg-A gap → design the closure plan & actions → human gate → push as SSOT data","就 SAMA +50bps 冲击提问 → 量化 A 段供需缺口 → 给出闭合方案与执行动作 → 人工门复核 → 作为 SSOT 数据推送")} cls="ph-end"
       right={mafChip}/>
     <ReasoningStatus ai={ai} L={L} Z={Z}/>
     <div className="ctrl">
