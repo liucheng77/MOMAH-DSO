@@ -1858,7 +1858,11 @@ function ChatAnalysis(){
       if(cur.playing) tRef.current=setTimeout(()=>advance(next), ln.k==="calc"?900:ln.k==="call"?850:680);
     } else if(ag.gate){ setAi({...cur,gate:true,playing:false,awaiting:false}); }
     else if(cur.ag>=AGENTS_T.length-1){ setAi({...cur,done:true,playing:false,awaiting:false}); pushLog("log_report"); addReport({ref:"DSO-2026-0619-URG-001",nameKey:"repName_brief",cov,conf:88}); }
-    else { setAi({...cur,playing:false,awaiting:true}); } // agent finished → wait for analyst (regenerate / next / prev)
+    else { const bk=brdKeyOf(ag.ag);
+      if(bk==="orch"||bk==="dq"){ // backend stage → auto-run to the next agent, no analyst stop
+        const next={...cur,ag:cur.ag+1,line:-1,playing:true,awaiting:false}; setAi(next); pushLog("log_route"); tRef.current=setTimeout(()=>advance(next),500);
+      } else { setAi({...cur,playing:false,awaiting:true}); } // analyst-interactive agent → wait (regenerate / next / prev)
+    }
   }
   function start(){ clearTimeout(tRef.current); setNotes({}); setNote(""); setRevisions({}); revisionsRef.current={}; pushLog("log_cross"); const cur={on:true,ag:0,line:-1,ds:{},gate:false,done:false,playing:true,awaiting:false}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),300); }
   function play(){ const cur={...aiRef.current,playing:true,awaiting:false}; setAi(cur); advance(cur); }
