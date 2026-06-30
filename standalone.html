@@ -904,9 +904,6 @@ table.tbl tbody tr:hover{background:#f8fbf9}
   background:linear-gradient(120deg,var(--green-dark) 0%,var(--green) 70%,var(--green-700) 100%);
   color:#fff;border-radius:var(--radius);padding:12px 18px;margin-bottom:14px;overflow:hidden;
   box-shadow:0 4px 16px rgba(8,93,58,.2)}
-.balady-hero::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--gold),#ffe08a)}
-.balady-hero::after{content:"";position:absolute;right:-40px;top:-70px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(248,198,48,.16),transparent 70%);pointer-events:none}
-html[dir="rtl"] .balady-hero::after{right:auto;left:-40px}
 .balady-hero.mon{background:linear-gradient(120deg,#0b3b34 0%,var(--green-dark) 60%,var(--green) 100%)}
 .balady-hero .bh-main{min-width:220px}
 .bh-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
@@ -1071,7 +1068,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:42 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:44 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
