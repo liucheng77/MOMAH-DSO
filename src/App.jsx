@@ -734,6 +734,7 @@ Object.assign(I18N.en, {
   kpis_title:"Key KPIs", biz_reports:"Business reports", k_dq:"Data quality score",
   release_notes:"Release notes", rn_latest:"Latest",
   ki_snapshot:"Jun 1, 2026", ki_sub:"Key indicators — monthly view", ki_real:"Real data", ki_mock:"DSO estimate",
+  hu_tag:"Supply-demand gap · Riyadh Seg-A", hu_sub:"RED below the 50% coverage line — launch the gap-closure plan", hu_gap:"Gap (units)", hu_covNow:"Coverage now", hu_covPlan:"After plan", mh_tag:"Data ingestion & source health", mh_healthy:"Healthy sources", mh_sub:"All 11 sources validated before any DSO output",
   ki_macro_title:"Macro-Economic Indicators · MoM", ki_housing_title:"Housing Market Indicators · MoM",
   ki_scn_title:"Macro Scenario Distribution", ki_risk_title:"Key Risks · Next 30 Days",
   ki_indicator:"Indicator", ki_may:"May 1", ki_jun:"Jun 1", ki_mom:"MoM Δ", ki_active:"Active",
@@ -768,6 +769,7 @@ Object.assign(I18N.zh, {
   kpis_title:"关键 KPI", biz_reports:"业务报告", k_dq:"数据质量分",
   release_notes:"更新日志", rn_latest:"最新",
   ki_snapshot:"2026 年 6 月 1 日", ki_sub:"关键指标 — 月度", ki_real:"真实数据", ki_mock:"DSO 估算",
+  hu_tag:"供需缺口 · 利雅得 A 段", hu_sub:"低于 50% 覆盖红线 — 需启动缺口闭合方案", hu_gap:"缺口(套)", hu_covNow:"当前覆盖", hu_covPlan:"方案闭合后", mh_tag:"数据录入与源健康", mh_healthy:"正常源", mh_sub:"出任何 DSO 结论前,先校验全部 11 个数据源",
   ki_macro_title:"宏观经济指标 · 环比", ki_housing_title:"住房市场指标 · 环比",
   ki_scn_title:"宏观情景分布", ki_risk_title:"关键风险 · 未来 30 天",
   ki_indicator:"指标", ki_may:"5 月 1 日", ki_jun:"6 月 1 日", ki_mom:"环比", ki_active:"当前",
@@ -802,6 +804,7 @@ Object.assign(I18N.ar, {
   kpis_title:"المؤشرات الرئيسية", biz_reports:"التقارير التشغيلية", k_dq:"درجة جودة البيانات",
   release_notes:"سجل التحديثات", rn_latest:"الأحدث",
   ki_snapshot:"١ يونيو ٢٠٢٦", ki_sub:"المؤشرات الرئيسية — شهرياً", ki_real:"بيانات حقيقية", ki_mock:"تقدير DSO",
+  hu_tag:"فجوة العرض والطلب · الرياض الفئة A", hu_sub:"أقل من خط التغطية ٥٠٪ — ابدأ خطة سد الفجوة", hu_gap:"الفجوة (وحدة)", hu_covNow:"التغطية الآن", hu_covPlan:"بعد الخطة", mh_tag:"إدخال البيانات وصحة المصادر", mh_healthy:"مصادر سليمة", mh_sub:"التحقق من جميع المصادر الـ١١ قبل أي مخرجات DSO",
   ki_macro_title:"المؤشرات الاقتصادية الكلية · شهرياً", ki_housing_title:"مؤشرات سوق السكن · شهرياً",
   ki_scn_title:"توزيع السيناريوهات الكلية", ki_risk_title:"أهم المخاطر · ٣٠ يوماً القادمة",
   ki_indicator:"المؤشر", ki_may:"١ مايو", ki_jun:"١ يونيو", ki_mom:"التغير الشهري", ki_active:"الحالي",
@@ -1109,7 +1112,7 @@ const KI_KPI=[
   {src:"DSO · Conversion", src_zh:"DSO · 转化", real:0, label:"Avg. Project Conversion", label_zh:"平均项目转化率", v:"65.8", unit:"%", chg:"↓ 1.4pp", dir:"down",
     meta:"Seg A 52% · Seg E 78% · rate hike pressures A–B", meta_zh:"A 段 52% · E 段 78% · 加息施压 A–B 段",
     series:[{m:"Dec",v:"69.0%",h:78},{m:"Jan",v:"68.5%",h:72},{m:"Feb",v:"68.0%",h:66},{m:"Mar",v:"67.5%",h:60},{m:"Apr",v:"67.2%",h:56},{m:"May",v:"65.8%",h:46}]},
-  {src:"DSO · Supply-Demand Balancing", src_zh:"DSO · 供需平衡", real:0, label:"Seg-A Gap Coverage", label_zh:"A 段缺口覆盖率", v:"35", unit:"%", chg:"↓ 2pp · RED", dir:"down",
+  {src:"DSO · Supply-Demand Balancing", src_zh:"DSO · 供需平衡", real:0, danger:1, label:"Seg-A Gap Coverage", label_zh:"A 段缺口覆盖率", v:"35", unit:"%", chg:"↓ 2pp · RED", dir:"down",
     meta:"Gap 12,400 units · pipeline covers 35% · RED ≤50%", meta_zh:"缺口 12,400 套 · 管线覆盖 35% · 红线 ≤50%",
     series:[{m:"Dec",v:"44%",h:78},{m:"Jan",v:"42%",h:72},{m:"Feb",v:"40%",h:66},{m:"Mar",v:"38%",h:58},{m:"Apr",v:"37%",h:54},{m:"May",v:"35%",h:46}]},
   {src:"DSO · Quality Monitor", src_zh:"DSO · 质量监控", real:0, label:"Data Quality Score", label_zh:"数据质量分", v:"94.6", unit:"/100", chg:"↑ 0.5", dir:"up",
@@ -1267,9 +1270,21 @@ function Hub(){
   return (<div className="fade">
     <PageHeader title={t("nav_hub")+" · "+t("ki_snapshot")} sub={t("ki_sub")}
       right={<span className="ki-legend"><span><span className="dot" style={{background:"var(--green)"}}/>{t("ki_real")}</span><span><span className="dot" style={{background:"#2563eb"}}/>{t("ki_mock")}</span></span>}/>
+    <div className="balady-hero">
+      <div className="bh-main">
+        <span className="bh-tag">{t("hu_tag")}</span>
+        <h2>12,400 <small>{lang==="zh"?"套":lang==="ar"?"وحدة":"units"}</small> · {t("hu_covNow")} 35%</h2>
+        <p>{t("hu_sub")}</p>
+      </div>
+      <div className="bh-stats">
+        <div className="bh-stat"><div className="v">12,400</div><div className="l">{t("hu_gap")}</div></div>
+        <div className="bh-stat danger"><div className="v">35%</div><div className="l">{t("hu_covNow")}</div></div>
+        <div className="bh-stat good"><div className="v">97%</div><div className="l">{t("hu_covPlan")}</div></div>
+      </div>
+    </div>
     <Section title={t("kpis_title")}>
       <div className="ki-grid">
-        {KI_KPI.map((k,i)=>{ const c=dcol(k.dir); return (<div key={i} className={"ki-card pop"+(k.real?"":" mock")} style={{animationDelay:(i*55)+"ms"}}>
+        {KI_KPI.map((k,i)=>{ const c=k.danger?"var(--danger)":dcol(k.dir); return (<div key={i} className={"ki-card pop"+(k.real?"":" mock")+(k.danger?" danger":"")} style={{animationDelay:(i*55)+"ms"}}>
           <span className={"ki-src "+(k.real?"real":"mock")}>{Z(k,"src")}</span>
           <div className="ki-label">{Z(k,"label")}</div>
           <div className="ki-row">
@@ -2127,6 +2142,18 @@ function Monitoring(){
   const ingLabel={recv:t("ingRecv"),delay:t("delayed"),miss:t("ingMiss")};
   return (<div className="fade">
     <PageHeader title={t("nav_monitor")} sub={t("mon_sub")}/>
+    <div className="balady-hero mon">
+      <div className="bh-main">
+        <span className="bh-tag">{t("mh_tag")}</span>
+        <h2>{scanRes?scanRes.dq:"94.2"} <small>/100</small> · {scanRes?scanRes.recv:9}/11 {t("mh_healthy")}</h2>
+        <p>{t("mh_sub")}</p>
+      </div>
+      <div className="bh-stats">
+        <div className="bh-stat"><div className="v">{scanRes?scanRes.dq:"94.2"}</div><div className="l">{t("dq_score")}</div></div>
+        <div className="bh-stat good"><div className="v">{scanRes?scanRes.recv:9}</div><div className="l">{t("mh_healthy")}</div></div>
+        <div className="bh-stat amber"><div className="v">{scanRes?scanRes.delay:1}</div><div className="l">{t("delayed")}</div></div>
+      </div>
+    </div>
     {scanning&&<div className="scan-bar" style={{marginBottom:14}}><span/></div>}
     <div className="banner" style={{marginBottom:14}}>⚠ {t("dq_degraded")} · {t("dq_ticket")} (#DQ-2407)</div>
     <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right">

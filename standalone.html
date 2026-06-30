@@ -899,6 +899,29 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 @keyframes recpulse{0%{opacity:.35;filter:saturate(1.4)}100%{opacity:1}}
 
 /* ---- Key Indicators dashboard ---- */
+/* ---- Balady hero / stat band ---- */
+.balady-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  background:linear-gradient(120deg,var(--green-dark) 0%,var(--green) 70%,var(--green-700) 100%);
+  color:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;overflow:hidden;
+  box-shadow:0 8px 28px rgba(8,93,58,.26)}
+.balady-hero::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--gold),#ffe08a)}
+.balady-hero::after{content:"";position:absolute;right:-40px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(248,198,48,.18),transparent 70%);pointer-events:none}
+html[dir="rtl"] .balady-hero::after{right:auto;left:-40px}
+.balady-hero.mon{background:linear-gradient(120deg,#0b3b34 0%,var(--green-dark) 60%,var(--green) 100%)}
+.balady-hero .bh-main{min-width:240px}
+.bh-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;padding:3px 12px;margin-bottom:10px}
+.balady-hero h2{color:#fff;font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.balady-hero h2 small{font-size:15px;font-weight:700;opacity:.85}
+.balady-hero p{margin:8px 0 0;font-size:13px;color:rgba(255,255,255,.86);max-width:520px}
+.bh-stats{display:flex;gap:12px}
+.bh-stat{min-width:96px;text-align:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;backdrop-filter:blur(2px)}
+.bh-stat .v{font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.bh-stat .l{font-size:10.5px;font-weight:700;opacity:.82;margin-top:5px}
+.bh-stat.good{border-color:rgba(168,236,196,.5)}.bh-stat.good .v{color:#bff2d3}
+.bh-stat.amber .v{color:var(--gold)}
+.bh-stat.danger{border-color:rgba(255,176,160,.55)}.bh-stat.danger .v{color:#ffc7bb}
+@media(max-width:720px){.balady-hero h2{font-size:24px}.bh-stat{min-width:80px;padding:10px}}
 .ki-legend{display:inline-flex;gap:14px;font-size:11.5px;color:var(--muted);font-weight:700}
 .ki-legend span{display:inline-flex;align-items:center;gap:5px}
 .ki-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -906,6 +929,10 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 @media(max-width:560px){.ki-grid{grid-template-columns:1fr}}
 .ki-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px 10px;box-shadow:var(--shadow);overflow:hidden}
 .ki-card.mock{background:linear-gradient(180deg,#f7f9ff,#fff)}
+.ki-card.danger{border-color:#f0b4ad;background:linear-gradient(180deg,#fdf2f0,#fff)}
+.ki-card.danger::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--danger)}
+html[dir="rtl"] .ki-card.danger::before{inset:0 0 0 auto}
+.ki-card.danger .ki-src{background:var(--danger-50);color:var(--danger)}
 .ki-src{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.02em;border-radius:6px;padding:2px 7px;margin-bottom:8px}
 .ki-src.real{background:var(--green-50);color:var(--green-dark)}
 .ki-src.mock{background:#eaf0fb;color:#2563eb}
@@ -1044,7 +1071,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:30 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 20:41 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -1766,6 +1793,7 @@ Object.assign(I18N.en, {
   kpis_title:"Key KPIs", biz_reports:"Business reports", k_dq:"Data quality score",
   release_notes:"Release notes", rn_latest:"Latest",
   ki_snapshot:"Jun 1, 2026", ki_sub:"Key indicators — monthly view", ki_real:"Real data", ki_mock:"DSO estimate",
+  hu_tag:"Supply-demand gap · Riyadh Seg-A", hu_sub:"RED below the 50% coverage line — launch the gap-closure plan", hu_gap:"Gap (units)", hu_covNow:"Coverage now", hu_covPlan:"After plan", mh_tag:"Data ingestion & source health", mh_healthy:"Healthy sources", mh_sub:"All 11 sources validated before any DSO output",
   ki_macro_title:"Macro-Economic Indicators · MoM", ki_housing_title:"Housing Market Indicators · MoM",
   ki_scn_title:"Macro Scenario Distribution", ki_risk_title:"Key Risks · Next 30 Days",
   ki_indicator:"Indicator", ki_may:"May 1", ki_jun:"Jun 1", ki_mom:"MoM Δ", ki_active:"Active",
@@ -1800,6 +1828,7 @@ Object.assign(I18N.zh, {
   kpis_title:"关键 KPI", biz_reports:"业务报告", k_dq:"数据质量分",
   release_notes:"更新日志", rn_latest:"最新",
   ki_snapshot:"2026 年 6 月 1 日", ki_sub:"关键指标 — 月度", ki_real:"真实数据", ki_mock:"DSO 估算",
+  hu_tag:"供需缺口 · 利雅得 A 段", hu_sub:"低于 50% 覆盖红线 — 需启动缺口闭合方案", hu_gap:"缺口(套)", hu_covNow:"当前覆盖", hu_covPlan:"方案闭合后", mh_tag:"数据录入与源健康", mh_healthy:"正常源", mh_sub:"出任何 DSO 结论前,先校验全部 11 个数据源",
   ki_macro_title:"宏观经济指标 · 环比", ki_housing_title:"住房市场指标 · 环比",
   ki_scn_title:"宏观情景分布", ki_risk_title:"关键风险 · 未来 30 天",
   ki_indicator:"指标", ki_may:"5 月 1 日", ki_jun:"6 月 1 日", ki_mom:"环比", ki_active:"当前",
@@ -1834,6 +1863,7 @@ Object.assign(I18N.ar, {
   kpis_title:"المؤشرات الرئيسية", biz_reports:"التقارير التشغيلية", k_dq:"درجة جودة البيانات",
   release_notes:"سجل التحديثات", rn_latest:"الأحدث",
   ki_snapshot:"١ يونيو ٢٠٢٦", ki_sub:"المؤشرات الرئيسية — شهرياً", ki_real:"بيانات حقيقية", ki_mock:"تقدير DSO",
+  hu_tag:"فجوة العرض والطلب · الرياض الفئة A", hu_sub:"أقل من خط التغطية ٥٠٪ — ابدأ خطة سد الفجوة", hu_gap:"الفجوة (وحدة)", hu_covNow:"التغطية الآن", hu_covPlan:"بعد الخطة", mh_tag:"إدخال البيانات وصحة المصادر", mh_healthy:"مصادر سليمة", mh_sub:"التحقق من جميع المصادر الـ١١ قبل أي مخرجات DSO",
   ki_macro_title:"المؤشرات الاقتصادية الكلية · شهرياً", ki_housing_title:"مؤشرات سوق السكن · شهرياً",
   ki_scn_title:"توزيع السيناريوهات الكلية", ki_risk_title:"أهم المخاطر · ٣٠ يوماً القادمة",
   ki_indicator:"المؤشر", ki_may:"١ مايو", ki_jun:"١ يونيو", ki_mom:"التغير الشهري", ki_active:"الحالي",
@@ -2141,7 +2171,7 @@ const KI_KPI=[
   {src:"DSO · Conversion", src_zh:"DSO · 转化", real:0, label:"Avg. Project Conversion", label_zh:"平均项目转化率", v:"65.8", unit:"%", chg:"↓ 1.4pp", dir:"down",
     meta:"Seg A 52% · Seg E 78% · rate hike pressures A–B", meta_zh:"A 段 52% · E 段 78% · 加息施压 A–B 段",
     series:[{m:"Dec",v:"69.0%",h:78},{m:"Jan",v:"68.5%",h:72},{m:"Feb",v:"68.0%",h:66},{m:"Mar",v:"67.5%",h:60},{m:"Apr",v:"67.2%",h:56},{m:"May",v:"65.8%",h:46}]},
-  {src:"DSO · Supply-Demand Balancing", src_zh:"DSO · 供需平衡", real:0, label:"Seg-A Gap Coverage", label_zh:"A 段缺口覆盖率", v:"35", unit:"%", chg:"↓ 2pp · RED", dir:"down",
+  {src:"DSO · Supply-Demand Balancing", src_zh:"DSO · 供需平衡", real:0, danger:1, label:"Seg-A Gap Coverage", label_zh:"A 段缺口覆盖率", v:"35", unit:"%", chg:"↓ 2pp · RED", dir:"down",
     meta:"Gap 12,400 units · pipeline covers 35% · RED ≤50%", meta_zh:"缺口 12,400 套 · 管线覆盖 35% · 红线 ≤50%",
     series:[{m:"Dec",v:"44%",h:78},{m:"Jan",v:"42%",h:72},{m:"Feb",v:"40%",h:66},{m:"Mar",v:"38%",h:58},{m:"Apr",v:"37%",h:54},{m:"May",v:"35%",h:46}]},
   {src:"DSO · Quality Monitor", src_zh:"DSO · 质量监控", real:0, label:"Data Quality Score", label_zh:"数据质量分", v:"94.6", unit:"/100", chg:"↑ 0.5", dir:"up",
@@ -2299,9 +2329,21 @@ function Hub(){
   return (<div className="fade">
     <PageHeader title={t("nav_hub")+" · "+t("ki_snapshot")} sub={t("ki_sub")}
       right={<span className="ki-legend"><span><span className="dot" style={{background:"var(--green)"}}/>{t("ki_real")}</span><span><span className="dot" style={{background:"#2563eb"}}/>{t("ki_mock")}</span></span>}/>
+    <div className="balady-hero">
+      <div className="bh-main">
+        <span className="bh-tag">{t("hu_tag")}</span>
+        <h2>12,400 <small>{lang==="zh"?"套":lang==="ar"?"وحدة":"units"}</small> · {t("hu_covNow")} 35%</h2>
+        <p>{t("hu_sub")}</p>
+      </div>
+      <div className="bh-stats">
+        <div className="bh-stat"><div className="v">12,400</div><div className="l">{t("hu_gap")}</div></div>
+        <div className="bh-stat danger"><div className="v">35%</div><div className="l">{t("hu_covNow")}</div></div>
+        <div className="bh-stat good"><div className="v">97%</div><div className="l">{t("hu_covPlan")}</div></div>
+      </div>
+    </div>
     <Section title={t("kpis_title")}>
       <div className="ki-grid">
-        {KI_KPI.map((k,i)=>{ const c=dcol(k.dir); return (<div key={i} className={"ki-card pop"+(k.real?"":" mock")} style={{animationDelay:(i*55)+"ms"}}>
+        {KI_KPI.map((k,i)=>{ const c=k.danger?"var(--danger)":dcol(k.dir); return (<div key={i} className={"ki-card pop"+(k.real?"":" mock")+(k.danger?" danger":"")} style={{animationDelay:(i*55)+"ms"}}>
           <span className={"ki-src "+(k.real?"real":"mock")}>{Z(k,"src")}</span>
           <div className="ki-label">{Z(k,"label")}</div>
           <div className="ki-row">
@@ -3159,6 +3201,18 @@ function Monitoring(){
   const ingLabel={recv:t("ingRecv"),delay:t("delayed"),miss:t("ingMiss")};
   return (<div className="fade">
     <PageHeader title={t("nav_monitor")} sub={t("mon_sub")}/>
+    <div className="balady-hero mon">
+      <div className="bh-main">
+        <span className="bh-tag">{t("mh_tag")}</span>
+        <h2>{scanRes?scanRes.dq:"94.2"} <small>/100</small> · {scanRes?scanRes.recv:9}/11 {t("mh_healthy")}</h2>
+        <p>{t("mh_sub")}</p>
+      </div>
+      <div className="bh-stats">
+        <div className="bh-stat"><div className="v">{scanRes?scanRes.dq:"94.2"}</div><div className="l">{t("dq_score")}</div></div>
+        <div className="bh-stat good"><div className="v">{scanRes?scanRes.recv:9}</div><div className="l">{t("mh_healthy")}</div></div>
+        <div className="bh-stat amber"><div className="v">{scanRes?scanRes.delay:1}</div><div className="l">{t("delayed")}</div></div>
+      </div>
+    </div>
     {scanning&&<div className="scan-bar" style={{marginBottom:14}}><span/></div>}
     <div className="banner" style={{marginBottom:14}}>⚠ {t("dq_degraded")} · {t("dq_ticket")} (#DQ-2407)</div>
     <Section title={t("srcHealth")} sub={t("lastScan")+": "+lastScan} right={<span className="sect-right">

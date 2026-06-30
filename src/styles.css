@@ -888,6 +888,29 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 @keyframes recpulse{0%{opacity:.35;filter:saturate(1.4)}100%{opacity:1}}
 
 /* ---- Key Indicators dashboard ---- */
+/* ---- Balady hero / stat band ---- */
+.balady-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  background:linear-gradient(120deg,var(--green-dark) 0%,var(--green) 70%,var(--green-700) 100%);
+  color:#fff;border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;overflow:hidden;
+  box-shadow:0 8px 28px rgba(8,93,58,.26)}
+.balady-hero::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--gold),#ffe08a)}
+.balady-hero::after{content:"";position:absolute;right:-40px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(248,198,48,.18),transparent 70%);pointer-events:none}
+html[dir="rtl"] .balady-hero::after{right:auto;left:-40px}
+.balady-hero.mon{background:linear-gradient(120deg,#0b3b34 0%,var(--green-dark) 60%,var(--green) 100%)}
+.balady-hero .bh-main{min-width:240px}
+.bh-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;padding:3px 12px;margin-bottom:10px}
+.balady-hero h2{color:#fff;font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.balady-hero h2 small{font-size:15px;font-weight:700;opacity:.85}
+.balady-hero p{margin:8px 0 0;font-size:13px;color:rgba(255,255,255,.86);max-width:520px}
+.bh-stats{display:flex;gap:12px}
+.bh-stat{min-width:96px;text-align:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;backdrop-filter:blur(2px)}
+.bh-stat .v{font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.bh-stat .l{font-size:10.5px;font-weight:700;opacity:.82;margin-top:5px}
+.bh-stat.good{border-color:rgba(168,236,196,.5)}.bh-stat.good .v{color:#bff2d3}
+.bh-stat.amber .v{color:var(--gold)}
+.bh-stat.danger{border-color:rgba(255,176,160,.55)}.bh-stat.danger .v{color:#ffc7bb}
+@media(max-width:720px){.balady-hero h2{font-size:24px}.bh-stat{min-width:80px;padding:10px}}
 .ki-legend{display:inline-flex;gap:14px;font-size:11.5px;color:var(--muted);font-weight:700}
 .ki-legend span{display:inline-flex;align-items:center;gap:5px}
 .ki-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -895,6 +918,10 @@ table.tbl tbody tr:hover{background:#f8fbf9}
 @media(max-width:560px){.ki-grid{grid-template-columns:1fr}}
 .ki-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px 10px;box-shadow:var(--shadow);overflow:hidden}
 .ki-card.mock{background:linear-gradient(180deg,#f7f9ff,#fff)}
+.ki-card.danger{border-color:#f0b4ad;background:linear-gradient(180deg,#fdf2f0,#fff)}
+.ki-card.danger::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--danger)}
+html[dir="rtl"] .ki-card.danger::before{inset:0 0 0 auto}
+.ki-card.danger .ki-src{background:var(--danger-50);color:var(--danger)}
 .ki-src{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.02em;border-radius:6px;padding:2px 7px;margin-bottom:8px}
 .ki-src.real{background:var(--green-50);color:var(--green-dark)}
 .ki-src.mock{background:#eaf0fb;color:#2563eb}
