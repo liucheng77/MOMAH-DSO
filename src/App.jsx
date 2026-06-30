@@ -1699,7 +1699,7 @@ function StoryStepper({states}){
 }
 // AI Financial Sustainability — first-principles score: budget safety 30 + efficiency 25 + HBR 25 + risk 20
 const FISCAL_BUDGET=7.9, CONTRACT_TARGET=510000, CONTRACT_COST=141444;
-const FISCAL_DEFAULTS={burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952};
+const FISCAL_DEFAULTS={burn:67,eff:0.82,hbr:36,leak:5,mape:7,contracts:127952,scn:"base"};
 function computeFiscalContinuity(lv){
   const budgetScore = lv.burn<70?30:lv.burn<85?20:10;
   const effScore = Math.min(25, (lv.eff/1.0)*25);
@@ -1716,55 +1716,34 @@ function computeFiscalContinuity(lv){
   return {budgetScore,effScore:+effScore.toFixed(1),hbrScore:+hbrScore.toFixed(1),riskScore,score,tone,consumed,historical,contractPct,approve};
 }
 function FiscalContinuityPanel({compact=false,lv:lvP,setLv:setLvP,active=false}){
-  const {lang}=useStore();
+  const {lang,cov}=useStore();
   const L=(en,zh)=>lang==="zh"?zh:en;
   const [lvI,setLvI]=useState(FISCAL_DEFAULTS);
   const lv=lvP||lvI, setLv=setLvP||setLvI;
-  const m=useMemo(()=>computeFiscalContinuity(lv),[lv]);
-  const set=(k,v)=>setLv(prev=>({...prev,[k]:Number(v)}));
+  const set=(k,v)=>setLv(prev=>({...prev,[k]:v}));
   const COL={good:"var(--green-dark)",warn:"var(--amber)",bad:"var(--danger)"};
-  const band=m.score>=90?{t:"good",l:L("Excellent","优秀")}:m.score>=70?{t:"good",l:L("Good","良好")}:m.score>=50?{t:"warn",l:L("Warning","预警")}:{t:"bad",l:L("Critical","危急")};
-  const chipCls=band.t==="good"?"":band.t==="warn"?" amber":" danger";
-  const burnT=lv.burn<70?"good":lv.burn<85?"warn":"bad";
-  const effT=lv.eff>=1?"good":lv.eff>=0.7?"warn":"bad";
   const hbrT=lv.hbr<=35?"good":lv.hbr<=38?"warn":"bad";
-  const n0=v=>Math.round(v).toLocaleString("en-US");
-  const rows=[
-    {k:"burn",label:L("Budget consumption","预算消耗"),min:0,max:100,step:1,val:lv.burn,fmt:v=>v+"%",note:L("threshold 70% / 85%","阈值 70% / 85%")},
-    {k:"eff",label:L("Spending efficiency","支出效率"),min:0.4,max:1.4,step:.01,val:lv.eff,fmt:v=>v.toFixed(2),note:L("contracts/SAR · target 1.0","合同/SAR · 目标 1.0")},
-    {k:"hbr",label:L("Housing burden ratio","住房负担比 HBR"),min:30,max:45,step:.5,val:lv.hbr,fmt:v=>v+"%",note:L("40→36, target 30","40→36, 目标 30")},
-    {k:"contracts",label:L("Contract progress","合同进度"),min:0,max:CONTRACT_TARGET,step:1000,val:lv.contracts,fmt:v=>n0(v),note:m.contractPct+"% · /510,000"},
-    {k:"leak",label:L("Leakage detection (days)","泄漏检测(天)"),min:1,max:21,step:1,val:lv.leak,fmt:v=>v+"d",note:L("target < 7 days","目标 < 7 天")},
-    {k:"mape",label:L("Forecast accuracy (MAPE)","预测准确度 MAPE"),min:2,max:20,step:.5,val:lv.mape,fmt:v=>v+"%",note:L("target < 8%","目标 < 8%")},
-  ];
-  const shown=rows.slice(0,3);   // unified to 3 sliders (match the 3 KPI cards) in both intro and theater
+  const SCN=[["opt",L("Optimistic","乐观")],["base",L("Base","基准")],["pess",L("Pessimistic","悲观")]];
   return (<div className={"fiscal-card"+(compact?" compact":"")+(active?" synced":"")}>
     <div className="fiscal-head">
-      <div><div className="eyebrow">{L("AI financial sustainability","AI 财政可持续性")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div>
-        <h3>{L("Is this recommendation fiscally sustainable through the budget cycle?","这套建议在财政上能否持续(撑过预算周期)?")}</h3></div>
-      <span className={"chip"+chipCls} title={band.l}>{L("Score","评分")} {m.score}/100</span>
+      <div><div className="eyebrow">{L("AI Agent theater · parameters","AI 智能体剧场参数配置")}{active&&<span className="synced-tag">↔ {L("synced","已同步")}</span>}</div></div>
     </div>
     {active&&<div className="synced-note">{L("From Financial Sustainability Agent: sustainability index 72 → 67 · net fiscal impact ≈ SAR 8B","来自 财政可持续 Agent:可持续指数 72 → 67 · 净财政冲击 ≈ SAR 8B")}</div>}
-    <div className="fiscal-metrics">
-      <div><span>{L("Budget burn","预算消耗")}</span><b style={{color:COL[burnT]}}>{lv.burn}%</b></div>
-      <div><span>{L("Spending eff.","支出效率")}</span><b style={{color:COL[effT]}}>{lv.eff.toFixed(2)}</b></div>
-      <div><span>{L("HBR","住房负担比")}</span><b style={{color:COL[hbrT]}}>{lv.hbr}%</b></div>
-    </div>
     <div className="fiscal-controls">
-      {shown.map(r=><label key={r.k} className="fslider">
-        <span><b>{r.label}</b><em>{r.fmt(r.val)}</em></span>
-        <input type="range" min={r.min} max={r.max} step={r.step} value={r.val} onChange={e=>set(r.k,e.target.value)}/>
-        <small className="fnote">{r.note}</small>
-      </label>)}
-    </div>
-    <div className="calc-chain">
-      <div><b>1</b><span>{L("Budget pressure","预算压力")} = SAR {FISCAL_BUDGET}B × {lv.burn}% + {n0(lv.contracts)} × SAR {n0(CONTRACT_COST)} = <strong>SAR {m.consumed}B</strong> {L("consumed","已耗")} + SAR {m.historical}B {L("exposure","历史敞口")}</span></div>
-      <div><b>2</b><span>{L("Score","评分")} = {L("budget","预算")} {m.budgetScore} + {L("eff","效率")} {m.effScore} + HBR {m.hbrScore} + {L("risk","风险")} {m.riskScore} = <strong>{m.score}/100</strong> · {band.l}</span></div>
-      <div><b>3</b><span>{L("Decision","决策")} = {m.approve?<strong style={{color:"var(--green-dark)"}}>{L("Approve allocation","批准分配")}</strong>:<strong style={{color:"var(--danger)"}}>{L("Escalate to Minister","上报部长")}</strong>} <span className="muted">({L("burn<70 AND HBR↓ AND leakage<7d","消耗<70 且 HBR↓ 且 泄漏<7天")})</span></span></div>
+      <div className="fcfg">
+        <div className="fcfg-l">{L("Simulation scenario","模拟情景")}</div>
+        <div className="seg2">{SCN.map(s=><button key={s[0]} className={lv.scn===s[0]?"on":""} onClick={()=>set("scn",s[0])}>{s[1]}</button>)}</div>
+        <small className="fnote">{L("BRD §5 · 3-scenario gap projection","BRD §5 · 三情景缺口投影")}</small>
+      </div>
+      <label className="fslider">
+        <span><b>{L("Housing burden ratio","住房负担比 HBR")}</b><em style={{color:COL[hbrT]}}>{lv.hbr}%</em></span>
+        <input type="range" min={30} max={45} step={.5} value={lv.hbr} onChange={e=>set("hbr",Number(e.target.value))}/>
+        <small className="fnote">{L("40 → 36, target 30","40 → 36, 目标 30")}</small>
+      </label>
     </div>
     {!compact&&<div className="output-stack">
-      <div><span>Output</span><b>{L("Fiscal-safe allocation recommendation","财政安全分配建议")}</b></div>
-      <div><span>API</span><b>/subsidy/v1/scenario/fiscal-sustainability</b></div>
+      <div><span>{L("Coverage","覆盖")}</span><b>{cov==="ministry"?L("Ministry","部委"):cov==="private"?L("Private","私有"):L("Total Market","全市场")}</b></div>
+      <div><span>Output</span><b>{L("Ministerial briefing","部长简报")}</b></div>
       <div><span>Dispatch</span><b>CoPilot + AI_H_03 + audit log</b></div>
     </div>}
   </div>);
@@ -1786,7 +1765,7 @@ function ChatAnalysis(){
   const [ai,setAi]=useState({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false});
   const [flow,setFlow]=useState(false);
   const [flv,setFlv]=useState(FISCAL_DEFAULTS);
-  const fres=computeFiscalContinuity(flv);
+  const gateApprove=flv.scn!=="pess";
   const [q,setQ]=useState("");
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
@@ -1901,9 +1880,9 @@ function ChatAnalysis(){
         {ai.gate&&<div className="gate-card">
           <div className="row" style={{flexWrap:"wrap",gap:8}}><span className="chip amber">⚠ {L("Governance gate","治理门")}</span><b>{L("Uncovered 65% > 30% — Planning Manager approval required","未覆盖 65% > 30% — 需 Planning Manager 批准")}</b></div>
           <div className="muted" style={{fontSize:12.5,margin:"8px 0 10px"}}>{L("AI output is a draft until you approve. Cleared HUMAN-REVIEWED (04:48) & LEGAL CLEARED (05:31).","AI 产出在你批准前仅为草稿。已过 HUMAN-REVIEWED(04:48)与 LEGAL CLEARED(05:31)。")}</div>
-          <div className={"gate-fiscal "+(fres.approve?"pass":"fail")}>{L("AI Financial Sustainability","AI 财政可持续性")}: <b>{fres.score}/100</b> · {fres.approve?L("PASS — fiscally fundable, approval enabled","通过 — 财政可承受,可批准"):L("FAIL — exceeds fiscal cap, must escalate","未通过 — 超出财政上限,须上报")} <span className="muted">({L("drag the panel sliders to change this →","拖右侧面板滑块可改变此结果 →")})</span></div>
+          <div className={"gate-fiscal "+(gateApprove?"pass":"fail")}>{L("Simulation scenario","模拟情景")}: <b>{flv.scn==="opt"?L("Optimistic","乐观"):flv.scn==="pess"?L("Pessimistic","悲观"):L("Base","基准")}</b> · {gateApprove?L("fiscally fundable — approval enabled","财政可承受 — 可批准"):L("pessimistic stress — must escalate","悲观承压 — 须上报")} <span className="muted">({L("switch scenario on the left panel →","在左侧面板切换情景 →")})</span></div>
           <div className="row" style={{flexWrap:"wrap",gap:8}}>
-            {fres.approve
+            {gateApprove
               ? <button className="btn amber" onClick={approve}>✓ {L("Approve & continue","批准并继续")}</button>
               : <button className="btn" style={{background:"var(--danger)",color:"#fff"}} onClick={()=>{pushLog("log_route");approve();}}>⤴ {L("Escalate to Minister","上报部长")}</button>}
             <button className="btn ghost" onClick={reset}>{L("Return","退回")}</button></div>

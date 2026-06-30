@@ -335,6 +335,12 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .fslider em{font-style:normal;color:#4f46e5;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 .fslider input{width:100%;accent-color:#4f46e5}
 .fslider .fnote{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
+.fcfg{margin-bottom:4px}
+.fcfg-l{font-size:12.5px;font-weight:600;margin-bottom:7px}
+.seg2{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.seg2 button{flex:1;border:0;background:transparent;font:inherit;font-size:12px;font-weight:600;color:var(--muted);padding:6px 6px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.seg2 button.on{background:var(--green);color:#fff;box-shadow:0 1px 4px rgba(27,131,84,.28)}
+.fcfg .fnote{display:block;font-size:10.5px;color:var(--muted);margin-top:5px}
 .fiscal-card.synced{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.16)}
 .synced-tag{font-size:10px;font-weight:700;color:#4f46e5;margin-inline-start:8px;background:#eef0fc;border-radius:6px;padding:2px 7px}
 .synced-note{background:#eef0fc;border:1px solid #d8def7;border-radius:8px;padding:7px 10px;font-size:11.5px;color:#3730a3;margin-bottom:12px;line-height:1.5}
