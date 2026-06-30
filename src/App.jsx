@@ -1021,8 +1021,8 @@ function TopBar(){
   </div>);
 }
 const NAV = {
-  analyst:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_monitor","◉","monitor"],["nav_reports","📄","reports"]],
-  planner:[["nav_hub","◧","hub"],["nav_chat","✦","chat"],["nav_reports","📄","reports"]],
+  analyst:[["nav_chat","✦","chat"],["nav_hub","◧","hub"],["nav_monitor","◉","monitor"],["nav_reports","📄","reports"]],
+  planner:[["nav_chat","✦","chat"],["nav_hub","◧","hub"],["nav_reports","📄","reports"]],
   leader:[["nav_cockpit","◧","cockpit"],["nav_eco","🤝","eco"],["nav_reports","📄","reports"]],
 };
 function Sidebar(){
@@ -1097,9 +1097,6 @@ const KI_KPI=[
   {src:"GASTAT · Official", src_zh:"GASTAT · 官方", real:1, label:"Real GDP Growth (YoY)", label_zh:"实际 GDP 增长(同比)", v:"3.0", unit:"%", chg:"↑ 0.2pp vs Q4'25", dir:"up",
     meta:"Non-oil +4.1% · oil +1.2% · Q1 2026", meta_zh:"非石油 +4.1% · 石油 +1.2% · 2026 Q1",
     series:[{m:"Dec",v:"2.4%",h:34},{m:"Jan",v:"2.5%",h:40},{m:"Feb",v:"2.6%",h:48},{m:"Mar",v:"2.7%",h:56},{m:"Apr",v:"2.8%",h:64},{m:"May",v:"3.0%",h:78}]},
-  {src:"Market · Real-time", src_zh:"市场 · 实时", real:1, label:"Brent Crude Oil", label_zh:"布伦特原油", v:"$80.59", unit:"", chg:"↓ $1.84 (−2.2%)", dir:"down",
-    meta:"May avg $82.43 · YTD $75–$89", meta_zh:"5 月均价 $82.43 · 年内 $75–$89",
-    series:[{m:"Dec",v:"$86.10",h:80},{m:"Jan",v:"$84.20",h:66},{m:"Feb",v:"$85.00",h:70},{m:"Mar",v:"$83.10",h:58},{m:"Apr",v:"$82.43",h:52},{m:"May",v:"$80.59",h:44}]},
   {src:"DSO · Demand Intelligence", src_zh:"DSO · 需求智能", real:0, label:"Riyadh Housing Demand", label_zh:"利雅得住房需求", v:"14,600", unit:"", chg:"↑ 2.1%", dir:"up",
     meta:"May 14,300 units · Seg A +3.2% · Seg B −1.4%", meta_zh:"5 月 14,300 套 · A 段 +3.2% · B 段 −1.4%",
     series:[{m:"Dec",v:"13,900",h:40},{m:"Jan",v:"14,000",h:46},{m:"Feb",v:"14,100",h:52},{m:"Mar",v:"14,200",h:58},{m:"Apr",v:"14,300",h:62},{m:"May",v:"14,600",h:74}]},
@@ -1237,7 +1234,7 @@ const KI_SCN=[
 ];
 const KI_RISKS=[
   {sev:"red",   t:"SAMA Jul meeting", t_zh:"SAMA 7 月会议", d:"Any ±25bps change triggers a full scenario refresh and impacts all housing forecasts.", d_zh:"任何 ±25bps 变动都会触发完整情景刷新,影响全部住房预测。"},
-  {sev:"amber", t:"Brent below $75", t_zh:"布伦特跌破 $75", d:"A sustained decline would pressure fiscal capacity and Eastern-Region employment.", d_zh:"持续下跌将压制财政能力与东部省就业。"},
+  {sev:"amber", t:"Pipeline–demand mismatch", t_zh:"管线与需求错配", d:"Seg-A pipeline covers only 35% of effective demand; if developers keep prioritizing Seg C–E, the gap widens.", d_zh:"A 段管线仅覆盖有效需求的 35%;若开发商持续偏向 C–E 段,缺口将扩大。"},
   {sev:"amber", t:"Housing rent inflation", t_zh:"住房租金通胀", d:"May CPI shows +8.1% YoY in rents; above 10% may trigger an affordability policy response.", d_zh:"5 月 CPI 住房租金同比 +8.1%;若超 10% 可能触发可负担性政策。"},
   {sev:"info",  t:"Seg A demand acceleration", t_zh:"A 段需求加速", d:"Riyadh Seg A registrations +3.2% MoM; if the trend holds, the gap-closure target is at risk.", d_zh:"利雅得 A 段登记环比 +3.2%;若延续,缺口闭合目标承压。"},
 ];
@@ -1279,22 +1276,15 @@ function Hub(){
         </div>); })}
       </div>
     </Section>
-    <div className="cols-2">
-      <Section title={<span className="sect-right"><span className="dot" style={{background:"var(--green)"}}/> {t("ki_macro_title")}</span>}>
-        <div className="scrollx"><table className="tbl">
-          <thead><tr><th>{t("ki_indicator")}</th><th className="right-num">{t("ki_may")}</th><th className="right-num">{t("ki_jun")}</th><th className="right-num">{t("ki_mom")}</th></tr></thead>
-          <tbody>{MOM_MACRO.map((r,i)=>(<tr key={i}><td>{Z(r,"k")}</td><td className="right-num mono muted">{r.may}</td><td className="right-num mono">{r.jun}</td><td className="right-num mono" style={{color:tcol(r.dt),fontWeight:700}}>{r.d}</td></tr>))}</tbody>
-        </table></div>
-      </Section>
-      <Section title={<span className="sect-right"><span className="dot" style={{background:"#2563eb"}}/> {t("ki_housing_title")}</span>}>
-        <div className="scrollx"><table className="tbl">
-          <thead><tr><th>{t("ki_indicator")}</th><th className="right-num">{t("ki_may")}</th><th className="right-num">{t("ki_jun")}</th><th className="right-num">{t("ki_mom")}</th></tr></thead>
-          <tbody>{MOM_HOUSING.map((r,i)=>(<tr key={i}><td>{Z(r,"k")}</td><td className="right-num mono muted">{r.may}</td><td className="right-num mono">{r.jun}</td><td className="right-num mono" style={{color:tcol(r.dt),fontWeight:700}}>{r.d}</td></tr>))}</tbody>
-        </table></div>
-      </Section>
-    </div>
+    <Section title={<span className="sect-right"><span className="dot" style={{background:"#2563eb"}}/> {t("ki_housing_title")}</span>}>
+      <div className="scrollx"><table className="tbl">
+        <thead><tr><th>{t("ki_indicator")}</th><th className="right-num">{t("ki_may")}</th><th className="right-num">{t("ki_jun")}</th><th className="right-num">{t("ki_mom")}</th></tr></thead>
+        <tbody>{MOM_HOUSING.map((r,i)=>(<tr key={i}><td>{Z(r,"k")}</td><td className="right-num mono muted">{r.may}</td><td className="right-num mono">{r.jun}</td><td className="right-num mono" style={{color:tcol(r.dt),fontWeight:700}}>{r.d}</td></tr>))}</tbody>
+      </table></div>
+    </Section>
     <Section title={t("ai_analysis")}>
-      <div className="cols-2"><AiRec d={AIREC.conv}/><AiRec d={AIREC.gap}/></div>
+      <AiRec d={AIREC.gap}/>
+      <div className="muted" style={{fontSize:11.5,marginTop:8}}>{lang==="zh"?"完整的缺口闭合方案与执行动作在推理剧场中生成 →":"Full closure plan & actions are produced in the reasoning theater →"} <a href="#" onClick={e=>{e.preventDefault();setRoute("chat");}} style={{color:"#2563eb",fontWeight:600}}>{t("nav_chat")}</a></div>
     </Section>
     <div className="cols-2">
       <Section title={t("ki_scn_title")}>
@@ -2608,7 +2598,7 @@ function App(){
       const keys=["log_idle","log_scan","log_route","log_feed"]; pushLog(keys[Math.floor(Math.random()*keys.length)]);
     },120000); return ()=>clearInterval(id); /* eslint-disable-next-line */ },[user,lang]);
 
-  function setUser(r){ setUserState(r); setRoute(r==="leader"?"cockpit":"hub"); if(r) setLog(seedLog(t)); }
+  function setUser(r){ setUserState(r); setRoute(r==="leader"?"cockpit":"chat"); if(r) setLog(seedLog(t)); }
   function ackAlert(id){ setAlerts(prev=>prev.map(a=>a.id===id?{...a,ack:true}:a)); }
   function raiseGapAlert(){ setAlerts(prev=> prev.some(a=>a.id==="AL-GAP")? prev : [{id:"AL-GAP",sev:"red",tk:"al_gap_t",bk:"al_gap_b",ts:nowStr(lang).split(" ").slice(-1)[0],ack:false,scn:"q_gap",rec:"shock"},...prev]); }
   function askOrchestrator(scn){ setSeed(scn); setRoute("chat"); }
