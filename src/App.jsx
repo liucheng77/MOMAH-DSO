@@ -1625,6 +1625,14 @@ const AGENTS_T=[
    {k:"calc",t:"Even if all 23 Seg-A projects hit 100%: 12,900 − 19,100",t_zh:"即便 23 个 A 段项目 100% 兑现:12,900 − 19,100",val:"gap 6,200"},
    {k:"think",t:"Conclusion: pipeline acceleration alone can't close it",t_zh:"结论:仅靠加速管线无法补足"},
    {k:"out",t:"Must add new supply — triggers early-warning to Planning",t_zh:"必须新增供给 —— 触发早期预警至规划"}]},
+ {ag:"Strategic Supply Planning Agent",ag_zh:"战略供给规划引擎",ic:"🏗️",lyr:"L3",io:{in:"Gap + pipeline + land bank",out:"Demand-driven supply plan"},lines:[
+   {k:"think",t:"The gap won't close on its own — design a demand-driven supply plan, then rank where to build first.",t_zh:"缺口不会自己消失——做一份需求驱动的供给计划,再排出先建哪里。"},
+   {k:"calc",t:"Required net-new Seg-A supply (Y3) = residual gap after pipeline",t_zh:"所需净新增 A 段供给(第3年)= 管线兑现后的剩余缺口",val:"≈ 6,200 units"},
+   {k:"call",t:"Rank locations by absorption × land readiness (Riyadh sub-municipalities)",t_zh:"按吸纳率 × 土地就绪度排序选址(利雅得各市辖区)",ds:["DS-08","DS-10"]},
+   {k:"calc",t:"Top sites: North Riyadh 2,400 · East 1,900 · South-West 1,900",t_zh:"优先选址:利雅得北 2,400 · 东 1,900 · 西南 1,900",val:"= 6,200"},
+   {k:"think",t:"Design cross-segment flexible units so A/B stock can flex with demand",t_zh:"设计跨段位弹性户型,使 A/B 库存可随需求灵活调整"},
+   {k:"calc",t:"Simulate Ministry share vs PPP/private split",t_zh:"模拟部委份额 vs PPP/私有 分担",val:"Ministry 55% · PPP 45%"},
+   {k:"out",t:"3-year supply plan: 6,200 net-new units, 3 priority clusters, Ministry 55%",t_zh:"3 年供给计划:净新增 6,200 套、3 个优先组团、部委承担 55%"}]},
  {ag:"Policy Simulation Agent",ag_zh:"政策模拟引擎",ic:"🛡️",lyr:"L3",io:{in:"Gap + fiscal cap SAR 3.2B",out:"Recommend Combo #4 · 97%"},lines:[
    {k:"think",t:"Systematic simulation. Constraint: fiscal cap SAR 3.2B (Fiscal's available space); objective: maximize most-in-need gap closure without hurting the Vision-2030 core pipeline.",t_zh:"做系统性政策模拟。约束:财政上限设为 SAR 3.2B(Fiscal 给的可用空间);目标:最需要群体缺口闭合率最大化,且不影响 Vision 2030 核心管线。"},
    {k:"calc",t:"Monte-Carlo over 6 options — M1 mortgage subsidy (1.8B, 28%), M2 Sakani expansion (2.4B, 34%), M3 developer incentive (1.2B, 22%).",t_zh:"对 6 套方案跑蒙特卡洛——M1 按揭补贴(1.8B,28%)、M2 Sakani 扩容(2.4B,34%)、M3 开发商激励(1.2B,22%)。"},
@@ -1658,6 +1666,7 @@ const AGENT_ACTIONS=[
  {key:"demand",name:"Demand Intelligence Agent",name_zh:"需求智能引擎",acts:["think_run","compute_elasticity","segment_migration","forecast_demand","render_seg_chart","assess_affordability"]},
  {key:"sdb",  name:"Supply-Demand Balancing Agent",name_zh:"供需平衡引擎",acts:["think_run","compute_gap","assess_coverage","analyze_rootcause","render_heatmap","project_absorption"]},
  {key:"conv", name:"Conversion & Absorption Agent",name_zh:"转化吸纳引擎",acts:["think_run","monitor_absorption","forecast_conv","map_pipeline","assess_margin","render_conv_chart"]},
+ {key:"plan", name:"Strategic Supply Planning Agent",name_zh:"战略供给规划引擎",acts:["think_run","build_plan","rank_locations","design_units","simulate_share","render_plan_chart"]},
  {key:"policy",name:"Policy Simulation Agent",name_zh:"政策模拟引擎",acts:["think_run","simulate_measure","rank_combos","recommend","assess_risk","render_policy_chart"]},
  {key:"fin",  name:"Financial Sustainability Agent",name_zh:"财政可持续引擎",acts:["assess_sovereign_debt","analyze_subsidy","evaluate_v2030","compute_sustainability_index","monitor_oil_breakeven","assess_reserves"]},
 ];
@@ -1671,9 +1680,10 @@ const ACTLABEL={
  compute_gap:["Gap quantification","缺口量化"],assess_coverage:["Coverage","覆盖评估"],analyze_rootcause:["Root-cause","根因分解"],render_heatmap:["Visualization","可视化"],project_absorption:["Absorption","吸纳预测"],
  monitor_absorption:["Absorption","吸纳监测"],forecast_conv:["Conversion forecast","转化预测"],map_pipeline:["Pipeline mapping","管线映射"],assess_margin:["Margin analysis","利润分析"],render_conv_chart:["Visualization","可视化"],
  simulate_measure:["Measure simulation","逐项模拟"],rank_combos:["Combo ranking","组合排序"],recommend:["Recommendation","方案推荐"],assess_risk:["Risk assessment","风险评估"],render_policy_chart:["Visualization","可视化"],
+ build_plan:["Build supply plan","构建供给计划"],rank_locations:["Rank locations","选址排序"],design_units:["Flexible-unit design","弹性户型设计"],simulate_share:["Ministry-share sim","部委份额模拟"],render_plan_chart:["Visualization","可视化"],
  assess_sovereign_debt:["Sovereign debt","主权债务"],analyze_subsidy:["Subsidy analysis","补贴分析"],evaluate_v2030:["V2030 financing","V2030 融资"],compute_sustainability_index:["Sustainability index","可持续指数"],monitor_oil_breakeven:["Oil breakeven","油价监测"],assess_reserves:["Reserve check","储备评估"],
 };
-function brdKeyOf(name){ if(/Orchestrator/.test(name))return "orch"; if(/Data Quality/.test(name))return "dq"; if(/Macro/.test(name))return "macro"; if(/Demand Intelligence/.test(name))return "demand"; if(/Supply-Demand Balancing/.test(name))return "sdb"; if(/Conversion/.test(name))return "conv"; if(/Policy Simulation/.test(name))return "policy"; if(/Fiscal|Financial/.test(name))return "fin"; return null; }
+function brdKeyOf(name){ if(/Orchestrator/.test(name))return "orch"; if(/Data Quality/.test(name))return "dq"; if(/Macro/.test(name))return "macro"; if(/Demand Intelligence/.test(name))return "demand"; if(/Supply-Demand Balancing/.test(name))return "sdb"; if(/Strategic Supply Planning/.test(name))return "plan"; if(/Conversion/.test(name))return "conv"; if(/Policy Simulation/.test(name))return "policy"; if(/Fiscal|Financial/.test(name))return "fin"; return null; }
 
 // Orchestrator status — fixed-width element in the chat header. Idle: badge + grey nodes + "auto";
 // running: same footprint with nodes lighting up + "x/7 · <engine>". Width stays constant.
@@ -1770,6 +1780,7 @@ function ChatAnalysis(){
   const [flv,setFlv]=useState(FISCAL_DEFAULTS);
   const gateApprove=flv.scn!=="pess";
   const [q,setQ]=useState("");
+  const [routed,setRouted]=useState(null);
   const tRef=useRef(null); const aiRef=useRef(ai); aiRef.current=ai; const endRef=useRef(null); const streamRef=useRef(null);
   const Z=(o,k)=>(lang==="zh"&&o[k+"_zh"])?o[k+"_zh"]:o[k];
   const L=(en,zh)=>lang==="zh"?zh:en;
@@ -1777,6 +1788,14 @@ function ChatAnalysis(){
   const mafChip=<button className="maf-chip" onClick={()=>setFlow(true)} title={L("Open agent I/O flow","展开 Agent I/O 流")}>⛓ Multi-Agent Flow · {orchSt} ▸</button>;
   useEffect(()=>()=>clearTimeout(tRef.current),[]);
   useEffect(()=>{ if(ai.on&&streamRef.current){ const el=streamRef.current; el.scrollTo({top:el.scrollHeight,behavior:"smooth"}); } },[ai]);
+  const ROUTES=[
+    {key:"orch", lbl:L("Analytical inquiry","分析性查询"), q:L("Full rate-hike analysis — gap + fiscal decision","加息全链分析 —— 缺口 + 财政决策")},
+    {key:"demand", lbl:L("Demand intelligence","需求情报"), q:L("How does +50bps shift demand by income segment?","加息 +50bps 如何按收入段位改变需求?")},
+    {key:"sdb", lbl:L("Supply-demand balancing","供需平衡"), q:L("How big is the Riyadh Seg-A gap and its coverage?","利雅得 A 段缺口多大、覆盖多少?")},
+    {key:"plan", lbl:L("Strategic planning","战略规划"), q:L("What supply plan closes the gap — sites & Ministry share?","用什么供给计划补缺口 —— 选址与部委份额?")},
+  ];
+  const routedName=routed?(ROUTES.find(r=>r.key===routed)||{}).lbl:null;
+  const goRoute=(r)=>{ setRouted(r.key); setQ(r.q); start(); };
   function advance(cur){
     const ag=AGENTS_T[cur.ag];
     if(cur.line<ag.lines.length-1){
@@ -1793,11 +1812,10 @@ function ChatAnalysis(){
   function pause(){ clearTimeout(tRef.current); setAi({...aiRef.current,playing:false}); }
   function stepOne(){ clearTimeout(tRef.current); advance({...aiRef.current,playing:false}); }
   function approve(){ clearTimeout(tRef.current); pushLog("log_route"); const cur={...aiRef.current,gate:false,ag:aiRef.current.ag+1,line:-1,playing:true}; setAi(cur); tRef.current=setTimeout(()=>advance(cur),400); }
-  function reset(){ clearTimeout(tRef.current); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false}); }
+  function reset(){ clearTimeout(tRef.current); setRouted(null); setAi({on:false,ag:-1,line:-1,ds:{},gate:false,done:false,playing:false}); }
   useEffect(()=>{ if(seed){ start(); clearSeed(); } /* eslint-disable-next-line */ },[seed]);
 
   if(!ai.on){
-    const ex=["⚡ "+L("Rate-hike +50bps impact on Riyadh Seg-A gap","加息 +50bps 对利雅得 A 段缺口的影响"),L("Is the gap a policy or a macro problem?","缺口是政策问题还是宏观问题?"),L("What should we do to close it?","该怎么补这个缺口?")];
     return (<div className="fade">
       <PageHeader title={t("nav_chat")} sub={L("Multi-agent reasoning theater — watch agents think, fetch, compute step-by-step, then hand back at the governance gate","多智能体推理剧场 — 看智能体逐步「想 → 取数 → 计算 → 产出」,治理门交回人工")} cls="ph-end" right={mafChip}/>
       <div className="ai-brief-grid">
@@ -1809,8 +1827,8 @@ function ChatAnalysis(){
           <h2>{L("SAMA +50bps shock → housing gap → fiscal continuity decision","SAMA +50bps 冲击 → 住房缺口 → 财政延续性决策")}</h2>
           <p>{L("Ask in natural language — the Orchestrator routes to the right engines, exposes the calculation chain, and packages the output for CoPilot / AI_H_03.","用自然语言提问 —— 编排器会路由到对应引擎,展开计算链,并把输出打包给 CoPilot / AI_H_03。")}</p>
           <div className="preset-row">
-            <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{L("Try","试试")}:</span>
-            {ex.map((e,i)=><button key={i} className="preset" onClick={()=>{setQ(e);start();}}>{e}</button>)}
+            <span className="muted" style={{fontSize:12,fontWeight:700,alignSelf:"center"}}>{L("Core use cases","核心用例")}:</span>
+            {ROUTES.map(r=><button key={r.key} className="preset" title={r.q} onClick={()=>goRoute(r)}>{r.lbl}</button>)}
             <button className="btn secondary sm" onClick={()=>setFlow(true)}>{L("Open Multi-Agent Flow","打开 Multi-Agent Flow")}</button>
           </div>
           <div className="ask-dock">
@@ -1859,17 +1877,19 @@ function ChatAnalysis(){
   const cards=[];
   for(let i=0;i<=ai.ag && i<AGENTS_T.length;i++){
     const ag=AGENTS_T[i]; const active=(i===ai.ag&&!ai.done);
+    const isRouted=routed&&brdKeyOf(ag.ag)===routed;
     const shown=(i<ai.ag)?ag.lines.length:(ai.line+1);
     const lns=[];
     for(let j=0;j<shown;j++){ const ln=ag.lines[j]; const isLast=active&&j===shown-1&&ln.k==="think"&&ai.playing;
       lns.push(<div key={j} className={"tln "+ln.k}><span className={"kind "+ln.k}>{kindLbl(ln.k)}</span><span className="ttx">{Z(ln,"t")}{ln.val?<span className="res">{ln.val}</span>:null}{isLast?<span className="dots"/>:null}</span></div>); }
-    cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")}>
-      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
+    cards.push(<div key={i} className={"agentcard"+(active?" active":"")+(ag.gate?" gatec":"")+(isRouted?" routed":"")}>
+      <div className="ah"><span className="aic">{ag.ic}</span>{Z(ag,"ag")}{isRouted?<span className="routed-tag">★ {L("routed","路由命中")}</span>:null}<span className="alyr">{ag.lyr}</span></div>{lns}</div>);
   }
   return (<div className="fade">
     <PageHeader title={t("nav_chat")} sub={L("L1 data → L2 quality gate → L3 agents → L4 governance → L5 output","L1 数据 → L2 质量门 → L3 智能体 → L4 治理门 → L5 产出")} cls="ph-end"
       right={mafChip}/>
     <ReasoningStatus ai={ai} L={L} Z={Z}/>
+    {routedName&&<div className="route-banner">✦ Orchestrator {L("routed →","路由 →")} <b>{routedName}</b> {L("engine","引擎")}</div>}
     <div className="ctrl">
       {ai.playing? <button className="btn ghost sm" onClick={pause}>⏸ {L("Pause","暂停")}</button>
         : (!ai.done&&!ai.gate? <button className="btn sm" onClick={play}>▶ {L("Resume","继续")}</button>:null)}

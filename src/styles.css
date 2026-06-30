@@ -140,6 +140,11 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 .agact.ok .agck{background:var(--green);border-color:var(--green);color:#fff}
 .agact.ok{color:var(--ink)}
 .agact .alab{flex:1;min-width:0}
+/* intent routing */
+.route-banner{background:#eef0fc;border:1px solid #d6dbf7;color:#3730a3;border-radius:9px;padding:8px 12px;font-size:12.5px;margin-bottom:12px}
+.route-banner b{color:#4f46e5}
+.agentcard.routed{border-color:#4f46e5}
+.agentcard.routed .ah .routed-tag{font-size:9.5px;font-weight:700;color:#4f46e5;background:#eef0fc;border:1px solid #d6dbf7;border-radius:6px;padding:1px 6px;margin-inline-start:7px}
 .dsc.ok .st{color:var(--green-dark)}
 .dsrail .rail-h{display:flex;align-items:center;gap:2px}
 /* flow diagram overlay */
