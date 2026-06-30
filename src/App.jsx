@@ -1803,7 +1803,7 @@ function DataSourcePanel({lit=0,active=false}){
   const {t,lang}=useStore();
   return (<div className="dsrail card pad">
     <div className="rail-h"><span className="livedot"/>{lang==="zh"?"数据源 · 实时":lang==="ar"?"المصادر · مباشر":"Data sources · LIVE"}<span className={"chip"+(active?" amber":"")} style={{marginInlineStart:"auto"}}>{active?(lit+"/11"):"11"}</span></div>
-    <div className={"orch-wrap"+(active?" active":"")}>
+    <div className="orch-wrap active">
       <div className="dsl">
         {SOURCES11.map((s,i)=>{ const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
           const on=i<lit, validating=active&&i===lit;

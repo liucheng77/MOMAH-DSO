@@ -1104,7 +1104,7 @@ const REPORTS_B64 = {"weekly":"PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkP
    ========================================================================= */
 
 /* Build stamp — replaced by Vite (define BUILD_STAMP) or by build-standalone.mjs (@@BUILD@@). */
-const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 23:31 AST";
+const BUILD_TIME = (typeof BUILD_STAMP!=="undefined" && BUILD_STAMP) ? BUILD_STAMP : "2026-06-30 23:34 AST";
 
 /* ---- Engines & data sources ---- */
 const ENGINES = [
@@ -2895,7 +2895,7 @@ function DataSourcePanel({lit=0,active=false}){
   const {t,lang}=useStore();
   return (<div className="dsrail card pad">
     <div className="rail-h"><span className="livedot"/>{lang==="zh"?"数据源 · 实时":lang==="ar"?"المصادر · مباشر":"Data sources · LIVE"}<span className={"chip"+(active?" amber":"")} style={{marginInlineStart:"auto"}}>{active?(lit+"/11"):"11"}</span></div>
-    <div className={"orch-wrap"+(active?" active":"")}>
+    <div className="orch-wrap active">
       <div className="dsl">
         {SOURCES11.map((s,i)=>{ const col=s.status==="ok"?"var(--green)":s.status==="amber"?"var(--amber)":"var(--danger)";
           const on=i<lit, validating=active&&i===lit;
