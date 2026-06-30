@@ -1929,27 +1929,27 @@ function ChatAnalysis(){
 }
 const FLOW_SRC=["SAP / Asas","Etimad","Esnad","Sakani","Wafi","Ejari","MOJ Price","GASTAT","Private Mkt","Geo / GIS","Bank stmts"];
 const FLOW_STAGES=[
- {t:"Intake & Data Quality",t_zh:"接入与数据质量",hand:"Unified dataset + DQ flags · 88%",hand_zh:"统一数据 + 质量标记 · 88%",ag:[
-   {n:"Orchestrator Agent",ic:"✦",own:"platform",in:"User query (NL)",in_zh:"用户提问(NL)",out:"Routed task + plan",out_zh:"路由任务 + 计划"},
-   {n:"Data Quality Monitor",ic:"◉",own:"platform",in:"11 raw sources",in_zh:"11 原始源",out:"Validated set · 88%",out_zh:"校验数据 · 88%"}]},
- {t:"Macro-Economic Analysis",t_zh:"宏观经济分析",hand:"Transmission frame · r=−0.85",hand_zh:"传导框架 · r=−0.85",ag:[
-   {n:"Macro-Economic Agent",ic:"🌐",own:"custom",in:"Rates · FX peg · demographics",in_zh:"利率 · 汇率挂钩 · 人口",out:"r=−0.85 · +35–50bps",out_zh:"r=−0.85 · +35–50bps"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"SAMA / GASTAT series",in_zh:"SAMA / GASTAT 序列",out:"Correlation panel",out_zh:"相关性面板"}]},
- {t:"Demand Intelligence",t_zh:"需求智能",hand:"Seg-A demand 19,100",hand_zh:"A 段需求 19,100",ag:[
-   {n:"Demand Intelligence Agent",ic:"📈",own:"custom",in:"Validated dataset",in_zh:"校验数据集",out:"Seg-A demand 19,100",out_zh:"A 段需求 19,100"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Segment / beneficiary tables",in_zh:"段位 / 受益人表",out:"B→A migration 2,360",out_zh:"B→A 迁移 2,360"}]},
- {t:"Supply-Demand Balancing",t_zh:"供需平衡",hand:"Gap 12,400 · coverage 35%",hand_zh:"缺口 12,400 · 覆盖 35%",ag:[
-   {n:"Supply-Demand Balancing Agent",ic:"⚖",own:"custom",in:"Demand + pipeline",in_zh:"需求 + 管线",out:"Gap 12,400 · 35%",out_zh:"缺口 12,400 · 35%"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"143 projects",in_zh:"143 个项目",out:"Effective supply 6,700",out_zh:"有效供给 6,700"}]},
- {t:"Conversion & Absorption",t_zh:"转化吸纳",hand:"Residual gap 6,200 + alert",hand_zh:"剩余缺口 6,200 + 预警",ag:[
-   {n:"Conversion & Absorption Agent",ic:"🎯",own:"custom",in:"Pipeline + conv rates",in_zh:"管线 + 转化率",out:"Residual gap 6,200",out_zh:"剩余缺口 6,200"},
-   {n:"Proactive Insights Agent",ic:"💡",own:"platform",in:"Conversion trend",in_zh:"转化趋势",out:"Early-warning",out_zh:"早期预警"}]},
- {t:"Policy Simulation",t_zh:"政策模拟",hand:"Ranked toolkit (draft)",hand_zh:"排序工具箱(草稿)",ag:[
-   {n:"Policy Simulation Agent",ic:"⚖",own:"custom",in:"Gap + six measures",in_zh:"缺口 + 六项措施",out:"Toolkit M1+M2+M3",out_zh:"工具箱 M1+M2+M3"},
-   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Causal-chain inputs",in_zh:"因果链输入",out:"M6 counter-indication",out_zh:"M6 反指征"}]},
+ {t:"Intake & Data Quality",t_zh:"接入与数据质量",hand:"Validated dataset",hand_zh:"校验数据集",ag:[
+   {n:"Orchestrator Agent",ic:"✦",own:"platform",in:"User query",in_zh:"用户提问",out:"Routing plan",out_zh:"路由计划"},
+   {n:"Data Quality Monitor",ic:"◉",own:"platform",in:"Raw data sources",in_zh:"原始数据源",out:"Validated dataset",out_zh:"校验数据集"}]},
+ {t:"Macro-Economic Analysis",t_zh:"宏观经济分析",hand:"Transmission parameters",hand_zh:"传导参数",ag:[
+   {n:"Macro-Economic Agent",ic:"🌐",own:"custom",in:"Rates · FX · demographics",in_zh:"利率 · 汇率 · 人口",out:"Transmission parameters",out_zh:"传导参数"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Macro time-series",in_zh:"宏观时序",out:"Correlation panel",out_zh:"相关性面板"}]},
+ {t:"Demand Intelligence",t_zh:"需求智能",hand:"Demand forecast",hand_zh:"需求预测",ag:[
+   {n:"Demand Intelligence Agent",ic:"📈",own:"custom",in:"Validated dataset",in_zh:"校验数据集",out:"Segment demand forecast",out_zh:"分段需求预测"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Segment / beneficiary tables",in_zh:"段位 / 受益人表",out:"Migration estimate",out_zh:"迁移估计"}]},
+ {t:"Supply-Demand Balancing",t_zh:"供需平衡",hand:"Supply-demand gap",hand_zh:"供需缺口",ag:[
+   {n:"Supply-Demand Balancing Agent",ic:"⚖",own:"custom",in:"Demand forecast + pipeline",in_zh:"需求预测 + 管线",out:"Supply-demand gap",out_zh:"供需缺口"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Project pipeline",in_zh:"项目管线",out:"Effective supply",out_zh:"有效供给"}]},
+ {t:"Conversion & Absorption",t_zh:"转化吸纳",hand:"Residual gap + early-warning",hand_zh:"剩余缺口 + 预警",ag:[
+   {n:"Conversion & Absorption Agent",ic:"🎯",own:"custom",in:"Pipeline + conversion rates",in_zh:"管线 + 转化率",out:"Residual gap",out_zh:"剩余缺口"},
+   {n:"Proactive Insights Agent",ic:"💡",own:"platform",in:"Conversion trend",in_zh:"转化趋势",out:"Early-warning signal",out_zh:"早期预警信号"}]},
+ {t:"Policy Simulation",t_zh:"政策模拟",hand:"Ranked policy toolkit",hand_zh:"排序政策工具箱",ag:[
+   {n:"Policy Simulation Agent",ic:"⚖",own:"custom",in:"Gap + measure set",in_zh:"缺口 + 措施集",out:"Ranked policy toolkit",out_zh:"排序政策工具箱"},
+   {n:"Data Querying Agent",ic:"🔎",own:"platform",in:"Causal-chain inputs",in_zh:"因果链输入",out:"Counter-indication flag",out_zh:"反指征标记"}]},
  {t:"Financial Sustainability",t_zh:"财政可持续",hand:"Fiscal-safe recommendation",hand_zh:"财政安全建议",ag:[
-   {n:"Financial Sustainability Agent",ic:"💰",own:"custom",in:"Debt + Sakani + V2030 + Brent",in_zh:"债务 + Sakani + V2030 + Brent",out:"Net SAR 8B · index 72→67",out_zh:"净 SAR 8B · 指数 72→67"},
-   {n:"Finance Rules Engine",ic:"📐",own:"platform",in:"5% cap envelope",in_zh:"5% 上限信封",out:"Within cap ✓",out_zh:"上限内 ✓"}]},
+   {n:"Financial Sustainability Agent",ic:"💰",own:"custom",in:"Toolkit + budget envelope",in_zh:"工具箱 + 预算信封",out:"Sustainability assessment",out_zh:"可持续性评估"},
+   {n:"Finance Rules Engine",ic:"📐",own:"platform",in:"Fiscal-cap rules",in_zh:"财政上限规则",out:"Cap-compliance check",out_zh:"上限合规校验"}]},
 ];
 function FlowDiagram({lang,onClose}){
   const L=(en,zh)=>lang==="zh"?zh:en;

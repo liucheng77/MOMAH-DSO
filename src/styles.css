@@ -355,7 +355,7 @@ h1,h2,h3,h4{margin:0;font-weight:600;color:var(--ink)}
 /* Live demo case · ask box docked at the bottom of the card */
 .ai-brief-main{display:flex;flex-direction:column}
 .ask-dock{margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
-.ask-row{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.ask-row{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:14px 10px 14px 16px;min-height:72px;background:#fff;transition:border-color .15s,box-shadow .15s}
 .ask-row:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-100)}
 .ask-row .ask-ic{color:#4f46e5;font-size:16px;flex:0 0 auto}
 .ask-row .ask-input{flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:14px;min-width:0}
